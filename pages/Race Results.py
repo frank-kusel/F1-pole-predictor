@@ -233,62 +233,76 @@ import pandas as pd
 
 
 
-import streamlit as st
-import pandas as pd
-import requests
-
-@st.cache
-def fetch_race_results():
-    # Define the API URL
-    url = "http://ergast.com/api/f1/2023/results.json"
-    response = requests.get(url)
-    data = response.json()
-    race_table = data["MRData"]["RaceTable"]
-    return race_table
-
-def extract_race_data(race_table):
+@st.cache_data
+def fetch_race_results(season):
     races = []
-    for race in race_table.get("Races", []):
-        for result in race.get("Results", []):
-            race_data = {
-                "season": race["season"],
-                "round": race["round"],
-                "raceName": race["raceName"],
-                "circuitID": race["Circuit"]["circuitId"],
-                "country": race["Circuit"]["Location"]["country"],
-                "date": race["date"],
-                "driverID": result["Driver"]["driverId"],
-                "position": result["position"],
-                "constructorID": result["Constructor"]["constructorId"]
-            }
-            if "Time" in result:
-                race_data["time"] = result["Time"]["time"]
-            else:
-                race_data["time"] = None
-            races.append(race_data)
+    offset = 0
+    total_races = float('inf')  # Set initially to infinity to start the loop
+    
+    while len(races) < total_races:
+        url = f"http://ergast.com/api/f1/{season}/results.json?limit=100&offset={offset}"
+        response = requests.get(url)
+        data = response.json()
+        race_table = data["MRData"]["RaceTable"]
+        
+        # Extract and append race data
+        for race in race_table.get("Races", []):
+            for result in race.get("Results", []):
+                race_data = {
+                    "season": race["season"],
+                    "round": race["round"],
+                    "raceName": race["raceName"],
+                    "circuitID": race["Circuit"]["circuitId"],
+                    "country": race["Circuit"]["Location"]["country"],
+                    "date": race["date"],
+                    "driverID": result["Driver"]["driverId"],
+                    "position": result["position"],
+                    "constructorID": result["Constructor"]["constructorId"]
+                }
+                if "Time" in result:
+                    race_data["time"] = result["Time"]["time"]
+                else:
+                    race_data["time"] = None
+                races.append(race_data)
+        
+        # Update offset and total_races for pagination
+        offset += 100
+        total_races = int(data["MRData"]["total"])
+        
     return races
 
 def main():
     st.title("Formula 1 Race Results")
 
-    # Fetch race results
-    race_table = fetch_race_results()
-    races = extract_race_data(race_table)
+    # Divide the app layout into two columns
+    col1, col2 = st.columns(2)
 
-    # Create DataFrame
-    df = pd.DataFrame(races)
+    # Select season in the first column
+    with col1:
+        selected_season = st.selectbox("Select Season", list(range(2010, 2024)))
 
-    # Filter by season
-    selected_season = st.selectbox("Select Season", df["season"].unique())
+    # Select race in the second column
+    with col2:
+        # Fetch race results for the selected season
+        races = fetch_race_results(selected_season)
 
-    # Filter by raceName
-    selected_race = st.selectbox("Select Race", df["raceName"].unique())
+        # Create DataFrame
+        df = pd.DataFrame(races)
+
+        selected_race = st.selectbox("Select Race", df["raceName"].unique())
+ 
 
     # Apply filters
-    filtered_df = df[(df["season"] == selected_season) & (df["raceName"] == selected_race)]
+    filtered_df = df[df["raceName"] == selected_race]
 
-    # Display filtered DataFrame
-    st.write(filtered_df)
+    # Show filtered DataFrame with specific columns
+    if not filtered_df.empty:
+        st.write(filtered_df[['position', 'driverID', 'constructorID', 'time']].reset_index(drop=True))
+    else:
+        st.write("No data available for the selected season and race.")
+
+    st.write(df)
+    st.dataframe(df)
 
 if __name__ == "__main__":
     main()
