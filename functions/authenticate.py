@@ -1,11 +1,13 @@
 '''
 This python script contains the logic required to authenticate a user. 
-A user simply enters a name and password which is stored to the database. 
-# TODO: I am not sure how databases work... so I don't know how to reset this or edit.. :|
+A user enters a name and password which is stored in an SQLite database. 
 '''
 
 import streamlit as st
 import sqlite3
+
+# TODO: format the database
+# TODO: alternatively import an authenticate package
 
 # # Create table for user information
 # c.execute('''CREATE TABLE IF NOT EXISTS users (
@@ -19,6 +21,7 @@ import sqlite3
 #              user_id INTEGER,
 #              driver1 TEXT,
 #              driver2 TEXT,
+#              circuit TEXT,
 #              FOREIGN KEY (user_id) REFERENCES users(user_id))''')
 
 # Function to register new user
@@ -54,13 +57,15 @@ def save_user_guesses(user_id, driver1, driver2, circuit):
 def login():
     conn = sqlite3.connect('user_database.db')
     c = conn.cursor()
-
+    
+    logged_in = False
+    username = None
+    
     # Registration or Login selection
     option = st.sidebar.radio("Select Option:", ("Register", "Login"), key="register_or_login")
 
     if option == "Register":
         # Registration
-        st.sidebar.header("Register")
         new_username = st.sidebar.text_input("Enter new username:")
         new_password = st.sidebar.text_input("Enter new password:", type="password")
         if st.sidebar.button("Register"):
@@ -69,17 +74,19 @@ def login():
             else:
                 register_user(new_username, new_password)
                 st.sidebar.success("Registration successful!")
-        return None
+        return username, logged_in
     
     elif option == "Login":
         # Login
-        st.sidebar.header("Login")
         username = st.sidebar.text_input("Username:")
         password = st.sidebar.text_input("Password:", type="password")
         if st.sidebar.button("Login"):
             if authenticate_user(username, password):
                 st.sidebar.success("Login successful!")
+                logged_in=True
  
             else:
                 st.sidebar.error("Invalid username or password.")
-        return username
+                logged_in=False
+                
+        return username, logged_in

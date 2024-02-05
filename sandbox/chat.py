@@ -1,4 +1,4 @@
-import streamlit as st
+import sandbox.streamlit as st
 import numpy as np
 
 # --- Chat input ---

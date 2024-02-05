@@ -1,5 +1,5 @@
 import sqlite3
-import streamlit as st
+import sandbox.streamlit as st
 import pandas as pd
 
 

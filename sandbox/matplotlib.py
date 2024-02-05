@@ -41,3 +41,5 @@ def plot_cumulative_points(cumulative_points):
 
      # Display the plot
      st.pyplot(fig)
+
+

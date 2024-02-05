@@ -1,10 +1,21 @@
 # Tasks
 
-This is a list containing important tasks, thoughts, and ideas that need further exploration. 
-Most importantly, this project should be a learning experience in coding, with practical use cases. If it's evident that this is too much to handle for novice programmers, the fully-featured app will be simplified.  
+- F1
+    - Database
+        - [ ] Create the database - JSON
+    - Metrics
+        - [ ] Link metrics to actual database 
+    - Leaderboard
+        - [ ] Create a database which shows the total points for each person
+        - [ ] Create a new leaderboard metric based on streamlit styling
 
-- [ ] Decide on whether to use React or Vue. Graphing capabilities will probably be the deciding factor.
-- [ ] Figure out an MVP. Do the core work first, and then add the features of a working web app.
-- [ ] Determine the main objectives of this project and complete them in order of priority to avoid distractions.
+- Pole Picker
+    - [ ] Show a table of picks for all users for the current race
+    - [ ] Show a table of most popoular driver picks
+    - [ ] Plot a graph of driver picks for:
+        - [ ] current race
+        - [ ] all past races
+    - [ ] Show previous race most popular picks vs race results
 
-
+- Race results
+    - [ ] Show race results for season and circuit
