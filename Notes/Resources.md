@@ -14,3 +14,7 @@ This is a list of useful links, sources, blog posts, and anything useful for the
 > Notes for anything related to Django
 
 ## Blogs and Articles
+
+## Database
+- SQLite Python: https://www.sqlitetutorial.net/sqlite-python/creating-database/
+- https://www.sqlitetutorial.net/sqlite-python/insert/

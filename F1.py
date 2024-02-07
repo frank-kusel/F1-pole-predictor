@@ -67,7 +67,8 @@ def main():
          
             
     # Login
-    username, logged_in = auth.login() # returns username if logged in, otherwise returns None 
+    username, logged_in = auth.login() # returns username if logged in, otherwise returns None
+    # st.page_link("pages/page_2.py", label="Page 2", icon="2️⃣", disabled=True) 
     
     
     # Rules
@@ -97,16 +98,27 @@ def main():
             circuit = st.selectbox("Circuit:", sorted(circuit_names), key="circuit_ID")
             submitted = st.form_submit_button("Place your bet!")
 
-        # 
+        # Save user guesses to a pandas dataframe
         if submitted:
-            driver1 = st.session_state["driver1"]
-            driver2 = st.session_state["driver2"]
-            st.success("I can't believe you've done this :0")
-            st.balloons()
-            # TODO: update a a database with the user's guess
-            auth.save_user_guesses(username, driver1, driver2, circuit)
- 
-                
+            user_guesses = pd.DataFrame({
+                'username': [username],
+                'driver1': [driver1],
+                'driver2': [driver2],
+                'circuit': [circuit]
+            })
+            excel_filename = 'F1_data.xlsx'
+            user_guesses.to_excel(excel_filename, index=False)
+        
+        # # Save user guesses to a dataframe -> SQLite
+        # if submitted:
+        #     driver1 = st.session_state["driver1"]
+        #     driver2 = st.session_state["driver2"]
+        #     st.success("I can't believe you've done this :0")
+        #     st.balloons()
+        #     # TODO: update a a database with the user's guess
+        #     auth.save_user_guesses(username, driver1, driver2, circuit)
+
+            
     # Metrics
     # TODO: Link these metrics to actual data from the dataframe
     if logged_in: 

@@ -9,20 +9,23 @@ import sqlite3
 # TODO: format the database
 # TODO: alternatively import an authenticate package
 
-# # Create table for user information
-# c.execute('''CREATE TABLE IF NOT EXISTS users (
-#              user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-#              username TEXT UNIQUE,
-#              password TEXT)''')
+conn = sqlite3.connect('user_database.db')
+c = conn.cursor()
 
-# # Create table for user guesses
-# c.execute('''CREATE TABLE IF NOT EXISTS user_guesses (
-#              guess_id INTEGER PRIMARY KEY AUTOINCREMENT,
-#              user_id INTEGER,
-#              driver1 TEXT,
-#              driver2 TEXT,
-#              circuit TEXT,
-#              FOREIGN KEY (user_id) REFERENCES users(user_id))''')
+# Create table for user information
+c.execute('''CREATE TABLE IF NOT EXISTS users (
+             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+             username TEXT UNIQUE,
+             password TEXT)''')
+
+# Create table for user guesses
+c.execute('''CREATE TABLE IF NOT EXISTS user_guesses (
+             guess_id INTEGER PRIMARY KEY AUTOINCREMENT,
+             user_id INTEGER,
+             driver1 TEXT,
+             driver2 TEXT,
+             circuit TEXT,
+             FOREIGN KEY (user_id) REFERENCES users(user_id))''')
 
 # Function to register new user
 def register_user(username, password):
