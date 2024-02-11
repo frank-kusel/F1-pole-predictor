@@ -156,8 +156,8 @@ def main():
             with st.expander("Racing Rules"):
                 st.markdown('_Welcome to the F1 Prediction Game! Predict the 10th place driver and earn points._')
                 points_system = {
-                    "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th"],
-                    "Points": [25, 18, 15, 12, 8, 5, 2]
+                    "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th", "5th"],
+                    "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0.5]
                 }
                 df_points_system = pd.DataFrame(points_system)
                 st.dataframe(points_system, hide_index=True, use_container_width=True)
