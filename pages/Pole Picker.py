@@ -72,12 +72,20 @@ fig = go.Figure(data=[
 ])
 
 # Update layout
-fig.update_layout(barmode='stack', xaxis_title='Number of Picks', yaxis_title='Driver',
+fig.update_layout(barmode='stack',
+                  xaxis_title='Number of Picks', 
+                  yaxis_title= None,
+                  showlegend = False,
                   title=f'Driver Picks for {selected_circuit}', legend=dict(title='Picks'))
 
 # Display the Plotly figure
 with st.container():
     st.plotly_chart(fig, use_container_width=True)
 
+import matplotlib.pyplot as plt
+import streamlit as st
+
+
 st.markdown('raw dataframe - delete later')
 st.dataframe(df, use_container_width=True, hide_index=True)
+

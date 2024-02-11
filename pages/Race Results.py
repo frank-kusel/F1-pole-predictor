@@ -24,7 +24,6 @@ def fetch_race_results(season):
         data = response.json()
         race_table = data["MRData"]["RaceTable"]
         
-        # Extract and append race data
         for race in race_table.get("Races", []):
             for result in race.get("Results", []):
                 race_data = {
@@ -40,22 +39,13 @@ def fetch_race_results(season):
                     "position": result["position"],
                     "constructorID": result["Constructor"]["constructorId"],
                     "grid": result["grid"]
-                    # "speed": result["FastestLap"]["AverageSpeed"]["speed"]
                 }
                 
-                if "speed" in result:
-                    race_data["speed"] = result["FastestLap"]["AverageSpeed"]["speed"]
-                else:
-                    race_data["speed"] = None
-
-                if "Time" in result:
-                    race_data["time"] = result["Time"]["time"]
-                else:
-                    race_data["time"] = None
+                race_data["speed"] = result["FastestLap"]["AverageSpeed"]["speed"] if "speed" in result else None
+                race_data["time"] = result["Time"]["time"] if "Time" in result else None
                 
                 races.append(race_data)
         
-        # Update offset and total_races for pagination
         offset += 100
         total_races = int(data["MRData"]["total"])
         
@@ -64,29 +54,18 @@ def fetch_race_results(season):
 def main():
     st.title("Race Results")
 
-    # Divide the app layout into two columns
     col1, col2 = st.columns(2)
 
-    # Select season in the first column
     with col1:
         selected_season = st.selectbox("Select Season", list(range(2023, 1950-1, -1)))
 
-    # Select race in the second column
     with col2:
-        # Fetch race results for the selected season
         races = fetch_race_results(selected_season)
-
-        # Create DataFrame
         df = pd.DataFrame(races)
-
         selected_race = st.selectbox("Select Race", df["raceName"].unique())
- 
 
-    # Apply filters
     filtered_df = df[df["raceName"] == selected_race]
     
-    
-    # Rename columns
     filtered_df = filtered_df.rename(columns={
         "position": "Position",
         "givenName": "Name",
@@ -94,20 +73,15 @@ def main():
         "time": "Time",
         "grid": "Grid"
     })
-    
 
-    # Show filtered DataFrame with specific columns
     if not filtered_df.empty:
         st.dataframe(filtered_df[['Position', 'Grid', 'Name', 'Surname', 'Time']].style.applymap(color_survived, subset=['Position', 'Grid']), use_container_width=True, hide_index=True)
     else:
         st.write("No data available for the selected season and race.")
 
-
-# Apply custom CSS to highlight cells containing the number 10
 def color_survived(val):
-    color = 'red' if int(val)==10 else 'black'
+    color = 'red' if int(val) == 10 else 'black'
     return f'background-color: {color}'
 
 if __name__ == "__main__":
     main()
-

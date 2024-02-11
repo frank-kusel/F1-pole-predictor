@@ -4,8 +4,6 @@ Fetch live results to be used for points calculations
 
 import requests
 
-import requests
-
 def get_driver_position(driver, race_results):
     # Implement function to retrieve driver's position from race results
     # Search race results for driver and return their finishing position
