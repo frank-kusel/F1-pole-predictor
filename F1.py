@@ -149,9 +149,9 @@ def main():
             
             points = calc_points.main(user_id, driver1, driver2)
             
-            current_points.container(height=120).metric("Current Points", points, 0)
+            current_points.container(height=120).metric("Race Points", points, 0)
             current_position.container(height=120).metric("Current Position", 10, -5)
-            total_points.container(height=120).metric("Current Points", 98, 12)
+            total_points.container(height=120).metric("Total Points", 98, 12)
             leader_points.container(height=120).metric("Leader Points", 125, 25)
     
     
