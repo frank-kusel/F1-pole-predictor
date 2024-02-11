@@ -15,6 +15,7 @@ import plotly.graph_objects as go
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Show table of picks once user has submitted their picks. 
 # TODO: Show a summary of most picked drivers for the current race. 
+# TODO: Find a way to only show these results when race results are submitted
 
 st.title('Pole Picker')
 
