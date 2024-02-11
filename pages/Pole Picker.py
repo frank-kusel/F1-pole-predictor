@@ -30,7 +30,7 @@ c.execute("SELECT user_guesses.user_id, users.username, user_guesses.driver1, us
 guesses_data = c.fetchall()
 
 df = pd.DataFrame(guesses_data, columns=['User ID', 'Name', 'Driver 1', 'Driver 2', 'Circuit'])
-st.dataframe(df, use_container_width=True, hide_index=True)
+
 
 # Add a SelectBox to filter the DataFrame by circuit
 selected_circuit = st.selectbox('Select Circuit', df['Circuit'].unique())
@@ -54,7 +54,7 @@ merged_counts['Driver 1 Picks'] = merged_counts['Driver 1 Picks'].astype(int)
 merged_counts['Driver 2 Picks'] = merged_counts['Driver 2 Picks'].astype(int)
 merged_counts['Total Picks'] = merged_counts['Driver 1 Picks'] + merged_counts['Driver 2 Picks']
 
-st.dataframe(merged_counts, use_container_width=True, hide_index=True)
+st.dataframe(merged_counts, use_container_width=True, hide_index=True, )
 
 
 # Combine the counts from Driver 1 and Driver 2
@@ -66,8 +66,8 @@ merged_counts.sort_values(by='Total Picks', ascending=True, inplace=True)
 
 # Create a stacked bar chart using Plotly
 fig = go.Figure(data=[
-    go.Bar(name='Driver 1 Picks', y=merged_counts['Driver'], x=merged_counts['Driver 1 Picks'], orientation='h', marker_color='green'),
-    go.Bar(name='Driver 2 Picks', y=merged_counts['Driver'], x=merged_counts['Driver 2 Picks'], orientation='h', marker_color='orange')
+    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1 Picks'], orientation='h', marker_color='green'),
+    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2 Picks'], orientation='h', marker_color='orange')
 ])
 
 # Update layout
@@ -75,5 +75,8 @@ fig.update_layout(barmode='stack', xaxis_title='Number of Picks', yaxis_title='D
                   title=f'Driver Picks for {selected_circuit}', legend=dict(title='Picks'))
 
 # Display the Plotly figure
-st.plotly_chart(fig)
+with st.container():
+    st.plotly_chart(fig, use_container_width=True)
 
+st.markdown('raw dataframe - delete later')
+st.dataframe(df, use_container_width=True, hide_index=True)

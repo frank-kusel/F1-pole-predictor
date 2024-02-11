@@ -1,5 +1,5 @@
 '''Run pieces of this code to edit the database. 
-Warning: Make a backup first!'''
+Warning: these changes are permanent'''
 
 import streamlit as st
 import sqlite3

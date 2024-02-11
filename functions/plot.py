@@ -57,11 +57,12 @@ def plot_cumulative_points(cumulative_points):
 
     # Update layout
     fig.update_layout(
-        title={'text': 'Leaderboard', 'x': 0.3, 'font': {'size': 24}},
-        xaxis=dict(title='Race'),
-        yaxis=dict(title='Points'),
+        # title={'text': 'Leaderboard', 'x': 0.3, 'font': {'size': 24}},
+        # xaxis=dict(title='Race'),
+        # yaxis=dict(title='Points'),
         height=600,
         yaxis_gridwidth=False,
+        yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
         xaxis_showline=False,
         yaxis_showline=False,
@@ -69,11 +70,11 @@ def plot_cumulative_points(cumulative_points):
         xaxis_tickvals=list(range(22)),  # Assuming 22 races
         yaxis_range=[0, cumulative_points.max().max() + 50],
         legend=dict(
-            orientation='v',
-            yanchor='top',
-            y=1,
-            xanchor='left',
-            x=1.02,
+            orientation='h',
+            yanchor='bottom',
+            y=0.9,
+            xanchor='center',
+            x=0.5,
             bgcolor=st.get_option("theme.backgroundColor"),
             bordercolor=st.get_option("theme.backgroundColor"),
             font=dict(color='white')
@@ -84,4 +85,4 @@ def plot_cumulative_points(cumulative_points):
     )
 
     # Show the plot
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, config ={'displayModeBar': False}, use_container_width=True)

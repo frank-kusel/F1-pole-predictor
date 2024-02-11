@@ -36,35 +36,43 @@ import numpy as np
 import sqlite3
 from functions.plot import plot_cumulative_points
 import functions.database as db
+import functions.ergast as erg
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
-page_title = "F1 POLE PREDICTOR"
+page_title = "F1 Pole Predictor"
 page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
 
-# ---------------------- DATABASE ----------------------
 # TODO: Link these lists to the ERGAST API - or just update manually
 # TODO: Set the month automatically for each race - user won't need to select circuit
-driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
-circuit_names = ("Bahrain International Circuit", "Jeddah Street Circuit", "Albert Park Circuit", "Suzuka Circuit", "Shanghai International Circuit", "Hard Rock Stadium Circuit", "Autodromo Enzo e Dino Ferrari", "Circuit de Monaco", "Circuit Gilles Villeneuve", "Circuit de Barcelona-Catalunya", "Red Bull Ring", "Silverstone Circuit", "Hungaroring", "Circuit de Spa-Francorchamps", "Circuit Zandvoort", "Autodromo Nazionale di Monza", "Baku City Circuit", "Marina Bay Street Circuit", "Circuit of the Americas", "Autódromo Hermanos Rodríguez", "Autódromo José Carlos Pace", "Las Vegas Strip Circuit", "Losail International Circuit", "Yas Marina Circuit")
-# ------------------------------------------------------
-
 
 # --- MAIN APP ---
 def main():
+    
+    # Page info
+    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
+    st.title(page_title + " " + page_icon)
     
     # Select database
     database = r"f1.db"
     conn = db.create_connection(database)
     
-    # Page info
-    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
-    st.title(page_icon + " " + page_title + " " + page_icon)
+
+    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
+    # circuit_names = ("Bahrain International Circuit", "Jeddah Street Circuit", "Albert Park Circuit", "Suzuka Circuit", "Shanghai International Circuit", "Hard Rock Stadium Circuit", "Autodromo Enzo e Dino Ferrari", "Circuit de Monaco", "Circuit Gilles Villeneuve", "Circuit de Barcelona-Catalunya", "Red Bull Ring", "Silverstone Circuit", "Hungaroring", "Circuit de Spa-Francorchamps", "Circuit Zandvoort", "Autodromo Nazionale di Monza", "Baku City Circuit", "Marina Bay Street Circuit", "Circuit of the Americas", "Autódromo Hermanos Rodríguez", "Autódromo José Carlos Pace", "Las Vegas Strip Circuit", "Losail International Circuit", "Yas Marina Circuit")
+
+    race_schedule = erg.race_schedule(2024)
+    race_schedule_df = pd.DataFrame(race_schedule)
+    # Create a new column in the DataFrame that concatenates the race name and date
+    race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
+    # race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' (' + race_schedule_df['date'] + ')'
+    # circuit_names = [race['raceName'] for race in race_schedule]
+    # circuit_dates = [date['date'] for date in race_schedule]
 
     # Registration or Login selection
-    option = st.sidebar.radio("Select Option:", ("Login", "Register"), key="register_or_login")
+    option = st.radio("Select Option:", ("Login", "Register"), key="register_or_login")
     
     # Retrieve user_id from session state
     user_id = st.session_state.get('user_id')
@@ -75,34 +83,34 @@ def main():
 
         if option == "Login":
             # Login
-            username = st.sidebar.text_input("Username:")
-            password = st.sidebar.text_input("Password:", type="password")
+            username = st.text_input("Username:")
+            password = st.text_input("Password:", type="password")
             logged_in = False
             
-            if st.sidebar.button("Login"):
+            if st.button("Login"):
                 user_id = db.authenticate_user(conn, (username, password))
                 if not user_id == None:
-                    st.sidebar.success("Login successful!")
+                    st.success("Login successful!")
                     logged_in=True
                     st.session_state['logged_in'] = logged_in
                     st.session_state['user_id'] = user_id
                 else:
-                    st.sidebar.error("Invalid username or password.")
+                    st.error("Invalid username or password.")
                     logged_in=False
                     
         elif option == "Register":
             # Registration
             logged_in = False
             st.session_state['logged_in'] = logged_in
-            new_username = st.sidebar.text_input("Enter new username:")
-            new_password = st.sidebar.text_input("Enter new password:", type="password")
+            new_username = st.text_input("Enter new username:")
+            new_password = st.text_input("Enter new password:", type="password")
             
-            if st.sidebar.button("Register"):
+            if st.button("Register"):
                 if db.is_username_taken(conn, (new_username,)):
-                    st.sidebar.warning("Username already taken. Please choose another one.")
+                    st.warning("Username already taken. Please choose another one.")
                 else:
                     user_id = db.register_user(conn, (new_username, new_password))
-                    st.sidebar.success("Registration successful!")
+                    st.success("Registration successful!")
         
 
     if logged_in:
@@ -112,8 +120,10 @@ def main():
                 driver1 = st.selectbox(f':green[First] Pick:', sorted(driver_names), key="driver1")
             with col2:
                 driver2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver2")
-            
-            circuit = st.selectbox("Circuit:", sorted(circuit_names), key="circuit_ID")  
+                    
+            selected_race_with_date = st.selectbox("Select Race:", race_schedule_df['race_with_date'], key="circuit")  
+            circuit = selected_race_with_date.split(' - ')[0]
+              
             submitted = st.form_submit_button("Place your bet!")
 
             # Save user guesses to a dataframe -> SQLite
@@ -154,17 +164,19 @@ def main():
         df = pd.DataFrame(guesses_data, columns=['Name', 'Driver 1', 'Driver 2', 'Circuit'])
         # Filter the DataFrame by selected circuit using .loc
         filtered_df = df[df['Circuit'] == circuit]
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        # st.dataframe(df, use_container_width=True, hide_index=True)
 
 
 
     # --- Load data ---
+    
     df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
     df = df.T
     cumulative_points = df.cumsum()
     # --- Plot cumulative points ---
     with st.container(border=True):
-
+        st.markdown(f'### :red[2023] Season')
+        st.markdown(f'Winner: **:green[Markus]!**')
         plot_cumulative_points(cumulative_points)
 
     return database
