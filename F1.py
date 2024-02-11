@@ -163,8 +163,14 @@ def main():
 
         df = pd.DataFrame(guesses_data, columns=['Name', 'Driver 1', 'Driver 2', 'Circuit'])
         # Filter the DataFrame by selected circuit using .loc
-        filtered_df = df[df['Circuit'] == circuit]
-        # st.dataframe(df, use_container_width=True, hide_index=True)
+        filtered_df = df[df['Name'] == user_id]
+        
+        # Select only the desired columns
+        filtered_df['Points'] = 0
+        filtered_df = filtered_df[['Circuit', 'Driver 1', 'Driver 2','Points']]
+        
+        st.markdown('Your past picks...')
+        st.dataframe(filtered_df, use_container_width=True, hide_index=True)
 
 
 
@@ -176,7 +182,7 @@ def main():
     # --- Plot cumulative points ---
     with st.container(border=True):
         st.markdown(f'### :red[2023] Season')
-        st.markdown(f'Winner: **:green[Markus]!**')
+        st.markdown(f'Winner: **:green[Markus]**')
         plot_cumulative_points(cumulative_points)
 
     return database
