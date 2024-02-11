@@ -57,9 +57,10 @@ def plot_cumulative_points(cumulative_points):
 
     # Update layout
     fig.update_layout(
+        title={'text': 'Leaderboard', 'x': 0.3, 'font': {'size': 24}},
         xaxis=dict(title='Race'),
         yaxis=dict(title='Points'),
-        height=800,
+        height=600,
         yaxis_gridwidth=False,
         xaxis_tickangle=-90,
         xaxis_showline=False,
@@ -83,4 +84,4 @@ def plot_cumulative_points(cumulative_points):
     )
 
     # Show the plot
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)

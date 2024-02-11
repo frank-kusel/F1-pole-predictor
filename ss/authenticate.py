@@ -9,7 +9,7 @@ import sqlite3
 # TODO: format the database
 # TODO: alternatively import an authenticate package
 
-conn = sqlite3.connect('user_database.db')
+conn = sqlite3.connect('user_database2.db')
 c = conn.cursor()
 
 # Create table for user information
@@ -46,23 +46,27 @@ def authenticate_user(username, password):
     conn = sqlite3.connect('user_database.db')
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
-    return c.fetchone() is not None
+    user_data = c.fetchone()
+    if user_data:
+        user_id = user_data[0]
+        return user_id, True  # Authentication successful
+    else:
+        return None, False  # Authentication failed
 
 # Function to save user guesses
 def save_user_guesses(user_id, driver1, driver2, circuit):
-    conn = sqlite3.connect('user_database.db')
+    conn = sqlite3.connect('user_database2.db')
     c = conn.cursor()
     c.execute("INSERT INTO user_guesses (user_id, driver1, driver2, circuit) VALUES (?, ?, ?, ?)", (user_id, driver1, driver2, circuit))
     conn.commit()
     
 
-# Main function to handle user registration, login, and guess submission
 def login():
-    conn = sqlite3.connect('user_database.db')
+    conn = sqlite3.connect('user_database2.db')
     c = conn.cursor()
     
     logged_in = False
-    username = None
+    user_id = None
     
     # Registration or Login selection
     option = st.sidebar.radio("Select Option:", ("Register", "Login"), key="register_or_login")
@@ -77,14 +81,15 @@ def login():
             else:
                 register_user(new_username, new_password)
                 st.sidebar.success("Registration successful!")
-        return username, logged_in
+        return user_id, logged_in
     
     elif option == "Login":
         # Login
         username = st.sidebar.text_input("Username:")
         password = st.sidebar.text_input("Password:", type="password")
         if st.sidebar.button("Login"):
-            if authenticate_user(username, password):
+            user_id, logged_in = authenticate_user(username, password)
+            if logged_in:
                 st.sidebar.success("Login successful!")
                 logged_in=True
  
@@ -92,4 +97,4 @@ def login():
                 st.sidebar.error("Invalid username or password.")
                 logged_in=False
                 
-        return username, logged_in
+        return user_id, logged_in

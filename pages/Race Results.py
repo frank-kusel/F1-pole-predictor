@@ -10,7 +10,7 @@ import pandas as pd
 # TODO: Add statistics and filter options. 
 # TODO: Can pages also have main functions??
 # TODO: Filter race by calling a new url, which might be quicker? OR print all previous races to a database
-
+# TODO: Show a table showing all past race results and driver positions in order of driver points
 
 @st.cache_data
 def fetch_race_results(season):
@@ -69,7 +69,7 @@ def main():
 
     # Select season in the first column
     with col1:
-        selected_season = st.selectbox("Select Season", list(range(2024, 1950-1, -1)))
+        selected_season = st.selectbox("Select Season", list(range(2023, 1950-1, -1)))
 
     # Select race in the second column
     with col2:
