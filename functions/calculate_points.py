@@ -1,25 +1,72 @@
-# Assume we have the list of Formula 1 driver names
-driver_names = [
-    "Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Sergio Perez",
-    "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso",
-    "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "Kimi Raikkonen",
-    "Antonio Giovinazzi", "George Russell", "Mick Schumacher", "Nikita Mazepin", "Nicholas Latifi"
-]
+'''
+Fetch live results to be used for points calculations
+'''
 
-user_guess = "Fernando Alonso"
+import requests
 
-# Calculate points based on user's guess
-if user_guess == driver_names[9]:
-    points = 10
-else:
-    # Calculate bonus points based on proximity to the 10th position
-    position_index = driver_names.index(user_guess)
-    distance_from_10th = abs(10 - position_index)
-    bonus_points = max(0, 5 - distance_from_10th)  # Assuming 5 bonus points for the closest guess
-    points = bonus_points
+import requests
 
-# Store the user's points in the database (to be implemented)
-# Display user's score and ranking on the leaderboard (to be implemented)
-print(f'User score: {points}')
-print('Hello user name! You scored %s points with %s' %(points, user_guess))
+def get_driver_position(driver, race_results):
+    # Implement function to retrieve driver's position from race results
+    # Search race results for driver and return their finishing position
+    # Iterate over each race result
+    for result in race_results:
+        # Check if the driver name matches
+        driver_name = result["Driver"]["givenName"] + " " + result["Driver"]["familyName"]
+        if driver_name == driver:
+            # Return the driver's finishing position
+            return result["position"]
+    
+    # If the driver is not found, return None
+    return None
+
+def main(user_id, driver1, driver2):
+    '''
+    calculate points based on guess
+    :param user_id:
+    :param driver1:
+    :param driver2:
+    '''
+    # Step 1: Retrieve latest race results from Ergast API
+    url = "https://ergast.com/api/f1/current/last/results.json"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        race_results = response.json()["MRData"]["RaceTable"]["Races"][0]["Results"]
+    else:
+        print("Failed to fetch race results")
+        return 0
+
+    # Step 2: Compare user's guesses with actual race results
+    driver1_position = get_driver_position(driver1, race_results)
+    driver2_position = get_driver_position(driver2, race_results)
+
+    # Step 3: Calculate points based on the provided scoring system
+    points_system = {
+        "10": 25,
+        "11": 18,
+        "9": 15,
+        "12": 12,
+        "8": 10,
+        "13": 8,
+        "7": 6,
+        "14": 4,
+        "6": 2,
+        "15": 1,
+        "5": 0.5
+    }
+    
+    # Calculate points for each driver's guess
+    driver1_points = points_system.get(driver1_position, 0)
+    driver2_points = points_system.get(driver2_position, 0) / 2
+
+    # Return the maximum points between driver1_points and driver2_points
+    return max(driver1_points, driver2_points)
+
+# Test the function
+# user_id = 1
+# driver1 = "Esteban Ocon"
+# driver2 = "Lance Stroll"
+# print("Maximum Points:", main(user_id, driver1, driver2))
+
 

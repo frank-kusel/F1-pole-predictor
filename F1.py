@@ -38,6 +38,7 @@ from functions.plot import plot_cumulative_points
 import functions.database as db
 import functions.ergast as erg
 import plotly.express as px
+import functions.calculate_points as calc_points
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
@@ -141,11 +142,16 @@ def main():
                 st.write(f'You have selected :green[{driver1}] and :orange[{driver2}]')
     
     
+    
         # Metrics
         with st.container(border=False):
-            current_position, current_points, leader_points = st.columns(3)
+            current_points, current_position, total_points, leader_points = st.columns(4)
+            
+            points = calc_points.main(user_id, driver1, driver2)
+            
+            current_points.container(height=120).metric("Current Points", points, 0)
             current_position.container(height=120).metric("Current Position", 10, -5)
-            current_points.container(height=120).metric("Current Points", 98, 12)
+            total_points.container(height=120).metric("Current Points", 98, 12)
             leader_points.container(height=120).metric("Leader Points", 125, 25)
     
     
@@ -175,13 +181,13 @@ def main():
         
         # Select only the desired columns
         filtered_df['Points'] = 0
+        
         filtered_df = filtered_df[['Circuit', 'Driver 1', 'Driver 2','Points']]
         
         st.markdown('Your past picks...')
         st.dataframe(filtered_df, use_container_width=True, hide_index=True)
 
-
-
+    
     # --- Load data ---
     
     df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
