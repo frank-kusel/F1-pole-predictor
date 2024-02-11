@@ -43,31 +43,31 @@ driver1_counts = filtered_df['Driver 1'].value_counts().reset_index()
 driver2_counts = filtered_df['Driver 2'].value_counts().reset_index()
 
 # Rename columns
-driver1_counts.columns = ['Driver', 'Driver 1 Picks']
-driver2_counts.columns = ['Driver', 'Driver 2 Picks']
+driver1_counts.columns = ['Driver', 'Driver 1']
+driver2_counts.columns = ['Driver', 'Driver 2']
 
 # Merge counts for Driver 1 and Driver 2
 merged_counts = pd.merge(driver1_counts, driver2_counts, on='Driver', how='outer').fillna(0)
 
 # Convert counts to integers
-merged_counts['Driver 1 Picks'] = merged_counts['Driver 1 Picks'].astype(int)
-merged_counts['Driver 2 Picks'] = merged_counts['Driver 2 Picks'].astype(int)
-merged_counts['Total Picks'] = merged_counts['Driver 1 Picks'] + merged_counts['Driver 2 Picks']
+merged_counts['Driver 1'] = merged_counts['Driver 1'].astype(int)
+merged_counts['Driver 2'] = merged_counts['Driver 2'].astype(int)
+merged_counts['Total'] = merged_counts['Driver 1'] + merged_counts['Driver 2']
 
 st.dataframe(merged_counts, use_container_width=True, hide_index=True, )
 
 
 # Combine the counts from Driver 1 and Driver 2
-merged_counts['Total Picks'] = merged_counts['Driver 1 Picks'] + merged_counts['Driver 2 Picks']
+merged_counts['Total'] = merged_counts['Driver 1'] + merged_counts['Driver 2']
 
 # Sort the DataFrame by Total Picks in descending order
-merged_counts.sort_values(by='Total Picks', ascending=True, inplace=True)
+merged_counts.sort_values(by='Total', ascending=True, inplace=True)
 
 
 # Create a stacked bar chart using Plotly
 fig = go.Figure(data=[
-    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1 Picks'], orientation='h', marker_color='green'),
-    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2 Picks'], orientation='h', marker_color='orange')
+    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='green'),
+    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='orange')
 ])
 
 # Update layout

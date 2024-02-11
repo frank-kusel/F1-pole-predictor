@@ -72,7 +72,7 @@ def plot_cumulative_points(cumulative_points):
         legend=dict(
             orientation='h',
             yanchor='bottom',
-            y=0.9,
+            y=1,
             xanchor='center',
             x=0.5,
             bgcolor=st.get_option("theme.backgroundColor"),
@@ -81,7 +81,10 @@ def plot_cumulative_points(cumulative_points):
         ),
         plot_bgcolor=st.get_option("theme.backgroundColor"),
         paper_bgcolor=st.get_option("theme.backgroundColor"),
-        font=dict(color='white')
+        font=dict(color='white'),
+        yaxis=dict(
+            showticklabels=False  # Remove y-axis tick labels
+        )
     )
 
     # Show the plot
