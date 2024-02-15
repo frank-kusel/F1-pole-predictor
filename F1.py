@@ -48,6 +48,10 @@ layout = 'centered'
 # ------------------------------------------------------
 
 # TODO: Set the month automatically for each race - user won't need to select circuit
+# TODO: Create a year filter for each user's past picks
+# TODO: Add or remove the 'Grand Prix' part of each race name
+# TODO: Create year filter in pole picker for favourite drivers
+# TODO: Create a function that only allows race entries once, and once per current next race
 
 # --- MAIN APP ---
 def main():
@@ -184,7 +188,7 @@ def main():
         
         filtered_df = filtered_df[['Circuit', 'Driver 1', 'Driver 2','Points']]
         
-        st.markdown('Your past picks...')
+        st.markdown('Your previous picks...')
         st.dataframe(filtered_df, use_container_width=True, hide_index=True)
 
     

@@ -59,21 +59,21 @@ sql_create_race_results_table = """ CREATE TABLE IF NOT EXISTS race_results (
 # Define the file path
 file_path = r'C:\Users\frank\F1-pole-predictor\data\2023_user_guesses.xlsx'
 
-# # Read the Excel file into a DataFrame
-# user_guesses_2023 = pd.read_excel(file_path, sheet_name='2023')
-# user_names_2023 = pd.read_excel(file_path, sheet_name='2023')
+# Read the Excel file into a DataFrame
+user_guesses_2023 = pd.read_excel(file_path, sheet_name='2023')
+user_names_2023 = pd.read_excel(file_path, sheet_name='2023')
 
 # # Display the DataFrame
 # print(user_guesses_2023)
 # print(user_names_2023)
 
-# # Assuming df is your DataFrame and database is your SQLite database file
-# table_name_guesses = 'user_guesses'
-# table_name_usernames = 'users'
+# Assuming df is your DataFrame and database is your SQLite database file
+table_name_guesses = 'user_guesses'
+table_name_usernames = 'users'
 
 # # Write DataFrame to SQLite table, append if table exists
-# user_guesses_2023.to_sql(table_name_guesses, conn, if_exists='append', index=False)
-# user_guesses_2023.to_sql(table_name_usernames, conn, if_exists='append', index=False)
+user_guesses_2023.to_sql(table_name_guesses, conn, if_exists='append', index=False)
+user_guesses_2023.to_sql(table_name_usernames, conn, if_exists='append', index=False)
 
 
 
