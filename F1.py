@@ -49,11 +49,13 @@ layout = 'centered'
 
 
 
-# TODO: Create year filter in pole picker for favourite drivers
+# TODO: Show race results
 # TODO: Create a function that only allows race entries once, and once per current next race
+# TODO: Create year filter in pole picker for favourite drivers
 # TODO: prevent the app from refetching driver names and race schedules on each click..
 # TODO: redo login logic.. or use the empty container function: https://discuss.streamlit.io/t/login-form-using-st-form/26722
 # TODO: Create a year filter for each user's past picks
+# TODO: Create stats for total users, races, guesses etc
 
 
 # --- MAIN APP ---
@@ -70,21 +72,30 @@ def main():
     # col2.page_link("pages/Race Results.py", label="Race Results")
     
     # Select database
-    database = r"f1.db"
+    database = r"F1.db"
     conn = db.create_connection(database)
-    
+        
     driver_names = erg.drivers()
     # driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
     
     race_schedule = erg.race_schedule(2024)
+    print(race_schedule)
     race_schedule_df = pd.DataFrame(race_schedule)
-    # Create a new column in the DataFrame that concatenates the race name and date
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
-    # race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' (' + race_schedule_df['date'] + ')'
-    # circuit_names = [race['raceName'] for race in race_schedule]
-    # circuit_dates = [date['date'] for date in race_schedule]
     next_race, next_race_date = erg.next_race_name(race_schedule)
+    print(f'Next race: {next_race}')
+    racerace = next_race
+
     
+    # SQL query to return circuit_id
+    curr = conn.cursor()
+
+    curr.execute("SELECT circuit_id FROM race_details WHERE race_name = ? ", (racerace,))
+    result = curr.fetchone()
+
+    circuit_id = result[0]
+    print(f'circuit id: {circuit_id}')
+
 
     with st.expander('Login'):
         # Registration or Login selection
@@ -137,9 +148,8 @@ def main():
         
         with st.form("entry_form", clear_on_submit=True):
             
-            circuit = next_race
             next_race_date_formatted = next_race_date.strftime('%d %B')
-            st.markdown(f'#### Next race: :red[{circuit}] - {next_race_date_formatted}')
+            st.markdown(f'#### Next race: :red[{next_race}] - {next_race_date_formatted}')
             current_date = datetime.today()
             # Convert the next_race_date to a datetime object
             next_race_datetime = datetime.combine(next_race_date, datetime.min.time())
@@ -148,14 +158,10 @@ def main():
             
             col1, col2 = st.columns(2)
             with col1:
-                driver1 = st.selectbox(f':green[First] Pick:', sorted(driver_names), key="driver1")
+                driver_1 = st.selectbox(f':green[First] Pick:', sorted(driver_names), key="driver_1")
             with col2:
-                driver2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver2")
+                driver_2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver_2")
                     
-            # selected_race_with_date = st.selectbox("Select Race:", race_schedule_df['race_with_date'], key="circuit")  
-            # circuit = selected_race_with_date.split(' - ')[0]
-                                   
-
             submitted = st.form_submit_button("Place your bet!", on_click=disable, disabled=st.session_state.disabled)
 
             # Save user guesses to a dataframe -> SQLite
@@ -164,8 +170,10 @@ def main():
                 st.session_state.show_submit_button = False
                 submitted_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 current_user = st.session_state['user_id']
-                db.save_user_guesses(conn, (current_user, driver1, driver2, circuit, submitted_time))
-                st.write(f'You have selected :green[{driver1}] and :orange[{driver2}]')
+
+                
+                db.save_user_guesses(conn, (current_user, driver_1, driver_2, circuit_id, submitted_time))
+                st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
     
 
     
@@ -174,7 +182,7 @@ def main():
         with st.container(border=False):
             current_points, current_position, total_points, leader_points = st.columns(4)
             
-            points = calc_points.main(user_id, driver1, driver2)
+            points = calc_points.main(user_id, driver_1, driver_2)
             
             current_points.container(height=120).metric("Race Points", points, 0)
             current_position.container(height=120).metric("Current Position", 10, -5)
@@ -197,20 +205,25 @@ def main():
     
     
     if logged_in:   
-        # Function to fetch user guesses
+        
+        # Fetch user guesses with race names directly from SQL
         c = conn.cursor()
-        c.execute("SELECT user_id, submission_time, driver1, driver2, circuit FROM user_guesses")
+        c.execute("""
+            SELECT ug.submission_time, rd.race_name, ug.driver_1, ug.driver_2
+            FROM user_guesses ug
+            JOIN race_details rd ON ug.circuit_id = rd.circuit_id
+            WHERE ug.user_id = ?
+        """, (user_id,))
         guesses_data = c.fetchall()
 
-        df = pd.DataFrame(guesses_data, columns=['Name', 'Submitted', 'Driver 1', 'Driver 2', 'Circuit'])
-        filtered_df = df[df['Name'] == user_id]
-        
-        filtered_df['Points'] = 0
-        
-        filtered_df = filtered_df[['Submitted', 'Circuit', 'Driver 1', 'Driver 2','Points']]
-        
+        # Convert the data to a DataFrame
+        filtered_df = pd.DataFrame(guesses_data, columns=['Submitted', 'Race', 'Driver 1', 'Driver 2'])
+
+        # Display DataFrame
         st.markdown('Your previous picks...')
         st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+
+
 
     
     # --- Load data ---

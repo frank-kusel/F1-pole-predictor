@@ -4,7 +4,7 @@ Fetch live results to be used for points calculations
 
 import requests
 
-def calculate_points(driver1_guess, driver2_guess, position_guess, points_system_url):
+def calculate_points(driver_1_guess, driver_2_guess, position_guess, points_system_url):
     # Fetch the latest race results from the ERGAST API
     response = requests.get(points_system_url)
     if response.status_code != 200:
@@ -25,10 +25,10 @@ def calculate_points(driver1_guess, driver2_guess, position_guess, points_system
     position_points_map = {position: points for position, points in zip(position_data, points_data)}
     
     # Calculate points for driver 1 guess
-    driver1_points = position_points_map.get(driver1_guess, 0)
+    driver1_points = position_points_map.get(driver_1_guess, 0)
     
     # Calculate points for driver 2 guess (points halved)
-    driver2_points = position_points_map.get(driver2_guess, 0) / 2
+    driver2_points = position_points_map.get(driver_2_guess, 0) / 2
     
     # Calculate points for position guess
     position_points = position_points_map.get(position_guess, 0)

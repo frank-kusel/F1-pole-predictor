@@ -27,7 +27,7 @@ c = conn.cursor()
 
 
 # Function to fetch user guesses
-c.execute("SELECT user_guesses.user_id, users.username, user_guesses.driver1, user_guesses.driver2, user_guesses.circuit FROM user_guesses JOIN users ON user_guesses.user_id = users.user_id")
+c.execute("SELECT user_guesses.user_id, users.username, user_guesses.driver_1, user_guesses.driver_2, user_guesses.circuit_id FROM user_guesses JOIN users ON user_guesses.user_id = users.user_id")
 guesses_data = c.fetchall()
 
 df = pd.DataFrame(guesses_data, columns=['User ID', 'Name', 'Driver 1', 'Driver 2', 'Circuit'])
@@ -40,22 +40,22 @@ selected_circuit = st.selectbox('Select Circuit', df['Circuit'].unique())
 filtered_df = df[df['Circuit'] == selected_circuit]
 
 # Count occurrences of each driver as Driver 1 and Driver 2 separately
-driver1_counts = filtered_df['Driver 1'].value_counts().reset_index()
-driver2_counts = filtered_df['Driver 2'].value_counts().reset_index()
+driver_1_counts = filtered_df['Driver 1'].value_counts().reset_index()
+driver_2_counts = filtered_df['Driver 2'].value_counts().reset_index()
 
 # Rename columns
-driver1_counts.columns = ['Driver', 'Driver 1']
-driver2_counts.columns = ['Driver', 'Driver 2']
+driver_1_counts.columns = ['Driver', 'Driver 1']
+driver_2_counts.columns = ['Driver', 'Driver 2']
 
 # Merge counts for Driver 1 and Driver 2
-merged_counts = pd.merge(driver1_counts, driver2_counts, on='Driver', how='outer').fillna(0)
+merged_counts = pd.merge(driver_1_counts, driver_2_counts, on='Driver', how='outer').fillna(0)
 
 # Convert counts to integers
 merged_counts['Driver 1'] = merged_counts['Driver 1'].astype(int)
 merged_counts['Driver 2'] = merged_counts['Driver 2'].astype(int)
 merged_counts['Total'] = merged_counts['Driver 1'] + merged_counts['Driver 2']
 
-st.dataframe(merged_counts, use_container_width=True, hide_index=True, )
+# st.dataframe(merged_counts, use_container_width=True, hide_index=True, )
 
 
 # Combine the counts from Driver 1 and Driver 2
@@ -81,11 +81,3 @@ fig.update_layout(barmode='stack',
 # Display the Plotly figure
 with st.container():
     st.plotly_chart(fig, use_container_width=True)
-
-import matplotlib.pyplot as plt
-import streamlit as st
-
-
-st.markdown('raw dataframe - delete later')
-st.dataframe(df, use_container_width=True, hide_index=True)
-

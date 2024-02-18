@@ -52,10 +52,10 @@ def save_user_guesses(conn, user_guesses):
     """
     Insert user guesses into the user_guesses table
     :param conn:
-    :param user_guesses: user_id, driver1, driver2, circuit
+    :param user_guesses: user_id, driver_1, driver_2, circuit
     :return:
     """
-    sql = ''' INSERT INTO  user_guesses (user_id, driver1, driver2, circuit, submission_time)
+    sql = ''' INSERT INTO  user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
                 VALUES (?, ?, ?, ?, ?)'''
     cur = conn.cursor()
     cur.execute(sql, user_guesses)
@@ -136,6 +136,7 @@ def login(conn, database):
         return user_id, logged_in
 
 
+# TODO: this function is still WIP
 def check_user_guess(conn, user_guess):
     """
     Check whether a user has already submitted a guess for a specific race.

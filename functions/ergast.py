@@ -40,7 +40,7 @@ def race_schedule(year):
         # Populate the race schedule list with race details
         for race in races:
             race_details = {
-                'raceName': race['raceName'].replace( 'Grand Prix', ''),
+                'raceName': race['raceName'].replace( ' Grand Prix', ''),
                 'date': race['date'],
                 'circuitName': race['Circuit']['circuitName']
             }
