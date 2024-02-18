@@ -55,8 +55,8 @@ def save_user_guesses(conn, user_guesses):
     :param user_guesses: user_id, driver1, driver2, circuit
     :return:
     """
-    sql = ''' INSERT INTO  user_guesses (user_id, driver1, driver2, circuit)
-                VALUES (?, ?, ?, ?)'''
+    sql = ''' INSERT INTO  user_guesses (user_id, driver1, driver2, circuit, submission_time)
+                VALUES (?, ?, ?, ?, ?)'''
     cur = conn.cursor()
     cur.execute(sql, user_guesses)
     conn.commit()
@@ -91,7 +91,6 @@ def authenticate_user(conn, login_details):
         return user_id  # Authentication successful
     else:
         return None  # Authentication failed
-
 
 
 # Main function to handle user registration, login, and guess submission
@@ -135,3 +134,33 @@ def login(conn, database):
                 logged_in=False
                 
         return user_id, logged_in
+
+
+def check_user_guess(conn, user_guess):
+    """
+    Check whether a user has already submitted a guess for a specific race.
+
+    Args:
+    - user_id: The ID of the user whose guess is being checked.
+    - next_race_date: The date of the next race.
+
+    Returns:
+    - True if the user has not submitted a guess for the next race, False otherwise.
+    """
+
+    # Connect to the SQLite database
+    conn = sqlite3.connect('f1.db')
+
+    # Query the database to check if the user has already submitted a guess for the next race
+    query = f"SELECT * FROM user_guesses WHERE user_id = {user_id} AND date = '{next_race_date}'"
+    df = pd.read_sql_query(query, conn)
+
+    # Close the database connection
+    conn.close()
+
+    # If the DataFrame is empty, the user has not submitted a guess for the next race
+    # Return True to allow the user to submit a new guess
+    if df.empty:
+        return True
+    else:
+        return False
