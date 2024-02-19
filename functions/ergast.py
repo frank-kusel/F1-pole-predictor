@@ -6,6 +6,7 @@ import streamlit as st
 import requests
 import pandas as pd
 
+@st.cache_data
 def race_schedule(year):
     '''
     Fetch a list of race names and dates using the ergast API
@@ -45,6 +46,9 @@ def race_schedule(year):
                 'circuitName': race['Circuit']['circuitName']
             }
             race_schedule.append(race_details)
+            
+        print(race_schedule)
+        
     else:
         race_schedule = [
             {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
@@ -76,7 +80,7 @@ def race_schedule(year):
 
     return race_schedule
 
-
+@st.cache_data
 def drivers():
     '''
     Fetch list of driver names from ergast API
@@ -101,8 +105,6 @@ def drivers():
         driver_names = [driver["givenName"] + " " + driver["familyName"] for driver in drivers_data]
         
         print(driver_names)
-        
-        # Print the list of driver names
 
     else:
         print("Failed to retrieve driver data from the Ergast API")
@@ -112,6 +114,7 @@ def drivers():
 
 import datetime
 
+@st.cache_data
 def next_race_name(race_schedule):
     # Get the current date
     current_date = datetime.date.today()

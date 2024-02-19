@@ -10,7 +10,9 @@ database = r"f1.db"
 conn = db.create_connection(database)
 
 
-
+'''
+This page shows a bunch of SQL queries and dataframes created from SQL queries to test out a few functions
+'''
 
 
 

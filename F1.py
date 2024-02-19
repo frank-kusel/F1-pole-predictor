@@ -34,7 +34,7 @@ import calendar
 from datetime import datetime
 import numpy as np
 import sqlite3
-from functions.plot import plot_cumulative_points
+import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
 import plotly.express as px
@@ -65,12 +65,6 @@ def main():
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
     st.title(page_title + " " + page_icon)
     
-    # Menu
-    # col1, col2 = st.columns(2)
-    
-    # col1.page_link("pages/Pole Picker.py", label="Pole Picker")
-    # col2.page_link("pages/Race Results.py", label="Race Results")
-    
     # Select database
     database = r"F1.db"
     conn = db.create_connection(database)
@@ -79,7 +73,6 @@ def main():
     # driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
     
     race_schedule = erg.race_schedule(2024)
-    print(race_schedule)
     race_schedule_df = pd.DataFrame(race_schedule)
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
     next_race, next_race_date = erg.next_race_name(race_schedule)
@@ -235,54 +228,11 @@ def main():
     with st.container(border=False):
         st.markdown(f'### :red[2023] Season')
         st.markdown(f'Winner: **:green[Markus]**')
-        plot_cumulative_points(cumulative_points)
+        plot.plot_cumulative_points(cumulative_points)
 
 
     # --- Plot a map ---
-    data = [
-    {"lon": 50.512, "lat": 26.031, "zoom": 15, "location": "Sakhir", "name": "Bahrain International Circuit", "id": "bh-2002"},
-    {"lon": 39.104, "lat": 21.632, "zoom": 14, "location": "Jeddah", "name": "Jeddah Corniche Circuit", "id": "sa-2021"},
-    {"lon": 144.970, "lat": -37.846, "zoom": 14, "location": "Melbourne", "name": "Albert Park Circuit", "id": "au-1953"},
-    {"lon": 136.534, "lat": 34.844, "zoom": 15, "location": "Suzuka", "name": "Suzuka International Racing Course", "id": "jp-1962"},
-    {"lon": 121.221, "lat": 31.340, "zoom": 14, "location": "Shanghai", "name": "Shanghai International Circuit", "id": "cn-2004"},
-    {"lon": -80.239, "lat": 25.958, "zoom": 15, "location": "Miami", "name": "Miami International Autodrome", "id": "us-2022"},
-    {"lon": 11.713, "lat": 44.341, "zoom": 15, "location": "Imola", "name": "Autodromo Enzo e Dino Ferrari", "id": "it-1953"},
-    {"lon": 7.429, "lat": 43.737, "zoom": 15, "location": "Monaco", "name": "Circuit de Monaco", "id": "mc-1929"},
-    {"lon": -73.525, "lat": 45.506, "zoom": 14, "location": "Montreal", "name": "Circuit Gilles-Villeneuve", "id": "ca-1978"},
-    {"lon": 2.259, "lat": 41.569, "zoom": 14, "location": "Barcelona", "name": "Circuit de Barcelona-Catalunya", "id": "es-1991"},
-    {"lon": 14.761, "lat": 47.223, "zoom": 15, "location": "Spielberg", "name": "Red Bull Ring", "id": "at-1969"},
-    {"lon": -1.017, "lat": 52.072, "zoom": 14, "location": "Silverstone", "name": "Silverstone Circuit", "id": "gb-1948"},
-    {"lon": 19.250, "lat": 47.583, "zoom": 14, "location": "Budapest", "name": "Hungaroring", "id": "hu-1986"},
-    {"lon": 5.971, "lat": 50.436, "zoom": 13, "location": "Spa Francorchamps", "name": "Circuit de Spa-Francorchamps", "id": "be-1925"},
-    {"lon": 4.541, "lat": 52.389, "zoom": 15, "location": "Zandvoort", "name": "Circuit Zandvoort", "id": "nl-1948"},
-    {"lon": 9.290, "lat": 45.621, "zoom": 13, "location": "Monza", "name": "Autodromo Nazionale Monza", "id": "it-1922"},
-    {"lon": 49.842, "lat": 40.369, "zoom": 14, "location": "Baku", "name": "Baku City Circuit", "id": "az-2016"},
-    {"lon": 103.859, "lat": 1.291, "zoom": 15, "location": "Singapore", "name": "Marina Bay Street Circuit", "id": "sg-2008"},
-    {"lon": -97.633, "lat": 30.135, "zoom": 15, "location": "Austin", "name": "Circuit of the Americas", "id": "us-2012"},
-    {"lon": -99.091, "lat": 19.402, "zoom": 15, "location": "Mexico City", "name": "Autódromo Hermanos Rodríguez", "id": "mx-1962"},
-    {"lon": -46.698, "lat": -23.702, "zoom": 15, "location": "Sao Paulo", "name": "Autódromo José Carlos Pace - Interlagos", "id": "br-1940"},
-    {"lon": -115.168, "lat": 36.116, "zoom": 14, "location": "Las Vegas", "name": "Las Vegas Street Circuit", "id": "us-2023"},
-    {"lon": 51.454, "lat": 25.49, "zoom": 15, "location": "Lusail", "name": "Losail International Circuit", "id": "qa-2004"},
-    {"lon": 54.601, "lat": 24.471, "zoom": 14, "location": "Yas Marina", "name": "Yas Marina Circuit", "id": "ae-2009"}
-    ]
-
-    # Create a DataFrame from the JSON data
-    df = pd.DataFrame(data)
-
-    # Create a scatter plot using Plotly
-    fig = px.scatter_mapbox(df, lat="lat", lon="lon", hover_name="name",
-                            zoom=1, height=600, color_discrete_sequence=['red'])
-
-    # Update map layout
-    fig.update_layout(mapbox_style="carto-darkmatter")  # Dark map style
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-    # Hide latitude and longitude info when hovering
-    fig.update_traces(hovertemplate="<b>%{hovertext}</b>")
-
-    # Display the map in Streamlit
-    st.markdown('## Race Locations')
-    st.plotly_chart(fig, config ={'displayModeBar': False}, use_container_width=True)
+    plot.map_locations()
 
 
 def disable():
