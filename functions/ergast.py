@@ -126,8 +126,8 @@ def next_race_name(race_schedule):
         
         # Check if the race date is after the current date
         if race_date > current_date:
+            print('Next race:', race['raceName'])
             return race['raceName'], race_date
-    
     # If no future race is found, return None
     return None
 

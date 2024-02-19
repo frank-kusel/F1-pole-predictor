@@ -68,6 +68,8 @@ def main():
     # Select database
     database = r"F1.db"
     conn = db.create_connection(database)
+    if conn is None:
+        print("Error: Unable to establish database connection.")
         
     driver_names = erg.drivers()
     # driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
@@ -76,7 +78,6 @@ def main():
     race_schedule_df = pd.DataFrame(race_schedule)
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
     next_race, next_race_date = erg.next_race_name(race_schedule)
-    print(f'Next race: {next_race}')
 
     
     with st.expander('Login'):
@@ -97,7 +98,7 @@ def main():
                 logged_in = False
                 
                 if st.button("Login"):
-                    user_id = db.authenticate_user(conn, (username, password))
+                    user_id = db.authenticate_user(conn, (username, password,))
                     if not user_id == None:
                         st.success("Login successful!")
                         logged_in=True
