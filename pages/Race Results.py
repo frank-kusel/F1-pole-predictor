@@ -75,7 +75,7 @@ def main():
     })
 
     if not filtered_df.empty:
-        st.dataframe(filtered_df[['Position', 'Grid', 'Name', 'Surname', 'Time']].style.applymap(color_survived, subset=['Position', 'Grid']), use_container_width=True, hide_index=True)
+        st.dataframe(filtered_df[['Position', 'Grid', 'Name', 'Surname', 'Time']].style.applymap(color_survived, subset=['Position', 'Grid']), use_container_width=True, hide_index=True, height=737)
     else:
         st.write("No data available for the selected season and race.")
 

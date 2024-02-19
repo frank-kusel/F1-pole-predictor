@@ -77,19 +77,8 @@ def main():
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
     next_race, next_race_date = erg.next_race_name(race_schedule)
     print(f'Next race: {next_race}')
-    racerace = next_race
 
     
-    # SQL query to return circuit_id
-    curr = conn.cursor()
-
-    curr.execute("SELECT circuit_id FROM race_details WHERE race_name = ? ", (racerace,))
-    result = curr.fetchone()
-
-    circuit_id = result[0]
-    print(f'circuit id: {circuit_id}')
-
-
     with st.expander('Login'):
         # Registration or Login selection
         option = st.radio("Select Option:", ("Login", "Register"), key="register_or_login")
@@ -134,6 +123,14 @@ def main():
         
 
     if logged_in:
+        
+        
+        # SQL query to return circuit_id
+        curr = conn.cursor()
+        curr.execute("SELECT circuit_id FROM race_details WHERE race_name = ? ", (next_race,))
+        result = curr.fetchone()
+        circuit_id = result[0]
+        print(f'circuit id: {circuit_id}')
         
         # Initialize session state
         if "disabled" not in st.session_state:

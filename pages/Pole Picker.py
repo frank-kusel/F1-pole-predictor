@@ -80,4 +80,4 @@ fig.update_layout(barmode='stack',
 
 # Display the Plotly figure
 with st.container():
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False})
