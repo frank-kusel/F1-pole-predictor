@@ -26,7 +26,8 @@ st.dataframe(users_df, use_container_width=True, hide_index=True)
 
 # user_guesses
 st.subheader('User Guesses')
-user_guesses_df = pd.read_sql('SELECT * from user_guesses', conn)
+guess_id = 1
+user_guesses_df = pd.read_sql('SELECT * from user_guesses WHERE guess_id=?', conn, params=(guess_id,))
 st.dataframe(user_guesses_df, use_container_width=True, hide_index=True)
 
 # --- SQL QUERY dataframes ---
