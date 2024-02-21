@@ -20,7 +20,7 @@ import plotly.graph_objects as go
 st.title('Pole Picker')
 
 # Connect to database
-database = r'f1.db'
+database = r'F1.db'
 conn = sqlite3.connect(database)
 
 c = conn.cursor()

@@ -83,9 +83,9 @@ def authenticate_user(conn, login_details):
     :return: True or False if user has logged in correctly
     """
     sql = ''' SELECT * FROM users WHERE username=? AND password=?'''
-    cur = conn.cursor()
-    cur.execute(sql, login_details)
-    user_data = cur.fetchone()
+    c = conn.cursor()
+    c.execute(sql, login_details)
+    user_data = c.fetchone()
     if user_data:
         user_id = int(user_data[0])
         return user_id  # Authentication successful

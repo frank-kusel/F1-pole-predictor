@@ -57,6 +57,23 @@ layout = 'centered'
 # TODO: Create a year filter for each user's past picks
 # TODO: Create stats for total users, races, guesses etc
 
+def authenticate_user(conn, login_details):
+    """
+    Authenticate user
+    :param conn:
+    :param login_details: username and password
+    :return: True or False if user has logged in correctly
+    """
+    sql = ''' SELECT * FROM users WHERE username=? AND password=?'''
+    c = conn.cursor()
+    c.execute(sql, login_details)
+    user_data = c.fetchone()
+    if user_data:
+        user_id = int(user_data[0])
+        return user_id  # Authentication successful
+    else:
+        return None  # Authentication failed
+
 
 # --- MAIN APP ---
 def main():
@@ -98,7 +115,7 @@ def main():
                 logged_in = False
                 
                 if st.button("Login"):
-                    user_id = db.authenticate_user(conn, (username, password,))
+                    user_id = authenticate_user(db.create_connection(database), (username, password,))
                     if not user_id == None:
                         st.success("Login successful!")
                         logged_in=True
