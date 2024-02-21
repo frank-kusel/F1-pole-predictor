@@ -39,6 +39,7 @@ import functions.database as db
 import functions.ergast as erg
 import plotly.express as px
 import functions.calculate_points as calc_points
+from sqlite3 import Error
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
@@ -57,24 +58,6 @@ layout = 'centered'
 # TODO: Create a year filter for each user's past picks
 # TODO: Create stats for total users, races, guesses etc
 
-def authenticate_user(conn, login_details):
-    """
-    Authenticate user
-    :param conn:
-    :param login_details: username and password
-    :return: True or False if user has logged in correctly
-    """
-    sql = ''' SELECT * FROM users WHERE username=? AND password=?'''
-    c = conn.cursor()
-    c.execute(sql, login_details)
-    user_data = c.fetchone()
-    
-    if user_data:
-        user_id = int(user_data[0])
-        return user_id  # Authentication successful
-    else:
-        return None  # Authentication failed
-
 
 # --- MAIN APP ---
 def main():
@@ -85,7 +68,7 @@ def main():
     
     # Select database
     database = r"F1.db"
-    conn = db.create_connection(database)
+    conn = create_connection(database)
     
     if conn is None:
         print("Error: Unable to establish database connection.")
@@ -134,10 +117,10 @@ def main():
                 new_password = st.text_input("Enter new password:", type="password")
                 
                 if st.button("Register"):
-                    if db.is_username_taken(conn, (new_username,)):
+                    if is_username_taken(conn, (new_username,)):
                         st.warning("Username already taken. Please choose another one.")
                     else:
-                        user_id = db.register_user(conn, (new_username, new_password))
+                        user_id = register_user(conn, (new_username, new_password))
                         st.success("Registration successful!")
         
 
@@ -181,7 +164,7 @@ def main():
                 current_user = st.session_state['user_id']
 
                 
-                db.save_user_guesses(conn, (current_user, driver_1, driver_2, circuit_id, submitted_time))
+                save_user_guesses(conn, (current_user, driver_1, driver_2, circuit_id, submitted_time))
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
     
 
@@ -252,7 +235,94 @@ def main():
 def disable():
     st.session_state.disabled = True
     
+# Create a db connection
+def create_connection(db_file):
+    """Create a databse connection to a SQLite databse specified by a db_file
+    :param: db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    
+    except Error as e:
+        print(e)
+        
+    return conn
 
+# Create db tables
+def create_table(conn, create_table_sql):
+    """ create a table from the creat_table_sql statement
+    :param conn: Connection object
+    :param create_table_sql: a CREATE TABLE statement
+    :return:
+    """
+    try:
+        c = conn.cursor()
+        c.execute(create_table_sql)
+    except Error as e:
+        print(e)
+
+# Insert data
+def register_user(conn, user_details):
+    """
+    Create a new user into the users table
+    :param conn:
+    :param user: username and password
+    :return: user id
+    """
+    sql = ''' INSERT INTO users (username, password)
+              VALUES(?,?)'''
+    cur = conn.cursor()
+    cur.execute(sql, user_details)
+    conn.commit()
+    return cur.lastrowid
+
+# Function to save user guesses
+def save_user_guesses(conn, user_guesses):
+    """
+    Insert user guesses into the user_guesses table
+    :param conn:
+    :param user_guesses: user_id, driver_1, driver_2, circuit
+    :return:
+    """
+    sql = ''' INSERT INTO  user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
+                VALUES (?, ?, ?, ?, ?)'''
+    cur = conn.cursor()
+    cur.execute(sql, user_guesses)
+    conn.commit()
+
+# Function to check if username already exists
+def is_username_taken(conn, username):
+    """
+    Check whether username already exists
+    :param conn:
+    :param username:
+    :return: True or False
+    """
+    sql = ''' SELECT * FROM users WHERE username=?'''
+    cur = conn.cursor()
+    cur.execute(sql, username)
+    return cur.fetchone() is not None
+
+# Function to authenticate user
+def authenticate_user(conn, login_details):
+    """
+    Authenticate user
+    :param conn:
+    :param login_details: username and password
+    :return: True or False if user has logged in correctly
+    """
+    sql = ''' SELECT * FROM users WHERE username=? AND password=?'''
+    c = conn.cursor()
+    c.execute(sql, login_details)
+    user_data = c.fetchone()
+    if user_data:
+        user_id = int(user_data[0])
+        return user_id  # Authentication successful
+    else:
+        return None  # Authentication failed
 
 
 # Run the app
