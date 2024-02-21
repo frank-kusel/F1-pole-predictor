@@ -113,7 +113,8 @@ def main():
                 if option == "Login":
                     # Login
                     username = st.text_input("Username:")
-                    password = st.text_input("Password:", type="password")
+                    password = st.text_input("Password:")
+                    # password = st.text_input("Password:", type="password")
                     logged_in = False
                     
                     if st.button("Login"):
