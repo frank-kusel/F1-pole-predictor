@@ -72,7 +72,7 @@ def main():
     # conn = create_connection(database)
     # conn = st.connection('F1_db', type='sql')
     # conn = sqlite3.connect('F1.db')
-    database = r'F1.db'
+    database = r'/mount/src/f1-pole-predictor/F1.db'
     conn = db.create_connection(database)
     st.markdown(conn)
     
