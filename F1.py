@@ -74,7 +74,7 @@ def main():
     # conn = sqlite3.connect('F1.db')
     database = r'F1.db'
     conn = db.create_connection(database)
-    st.dataframe(conn)
+    conn
     
     users_df = pd.read_sql('SELECT * from users', conn)
     st.dataframe(users_df, use_container_width=True, hide_index=True)
