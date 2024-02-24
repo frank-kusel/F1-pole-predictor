@@ -23,7 +23,7 @@ import sqlite3
 
 # conn2 = st.connection('F1_db', type='sql')
 
-conn2 = sqlite3.connect('F1.db')
+c = sqlite3.connect('F1.db')
 
-users_df = pd.read_sql('SELECT * FROM users', conn2)
+users_df = pd.read_sql('SELECT * FROM users', c)
 st.dataframe(users_df, use_container_width=True, hide_index=True)
