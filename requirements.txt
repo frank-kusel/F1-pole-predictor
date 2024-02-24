@@ -4,4 +4,3 @@ pandas
 plotly
 numpy
 folium
-SQLAlchemy

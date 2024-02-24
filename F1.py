@@ -70,7 +70,7 @@ def main():
     # database = st.secrets['sqlite']
     
     # conn = create_connection(database)
-    conn = st.connection('F1_db', type='sql')
+    # conn = st.connection('F1_db', type='sql')
     # conn = sqlite3.connect('F1.db')
     database = r'F1.db'
     conn = db.create_connection(database)
