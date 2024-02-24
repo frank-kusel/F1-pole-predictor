@@ -10,31 +10,45 @@ import numpy as np
 import plotly.express as px
 import sqlite3
 import plotly.graph_objects as go
-
+from st_supabase_connection import SupabaseConnection
+import functions.database as db
+from supabase import create_client, Client
 
 # TODO: Figure out how to access the session state from the main page in this page.
-# TODO: Show table of picks once user has submitted their picks. 
-# TODO: Show a summary of most picked drivers for the current race. 
 # TODO: Find a way to only show these results when race results are submitted
 
-st.title('Pole Picker')
+# Initialize connection.
+c = st.connection("postgresql", type="sql")
 
-# Connect to database
-database = r'F1.db'
-conn = sqlite3.connect(database)
+# Perform query.
+guesses_sql = '''   
+            SELECT 
+                users.username,
+                user_guesses.driver_1, 
+                user_guesses.driver_2, 
+                race_info.race_name 
+            FROM 
+                user_guesses 
+            JOIN 
+                users ON user_guesses.user_id = users.user_id
+            JOIN
+                race_info ON user_guesses.circuit_id = race_info.circuit_id
+'''
 
-c = conn.cursor()
+guesses_db = c.query(guesses_sql, ttl=None)
+guesses_db.rename(columns={'username': 'User',
+                           'driver_1': 'Driver 1',
+                           'driver_2': 'Driver 2',
+                           'race_name': 'Circuit'},inplace=True)
 
-
-# Function to fetch user guesses
-c.execute("SELECT user_guesses.user_id, users.username, user_guesses.driver_1, user_guesses.driver_2, user_guesses.circuit_id FROM user_guesses JOIN users ON user_guesses.user_id = users.user_id")
-guesses_data = c.fetchall()
-
-df = pd.DataFrame(guesses_data, columns=['User ID', 'Name', 'Driver 1', 'Driver 2', 'Circuit'])
-
+df = guesses_db
 
 # Add a SelectBox to filter the DataFrame by circuit
 selected_circuit = st.selectbox('Select Circuit', df['Circuit'].unique())
+filtered_guesses_db = guesses_db[guesses_db['Circuit'] == selected_circuit]
+filtered_guesses_db.drop(columns=['Circuit'], inplace=True)
+
+st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
 
 # Filter the DataFrame by selected circuit using .loc
 filtered_df = df[df['Circuit'] == selected_circuit]

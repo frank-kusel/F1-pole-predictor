@@ -67,14 +67,7 @@ def main():
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
     st.title(page_title + " " + page_icon)
     
-    # Select database
-    # database = st.secrets['sqlite']
-    
-    # conn = create_connection(database)
-    # conn = st.connection('F1_db', type='sql')
-    # conn = sqlite3.connect('F1.db')
-    database = r'F1.db'
-    # conn = db.create_connection(database)
+    # Connect to database
     conn = st.connection("supabase", type=SupabaseConnection)
     
     users_sql = conn.query("*", table='users', ttl=None).execute()
