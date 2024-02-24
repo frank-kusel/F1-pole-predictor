@@ -71,8 +71,9 @@ def main():
     
     # conn = create_connection(database)
     # conn = st.connection('F1_db', type='sql')
-    database = r'F1.db'
-    conn = db.create_connection(database)
+    conn = sqlite3.connect('F1.db')
+    # database = r'F1.db'
+    # conn = db.create_connection(database)
     st.markdown(conn)
     
     users_df = pd.read_sql('SELECT * from users', conn)
