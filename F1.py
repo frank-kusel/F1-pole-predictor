@@ -40,6 +40,7 @@ import functions.ergast as erg
 import plotly.express as px
 import functions.calculate_points as calc_points
 from sqlite3 import Error
+from st_supabase_connection import SupabaseConnection
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
@@ -73,8 +74,9 @@ def main():
     # conn = st.connection('F1_db', type='sql')
     # conn = sqlite3.connect('F1.db')
     database = r'F1.db'
-    conn = db.create_connection(database)
-    conn
+    # conn = db.create_connection(database)
+    conn = st.connection("supabase", type=SupabaseConnection)
+    
     
     users_df = pd.read_sql('SELECT * FROM users', conn)
     st.dataframe(users_df, use_container_width=True, hide_index=True)

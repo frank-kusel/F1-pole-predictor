@@ -4,3 +4,4 @@ pandas
 plotly
 numpy
 folium
+st-supabase-connection
