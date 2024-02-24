@@ -67,11 +67,13 @@ def main():
     st.title(page_title + " " + page_icon)
     
     # Select database
-    database = r"/mount/src/f1-pole-predictor/F1.db"
-    conn = create_connection(database)
+    # database = st.secrets['sqlite']
+    
+    # conn = create_connection(database)
+    # conn = st.connection('F1_db', type='sql')
+    database = r'F1.db'
+    conn = db.create_connection(database)
     st.markdown(conn)
-    
-    
     
     users_df = pd.read_sql('SELECT * from users', conn)
     st.dataframe(users_df, use_container_width=True, hide_index=True)
