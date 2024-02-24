@@ -69,10 +69,16 @@ def main():
     # Select database
     database = r"F1.db"
     conn = create_connection(database)
+    st.write(conn)
+    
+    
     
     users_df = pd.read_sql('SELECT * from users', conn)
     st.dataframe(users_df, use_container_width=True, hide_index=True)
     st.markdown(authenticate_user(conn,('Frank', 'password')))
+    
+    
+    
     
     if conn is None:
         print("Error: Unable to establish database connection.")
