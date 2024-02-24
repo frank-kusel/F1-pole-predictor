@@ -77,6 +77,8 @@ def main():
     # conn = db.create_connection(database)
     conn = st.connection("supabase", type=SupabaseConnection)
     
+    users_sql = conn.query("*", table='users', ttl=None).execute()
+    st.dataframe(users_sql.data)
     
     users_df = pd.read_sql('SELECT * FROM users', conn)
     st.dataframe(users_df, use_container_width=True, hide_index=True)
