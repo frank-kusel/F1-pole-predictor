@@ -76,7 +76,7 @@ def main():
     conn = db.create_connection(database)
     conn
     
-    users_df = pd.read_sql('SELECT * from users', conn)
+    users_df = pd.read_sql('SELECT * FROM users', conn)
     st.dataframe(users_df, use_container_width=True, hide_index=True)
     st.markdown(authenticate_user(conn,('Frank', 'password')))
     
