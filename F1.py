@@ -67,7 +67,7 @@ def main():
     st.title(page_title + " " + page_icon)
     
     # Select database
-    database = r"F1.db"
+    database = r"/mount/src/f1-pole-predictor/F1.db"
     conn = create_connection(database)
     st.write(conn)
     
