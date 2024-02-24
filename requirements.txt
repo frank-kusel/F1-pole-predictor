@@ -7,3 +7,4 @@ folium
 st-supabase-connection
 supabase
 psycopg2-binary
+sqlalchemy
