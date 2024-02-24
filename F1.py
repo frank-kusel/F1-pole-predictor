@@ -69,7 +69,7 @@ def main():
     # Select database
     database = r"/mount/src/f1-pole-predictor/F1.db"
     conn = create_connection(database)
-    st.write(conn)
+    st.markdown(conn)
     
     
     
