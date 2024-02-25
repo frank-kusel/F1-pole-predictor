@@ -35,7 +35,7 @@ guesses_sql = '''
                 race_info ON user_guesses.circuit_id = race_info.circuit_id
 '''
 
-guesses_db = conn.query(guesses_sql, ttl=None)
+guesses_db = conn.query(guesses_sql, ttl=0.0001)
 guesses_db.rename(columns={'username': 'User',
                            'driver_1': 'Driver 1',
                            'driver_2': 'Driver 2',
