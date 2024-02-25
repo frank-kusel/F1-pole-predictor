@@ -218,7 +218,7 @@ def main():
                                         users ON ug.user_id = users.user_id
                                     WHERE 
                                         ug.user_id = :user_id
-        ''', params={"user_id": int(user_id)})
+        ''', params={"user_id": int(user_id)}, ttl=0.0001)
         guesses_data = guesses_data.drop(columns=['guess_id'])
 
         # Display DataFrame
