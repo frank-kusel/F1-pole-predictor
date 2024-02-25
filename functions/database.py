@@ -1,6 +1,7 @@
 import sqlite3
 import streamlit as st
 from sqlalchemy import text
+import pandas as pd
 
 # Insert data
 def register_user(conn, username, password):
@@ -65,6 +66,7 @@ def authenticate_user(conn, username, password):
     user_data = conn.query(sql, params={"username":username, "password":password})
 
     if not user_data.empty:
+        user_id = pd.Dataframe(user_data)
         user_id = user_data.iloc[0, 0]
 
         return user_id  # Authentication successful
