@@ -25,8 +25,8 @@ def save_user_guesses(conn, user_id, driver_1, driver_2, circuit_id, submission_
     :param user_guesses: user_id, driver_1, driver_2, circuit
     :return:
     """
-    sql = '''   INSERT INTO user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
-                VALUES (:user_id, :driver_1, :driver_2, :circuit_id, :submission_time)'''
+    sql = text('''   INSERT INTO user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
+                VALUES (:user_id, :driver_1, :driver_2, :circuit_id, :submission_time)''')
     with conn.session as s:
         s.execute(sql, params=dict(user_id=user_id, driver_1=driver_1, driver_2=driver_2, circuit_id=circuit_id, submission_time=submission_time))
         s.commit()
