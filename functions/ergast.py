@@ -123,11 +123,12 @@ def next_race_name(race_schedule):
     for race in race_schedule:
         # Convert the race date string to a datetime object
         race_date = datetime.datetime.strptime(race['date'], '%Y-%m-%d').date()
+        circuit_name = race['circuitName']
         
         # Check if the race date is after the current date
         if race_date > current_date:
             print('Next race:', race['raceName'])
-            return race['raceName'], race_date
+            return race['raceName'], race_date, circuit_name
     # If no future race is found, return None
     return None
 

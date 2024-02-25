@@ -77,13 +77,12 @@ def main():
     race_schedule = erg.race_schedule(2024)
     race_schedule_df = pd.DataFrame(race_schedule)
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
-    next_race, next_race_date = erg.next_race_name(race_schedule)
+    next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
     
     # Retrieve user_id from session state
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
-    
     
     if not logged_in:
     # with st.expander('Login'):
@@ -127,7 +126,11 @@ def main():
                         else:
                             user_id = db.register_user(conn, new_username, new_password)
                             st.success("Registration successful!")
-        
+
+    with st.container(border=True):
+        next_race_date_formatted = next_race_date.strftime('%d %B')
+        st.markdown(f'#### Next race: :red[{next_race}] Grand Prix - {next_race_date_formatted}')
+        st.markdown(f'*{circuit_name}*')        
 
     if logged_in:
         
@@ -145,10 +148,10 @@ def main():
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
         
+
+            
         with st.form("entry_form", clear_on_submit=True):
             
-            next_race_date_formatted = next_race_date.strftime('%d %B')
-            st.markdown(f'#### Next race: :red[{next_race}] Grand Prix - {next_race_date_formatted}')
             current_date = datetime.today()
             # Convert the next_race_date to a datetime object
             next_race_datetime = datetime.combine(next_race_date, datetime.min.time())
@@ -161,7 +164,7 @@ def main():
             with col2:
                 driver_2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver_2")
                     
-            submitted = st.form_submit_button("Place your bet!", on_click=disable, disabled=st.session_state.disabled)
+            submitted = st.form_submit_button(f"Place your bet - {next_race} Grand Prix", on_click=disable, disabled=st.session_state.disabled)
 
             # Save user guesses to a dataframe -> SQLite
             if submitted:
