@@ -29,7 +29,7 @@ guesses_sql = '''
                 JOIN
                     users ON user_guesses.user_id = users.user_id
                 JOIN
-                    race_info ON user_guesses.circuit_id = race_info.circuit_id
+                    race_info ON user_guesses.circuit_id = race_info.circuit_id;
 
 '''
 
