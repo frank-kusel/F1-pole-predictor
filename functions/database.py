@@ -41,7 +41,7 @@ def is_username_taken(conn, username):
     :param username:
     :return: True or False
     """
-    sql = ''' SELECT * FROM users WHERE username = :username'''
+    sql = "SELECT * FROM users WHERE username = :username"
     taken = conn.query(sql, params={"username": username})
     if not taken.empty:
         return True  # Taken
@@ -57,7 +57,7 @@ def authenticate_user(conn, username, password):
     :param password:
     :return: True or False if user has logged in correctly
     """
-    sql = '''   SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1'''
+    sql = "SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1"
     
     user_data = conn.query(sql, params={"username":username, "password":password})
 
