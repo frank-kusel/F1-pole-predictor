@@ -68,16 +68,9 @@ def main():
     st.title(page_title + " " + page_icon)
     
     # Connect to database
-    conn = st.connection("supabase", type=SupabaseConnection)
-    
-    users_sql = conn.query("*", table='users', ttl=None).execute()
-    st.dataframe(users_sql.data)
-    
-    users_df = pd.read_sql('SELECT * FROM users', conn)
-    st.dataframe(users_df, use_container_width=True, hide_index=True)
-    st.markdown(authenticate_user(conn,('Frank', 'password')))
-    
-    
+    # conn = st.connection("supabase", type=SupabaseConnection)
+    # Initialize connection.
+    conn = st.connection("postgresql", type="sql")
     
     
     if conn is None:
@@ -109,8 +102,8 @@ def main():
                 logged_in = False
                 
                 if st.button("Login"):
-                    user_id = authenticate_user(conn, (username, password,))
-                    if not user_id == None:
+                    user_id = db.authenticate_user(conn, username, password,)
+                    if user_id > 0:
                         st.success("Login successful!")
                         logged_in=True
                         st.session_state['logged_in'] = logged_in
@@ -127,22 +120,22 @@ def main():
                 new_password = st.text_input("Enter new password:", type="password")
                 
                 if st.button("Register"):
-                    if is_username_taken(conn, (new_username,)):
+                    if db.is_username_taken(conn, (new_username,)):
                         st.warning("Username already taken. Please choose another one.")
                     else:
-                        user_id = register_user(conn, (new_username, new_password))
+                        user_id = db.register_user(conn, (new_username, new_password))
                         st.success("Registration successful!")
         
 
     if logged_in:
         
-        
+        # TODO: delete or recode this
         # SQL query to return circuit_id
-        curr = conn.cursor()
-        curr.execute("SELECT circuit_id FROM race_details WHERE race_name = ? ", (next_race,))
-        result = curr.fetchone()
-        circuit_id = result[0]
-        print(f'circuit id: {circuit_id}')
+        # curr = conn.cursor()
+        # curr.execute("SELECT circuit_id FROM race_details WHERE race_name = ? ", (next_race,))
+        # result = curr.fetchone()
+        # circuit_id = result[0]
+        # print(f'circuit id: {circuit_id}')
         
         # Initialize session state
         if "disabled" not in st.session_state:
@@ -174,7 +167,7 @@ def main():
                 current_user = st.session_state['user_id']
 
                 
-                save_user_guesses(conn, (current_user, driver_1, driver_2, circuit_id, submitted_time))
+                db.save_user_guesses(conn, (current_user, driver_1, driver_2, circuit_id, submitted_time))
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
     
 
@@ -209,21 +202,27 @@ def main():
     if logged_in:   
         
         # Fetch user guesses with race names directly from SQL
-        c = conn.cursor()
-        c.execute("""
-            SELECT ug.submission_time, rd.race_name, ug.driver_1, ug.driver_2
-            FROM user_guesses ug
-            JOIN race_details rd ON ug.circuit_id = rd.circuit_id
-            WHERE ug.user_id = ?
-        """, (user_id,))
-        guesses_data = c.fetchall()
-
-        # Convert the data to a DataFrame
-        filtered_df = pd.DataFrame(guesses_data, columns=['Submitted', 'Race', 'Driver 1', 'Driver 2'])
+        # c = conn.cursor()
+        conn = st.connection("postgresql", type="sql")
+        guesses_data = conn.query('''
+                                    SELECT
+                                        rd.race_name, 
+                                        ug.driver_1, 
+                                        ug.driver_2,
+                                        ug.submission_time 
+                                    FROM 
+                                        user_guesses ug
+                                    JOIN 
+                                        race_info rd ON ug.circuit_id = rd.circuit_id
+                                    JOIN
+                                        users ON ug.user_id = users.user_id
+                                    WHERE 
+                                        ug.user_id = :user_id
+        ''', params={"user_id": int(user_id)})
 
         # Display DataFrame
         st.markdown('Your previous picks...')
-        st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+        st.dataframe(guesses_data, use_container_width=True, hide_index=True)
 
     
     # --- Load data ---
@@ -244,95 +243,6 @@ def main():
 
 def disable():
     st.session_state.disabled = True
-    
-# Create a db connection
-def create_connection(db_file):
-    """Create a databse connection to a SQLite databse specified by a db_file
-    :param: db_file: database file
-    :return: Connection object or None
-    """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    
-    except Error as e:
-        print(e)
-        
-    return conn
-
-# Create db tables
-def create_table(conn, create_table_sql):
-    """ create a table from the creat_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
-    """
-    try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
-    except Error as e:
-        print(e)
-
-# Insert data
-def register_user(conn, user_details):
-    """
-    Create a new user into the users table
-    :param conn:
-    :param user: username and password
-    :return: user id
-    """
-    sql = ''' INSERT INTO users (username, password)
-              VALUES(?,?)'''
-    cur = conn.cursor()
-    cur.execute(sql, user_details)
-    conn.commit()
-    return cur.lastrowid
-
-# Function to save user guesses
-def save_user_guesses(conn, user_guesses):
-    """
-    Insert user guesses into the user_guesses table
-    :param conn:
-    :param user_guesses: user_id, driver_1, driver_2, circuit
-    :return:
-    """
-    sql = ''' INSERT INTO  user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
-                VALUES (?, ?, ?, ?, ?)'''
-    cur = conn.cursor()
-    cur.execute(sql, user_guesses)
-    conn.commit()
-
-# Function to check if username already exists
-def is_username_taken(conn, username):
-    """
-    Check whether username already exists
-    :param conn:
-    :param username:
-    :return: True or False
-    """
-    sql = ''' SELECT * FROM users WHERE username=?'''
-    cur = conn.cursor()
-    cur.execute(sql, username)
-    return cur.fetchone() is not None
-
-# Function to authenticate user
-def authenticate_user(conn, login_details):
-    """
-    Authenticate user
-    :param conn:
-    :param login_details: username and password
-    :return: True or False if user has logged in correctly
-    """
-    sql = ''' SELECT * FROM users WHERE username=? AND password=?'''
-    c = conn.cursor()
-    c.execute(sql, login_details)
-    user_data = c.fetchone()
-    if user_data:
-        user_id = int(user_data[0])
-        return user_id  # Authentication successful
-    else:
-        return None  # Authentication failed
 
 
 # Run the app

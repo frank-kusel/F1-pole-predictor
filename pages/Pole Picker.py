@@ -18,7 +18,7 @@ from supabase import create_client, Client
 # TODO: Find a way to only show these results when race results are submitted
 
 # Initialize connection.
-c = st.connection("postgresql", type="sql")
+conn = st.connection("postgresql", type="sql")
 
 # Perform query.
 guesses_sql = '''   
@@ -35,7 +35,7 @@ guesses_sql = '''
                 race_info ON user_guesses.circuit_id = race_info.circuit_id
 '''
 
-guesses_db = c.query(guesses_sql, ttl=None)
+guesses_db = conn.query(guesses_sql, ttl=None)
 guesses_db.rename(columns={'username': 'User',
                            'driver_1': 'Driver 1',
                            'driver_2': 'Driver 2',
@@ -44,9 +44,11 @@ guesses_db.rename(columns={'username': 'User',
 df = guesses_db
 
 # Add a SelectBox to filter the DataFrame by circuit
-selected_circuit = st.selectbox('Select Circuit', df['Circuit'].unique())
+st.subheader('Driver Picks')
+selected_circuit = st.selectbox('', df['Circuit'].unique())
 filtered_guesses_db = guesses_db[guesses_db['Circuit'] == selected_circuit]
 filtered_guesses_db.drop(columns=['Circuit'], inplace=True)
+
 
 st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
 
@@ -81,8 +83,8 @@ merged_counts.sort_values(by='Total', ascending=True, inplace=True)
 
 # Create a stacked bar chart using Plotly
 fig = go.Figure(data=[
-    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='green'),
-    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='orange')
+    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='red'),
+    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='grey')
 ])
 
 # Update layout
@@ -90,8 +92,46 @@ fig.update_layout(barmode='stack',
                   xaxis_title='Number of Picks', 
                   yaxis_title= None,
                   showlegend = False,
-                  title=f'Driver Picks for {selected_circuit}', legend=dict(title='Picks'))
+                  margin=dict(t=5))
 
 # Display the Plotly figure
-with st.container():
-    st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False})
+st.subheader('Race Picks')
+st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False})
+
+
+
+# driver picks
+driver_picks_sql = """ 
+                    SELECT 
+                        driver, COUNT(*) AS total_count
+                    FROM (
+                        SELECT driver_1 AS driver FROM user_guesses
+                        UNION ALL
+                        SELECT driver_2 AS driver FROM user_guesses
+                    ) AS drivers
+                    GROUP BY driver
+                    ORDER BY total_count DESC;
+"""
+driver_picks_df = conn.query(driver_picks_sql)
+
+
+
+st.subheader('Most Popular Driver')
+# st.dataframe(driver_picks_df, use_container_width=True, hide_index=True)
+
+# Create a stacked bar chart using Plotly
+fig = go.Figure(data=[
+    go.Bar(name='driver', y=driver_picks_df['driver'], x=driver_picks_df['total_count'], orientation='h', marker_color='red',text=driver_picks_df['total_count'], textposition='auto')
+])
+
+# Update layout
+fig.update_layout( 
+                  yaxis_title= None,
+                  showlegend = False,
+                  height=800,
+                  margin=dict(t=5))
+
+fig.update_yaxes(autorange="reversed")
+
+# Display the Plotly figure
+st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'editable': False})

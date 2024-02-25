@@ -3,46 +3,6 @@ from sqlite3 import Error
 import streamlit as st
 from supabase import create_client, Client
 
-# --- SUPABASE ---
-
-# Initialize connection.
-# Uses st.cache_resource to only run once.
-@st.cache_resource
-def init_connection():
-    url = st.secrets["SUPABASE_URL"]
-    key = st.secrets["SUPABASE_KEY"]
-    return create_client(url, key)
-
-# ----------------
-
-# Create a db connection
-def create_connection(db_file):
-    """Create a databse connection to a SQLite databse specified by a db_file
-    :param: db_file: database file
-    :return: Connection object or None
-    """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    
-    except Error as e:
-        print(e)
-        
-    return conn
-
-# Create db tables
-def create_table(conn, create_table_sql):
-    """ create a table from the creat_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
-    """
-    try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
-    except Error as e:
-        print(e)
 
 # Insert data
 def register_user(conn, user_details):
@@ -87,22 +47,22 @@ def is_username_taken(conn, username):
     return cur.fetchone() is not None
 
 # Function to authenticate user
-def authenticate_user(conn, login_details):
+def authenticate_user(conn, username, password):
     """
     Authenticate user
     :param conn:
     :param login_details: username and password
     :return: True or False if user has logged in correctly
     """
-    sql = ''' SELECT * FROM users WHERE username=? AND password=?'''
-    c = conn.cursor()
-    c.execute(sql, login_details)
-    user_data = c.fetchone()
-    if user_data:
-        user_id = int(user_data[0])
+    sql = ''' SELECT * FROM users WHERE username = :username AND password = :password'''
+    user_data = conn.query(sql, params={"username":username, "password":password})
+
+    if not user_data.empty:
+        user_id = user_data.iloc[0, 0]
+
         return user_id  # Authentication successful
     else:
-        return None  # Authentication failed
+        return False  # Authentication failed
 
 
 # Main function to handle user registration, login, and guess submission
