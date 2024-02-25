@@ -22,36 +22,44 @@ conn = st.connection("postgresql", type="sql")
 
 # Perform query.
 guesses_sql = '''   
-            SELECT 
-                users.username,
-                user_guesses.driver_1, 
-                user_guesses.driver_2, 
-                race_info.race_name 
-            FROM 
-                user_guesses 
-            JOIN 
-                users ON user_guesses.user_id = users.user_id
-            JOIN
-                race_info ON user_guesses.circuit_id = race_info.circuit_id
+                SELECT
+                    users.username,
+                    user_guesses.driver_1,
+                    user_guesses.driver_2,
+                    race_info.race_name,
+                    TO_CHAR(race_info.date, 'MM-DD') AS race_date,
+                    TO_CHAR(user_guesses.submission_time, 'YYYY') AS submission_year
+                FROM
+                    user_guesses
+                JOIN
+                    users ON user_guesses.user_id = users.user_id
+                JOIN
+                    race_info ON user_guesses.circuit_id = race_info.circuit_id
+
 '''
 
 guesses_db = conn.query(guesses_sql, ttl=0.0001)
+
 guesses_db.rename(columns={'username': 'User',
                            'driver_1': 'Driver 1',
                            'driver_2': 'Driver 2',
                            'race_name': 'Circuit'},inplace=True)
+guesses_db['Race'] = guesses_db['submission_year'] + '-' + guesses_db['race_date'] + ' - ' + guesses_db['Circuit']
+guesses_db.drop(columns=['submission_year'], inplace=True)
+guesses_db.drop(columns=['race_date'], inplace=True)
 
 df = guesses_db
 
 # Add a SelectBox to filter the DataFrame by circuit
 st.subheader('Driver Picks')
-selected_circuit = st.selectbox('', df['Circuit'].unique())
+selected_circuit = st.selectbox('', sorted(df['Race'].unique(), reverse=True))
+selected_circuit = selected_circuit.split("-")[3].strip()
 filtered_guesses_db = guesses_db[guesses_db['Circuit'] == selected_circuit]
 filtered_guesses_db.drop(columns=['Circuit'], inplace=True)
+filtered_guesses_db.drop(columns=['Race'], inplace=True)
 
 
 st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
-
 # Filter the DataFrame by selected circuit using .loc
 filtered_df = df[df['Circuit'] == selected_circuit]
 
@@ -83,16 +91,16 @@ merged_counts.sort_values(by='Total', ascending=True, inplace=True)
 
 # Create a stacked bar chart using Plotly
 fig = go.Figure(data=[
-    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='red'),
-    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='grey')
+    go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='red',text=merged_counts['Total'], textposition='auto'),
+    go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='grey', text=merged_counts['Total'], textposition='auto')
 ])
 
 # Update layout
 fig.update_layout(barmode='stack',
-                  xaxis_title='Number of Picks', 
                   yaxis_title= None,
                   showlegend = False,
-                  margin=dict(t=5))
+                  margin=dict(t=5),
+                  xaxis=dict(showticklabels=False))  # Hide x-axis tick labels
 
 # Display the Plotly figure
 st.subheader('Race Picks')
@@ -128,7 +136,8 @@ fig.update_layout(
                   yaxis_title= None,
                   showlegend = False,
                   height=800,
-                  margin=dict(t=5))
+                  margin=dict(t=5),
+                  xaxis=dict(showticklabels=False))  # Hide x-axis tick labels)
 
 fig.update_yaxes(autorange="reversed")
 

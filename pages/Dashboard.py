@@ -1,48 +1,36 @@
-'''
-For now this will show a bunch of tables for testing. 
-Tables are queried from the db and shown as dataframes
-'''
 import functions.database as db
 import streamlit as st
 import pandas as pd
-
 
 # Initialize connection.
 conn = st.connection("postgresql", type="sql")
 
 '''
-This page shows a bunch of SQL queries and dataframes created from SQL queries to test out a few functions
+The page shows all Supabase tables. 
+Only admin can see this page. 
 '''
 
 # users
 st.subheader('Users')
-users_df = conn.query('SELECT * from users')
+users_df = conn.query('SELECT * from users', ttl=0.001)
 st.dataframe(users_df, use_container_width=True, hide_index=True)
 
 # user_guesses
 st.subheader('User Guesses')
-guess_id = 1
-user_guesses_df = conn.query('''SELECT * 
-                                FROM user_guesses 
-                                WHERE guess_id = :guess_id''', params={"guess_id":"1"})
-
-#  df = conn.query("select * from pet_owners where owner = :owner", ttl=3600, params={"owner":"barbara"}
-
+user_guesses_df = conn.query('''SELECT * FROM user_guesses ''')
 st.dataframe(user_guesses_df, use_container_width=True, hide_index=True)
 
+# race_info
+st.subheader('Race Info')
+race_info_df = conn.query('''SELECT * FROM race_info ''')
+st.dataframe(race_info_df, use_container_width=True, hide_index=True)
 
-# driver picks
-driver_picks_sql = """ 
-                    SELECT 
-                        driver, COUNT(*) AS total_count
-                    FROM (
-                        SELECT driver_1 AS driver FROM user_guesses
-                        UNION ALL
-                        SELECT driver_2 AS driver FROM user_guesses
-                    ) AS drivers
-                    GROUP BY driver
-                    ORDER BY total_count DESC;
-"""
-driver_picks_df = conn.query(driver_picks_sql)
-st.subheader('Most Popular Driver')
-st.dataframe(driver_picks_df, use_container_width=True, hide_index=True)
+# race_results
+st.subheader('Race Results')
+race_results_df = conn.query('''SELECT * FROM race_results ''')
+st.dataframe(race_results_df, use_container_width=True, hide_index=True)
+
+# scores
+st.subheader('Scores')
+scores_df = conn.query('''SELECT * FROM scores ''')
+st.dataframe(scores_df, use_container_width=True, hide_index=True)
