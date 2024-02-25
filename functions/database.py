@@ -42,10 +42,10 @@ def is_username_taken(conn, username):
     :param username:
     :return: True or False
     """
-    # Suppress the UserWarning about non-SQLAlchemy objects
-    warnings.filterwarnings("ignore", category=UserWarning)
-    
+
     sql = "SELECT * FROM users WHERE username = :username"
+    sql = str(sql)
+    
     taken = conn.query(sql, params={"username": username})
     if not taken.empty:
         return True  # Taken
@@ -61,11 +61,9 @@ def authenticate_user(conn, username, password):
     :param password:
     :return: True or False if user has logged in correctly
     """
-    # Suppress the UserWarning about non-SQLAlchemy objects
-    warnings.filterwarnings("ignore", category=UserWarning)
-    
+
     sql = "SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1"
-    
+    sql = str(sql)
     user_data = conn.query(sql, params={"username":username, "password":password})
 
     if not user_data.empty:
