@@ -4,5 +4,7 @@ pandas
 plotly
 numpy
 folium
-psycopg2-binary
-sqlalchemy
+psycopg2-binary==2.9.9
+sqlalchemy==1.4.0
+st-supabase-connection
+supabase
