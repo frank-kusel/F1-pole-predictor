@@ -64,7 +64,7 @@ def authenticate_user(conn, username, password):
                     username = :username AND password = :password''')
                     
     user_data = conn.query(sql, params={"username":username, "password":password})
-
+    st.write(user_data)
     if not user_data.empty:
         user_id = pd.Dataframe(user_data)
         user_id = user_data.iloc[0, 0]
