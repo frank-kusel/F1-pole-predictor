@@ -98,7 +98,7 @@ def main():
                 if option == "Login":
                     # Login
                     username = st.text_input("Username:")
-                    st.session_state['username'] = username
+                    # st.session_state['username'] = username
                     password = st.text_input("Password:", type="password")
                     logged_in = False
                     
