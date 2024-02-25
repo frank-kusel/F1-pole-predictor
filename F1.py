@@ -44,7 +44,7 @@ from st_supabase_connection import SupabaseConnection
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
-page_title = "F1 Pole Predictor"
+page_title = "F1 - 10th Place Cup"
 page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
@@ -123,7 +123,7 @@ def main():
                     if db.is_username_taken(conn, (new_username,)):
                         st.warning("Username already taken. Please choose another one.")
                     else:
-                        user_id = db.register_user(conn, (new_username, new_password))
+                        user_id = db.register_user(conn, new_username, new_password)
                         st.success("Registration successful!")
         
 
@@ -131,11 +131,13 @@ def main():
         
         # TODO: delete or recode this
         # SQL query to return circuit_id
-        # curr = conn.cursor()
-        # curr.execute("SELECT circuit_id FROM race_details WHERE race_name = ? ", (next_race,))
-        # result = curr.fetchone()
-        # circuit_id = result[0]
-        # print(f'circuit id: {circuit_id}')
+        circuit_data = conn.query('''
+                   SELECT circuit_id FROM race_info WHERE race_name = :race_name
+                   '''
+                   , params={"race_name":next_race})
+
+        circuit_id = int(circuit_data.iloc[0, 0])
+        st.write(circuit_id)
         
         # Initialize session state
         if "disabled" not in st.session_state:
@@ -163,11 +165,13 @@ def main():
             if submitted:
                 
                 st.session_state.show_submit_button = False
-                submitted_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                submitted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 current_user = st.session_state['user_id']
 
+                st.header("Check")
+
                 
-                db.save_user_guesses(conn, (current_user, driver_1, driver_2, circuit_id, submitted_time))
+                db.save_user_guesses(conn, int(current_user), driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
     
 
@@ -206,11 +210,12 @@ def main():
         conn = st.connection("postgresql", type="sql")
         guesses_data = conn.query('''
                                     SELECT
+                                        ug.guess_id,
                                         rd.race_name, 
                                         ug.driver_1, 
                                         ug.driver_2,
                                         ug.submission_time 
-                                    FROM 
+                                    FROM
                                         user_guesses ug
                                     JOIN 
                                         race_info rd ON ug.circuit_id = rd.circuit_id
@@ -219,6 +224,7 @@ def main():
                                     WHERE 
                                         ug.user_id = :user_id
         ''', params={"user_id": int(user_id)})
+        guesses_data = guesses_data.drop(columns=['guess_id'])
 
         # Display DataFrame
         st.markdown('Your previous picks...')

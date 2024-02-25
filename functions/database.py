@@ -5,7 +5,7 @@ from supabase import create_client, Client
 
 
 # Insert data
-def register_user(conn, user_details):
+def register_user(conn, username, password):
     """
     Create a new user into the users table
     :param conn:
@@ -13,25 +13,26 @@ def register_user(conn, user_details):
     :return: user id
     """
     sql = ''' INSERT INTO users (username, password)
-              VALUES(?,?)'''
-    cur = conn.cursor()
-    cur.execute(sql, user_details)
-    conn.commit()
-    return cur.lastrowid
+              VALUES (:username, :password)'''
+    with conn.session as s:
+        s.execute(sql, params=dict(username=username, password=password))
+        s.commit()
+        
 
 # Function to save user guesses
-def save_user_guesses(conn, user_guesses):
+def save_user_guesses(conn, user_id, driver_1, driver_2, circuit_id, submission_time):
     """
     Insert user guesses into the user_guesses table
     :param conn:
     :param user_guesses: user_id, driver_1, driver_2, circuit
     :return:
     """
-    sql = ''' INSERT INTO  user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
-                VALUES (?, ?, ?, ?, ?)'''
-    cur = conn.cursor()
-    cur.execute(sql, user_guesses)
-    conn.commit()
+    sql = '''   INSERT INTO user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
+                VALUES (:user_id, :driver_1, :driver_2, :circuit_id, :submission_time)'''
+    with conn.session as s:
+        s.execute(sql, params=dict(user_id=user_id, driver_1=driver_1, driver_2=driver_2, circuit_id=circuit_id, submission_time=submission_time))
+        s.commit()
+
 
 # Function to check if username already exists
 def is_username_taken(conn, username):
@@ -41,20 +42,28 @@ def is_username_taken(conn, username):
     :param username:
     :return: True or False
     """
-    sql = ''' SELECT * FROM users WHERE username=?'''
-    cur = conn.cursor()
-    cur.execute(sql, username)
-    return cur.fetchone() is not None
+    sql = ''' SELECT * FROM users WHERE username = :username'''
+    taken = conn.query(sql, params={"username": username})
+    if not taken.empty:
+        return True  # Taken
+    else:
+        return False  # Free
 
 # Function to authenticate user
 def authenticate_user(conn, username, password):
     """
     Authenticate user
     :param conn:
-    :param login_details: username and password
+    :param username:
+    :param password:
     :return: True or False if user has logged in correctly
     """
-    sql = ''' SELECT * FROM users WHERE username = :username AND password = :password'''
+    sql = '''   SELECT * 
+                FROM 
+                    users 
+                WHERE 
+                    username = :username AND password = :password'''
+                    
     user_data = conn.query(sql, params={"username":username, "password":password})
 
     if not user_data.empty:
