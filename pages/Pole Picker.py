@@ -112,8 +112,7 @@ driver_picks_sql = """
                     GROUP BY driver
                     ORDER BY total_count DESC;
 """
-driver_picks_df = conn.query(driver_picks_sql, ttl="10")
-
+driver_picks_df = conn.query(driver_picks_sql, ttl=None)
 
 
 st.subheader('Most Popular Driver')
