@@ -30,17 +30,12 @@ In the terminal of the project directory run: streamlit run F1.py
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import calendar
 from datetime import datetime
-import numpy as np
-import sqlite3
 import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
-import plotly.express as px
 import functions.calculate_points as calc_points
 from sqlite3 import Error
-from st_supabase_connection import SupabaseConnection
 
 # ---------------------- SETTINGS ----------------------
 race_results = []

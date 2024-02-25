@@ -1,7 +1,5 @@
 import sqlite3
-from sqlite3 import Error
 import streamlit as st
-from supabase import create_client, Client
 
 
 # Insert data
