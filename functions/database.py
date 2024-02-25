@@ -57,16 +57,16 @@ def authenticate_user(conn, username, password):
     :param password:
     :return: True or False if user has logged in correctly
     """
-    sql = ('''   SELECT * 
+    sql = ('''   SELECT user_id 
                 FROM 
                     users 
                 WHERE 
-                    username = :username AND password = :password''')
+                    username = :username AND password = :password LIMIT 1''')
                     
     user_data = conn.query(sql, params={"username":username, "password":password})
-    st.write(user_data)
+
     if not user_data.empty:
-        user_id = pd.Dataframe(user_data)
+
         user_id = user_data.iloc[0, 0]
 
         return user_id  # Authentication successful
