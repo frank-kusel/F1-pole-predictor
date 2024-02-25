@@ -1,6 +1,6 @@
 import sqlite3
 import streamlit as st
-
+from sqlalchemy import text
 
 # Insert data
 def register_user(conn, username, password):
@@ -10,8 +10,8 @@ def register_user(conn, username, password):
     :param user: username and password
     :return: user id
     """
-    sql = ''' INSERT INTO users (username, password)
-              VALUES (:username, :password)'''
+    sql = text(''' INSERT INTO users (username, password)
+              VALUES (:username, :password)''')
     with conn.session as s:
         s.execute(sql, params=dict(username=username, password=password))
         s.commit()
