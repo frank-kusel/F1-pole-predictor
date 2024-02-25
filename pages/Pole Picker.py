@@ -10,9 +10,7 @@ import numpy as np
 import plotly.express as px
 import sqlite3
 import plotly.graph_objects as go
-from st_supabase_connection import SupabaseConnection
 import functions.database as db
-from supabase import create_client, Client
 
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
