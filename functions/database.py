@@ -62,7 +62,7 @@ def authenticate_user(conn, username, password):
                     users 
                 WHERE 
                     username = :username AND password = :password LIMIT 1''')
-                    
+    st.write(username)
     user_data = conn.query(sql, params={"username":username, "password":password})
 
     if not user_data.empty:
