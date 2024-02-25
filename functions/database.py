@@ -42,9 +42,8 @@ def is_username_taken(conn, username):
     :param username:
     :return: True or False
     """
-
-    sql = "SELECT * FROM users WHERE username = :username"
-    sql = str(sql)
+    conn = st.connection("postgresql", type="sql") 
+    sql = '''SELECT * FROM users WHERE username = :username'''
     
     taken = conn.query(sql, params={"username": username})
     if not taken.empty:
@@ -61,9 +60,9 @@ def authenticate_user(conn, username, password):
     :param password:
     :return: True or False if user has logged in correctly
     """
+    conn = st.connection("postgresql", type="sql")      
+    sql = '''SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1'''
 
-    sql = "SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1"
-    sql = str(sql)
     user_data = conn.query(sql, params={"username":username, "password":password})
 
     if not user_data.empty:

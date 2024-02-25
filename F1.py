@@ -67,7 +67,6 @@ def main():
     # Initialize connection.
     conn = st.connection("postgresql", type="sql")
     
-    
     if conn is None:
         print("Error: Unable to establish database connection.")
         
