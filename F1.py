@@ -79,51 +79,59 @@ def main():
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
     next_race, next_race_date = erg.next_race_name(race_schedule)
     
-    with st.expander('Login'):
-        # Registration or Login selection
-        option = st.radio("Select Option:", ("Login", "Register"), key="register_or_login")
-        
-        # Retrieve user_id from session state
-        user_id = st.session_state.get('user_id')
-        logged_in = st.session_state.get('logged_in')
-        # Login
+    # Retrieve user_id from session state
+    user_id = st.session_state.get('user_id')
+    logged_in = st.session_state.get('logged_in')
+    username = st.session_state.get('username')
     
-        if user_id is None: # If user_id is not in session state, perform login
+    
+    if not logged_in:
+    # with st.expander('Login'):
+        # Registration or Login selection
+        with st.container(border=True):
+            option = st.radio("Select Option:", ("Login", "Register"), key="register_or_login")
+            
 
-            if option == "Login":
-                # Login
-                username = st.text_input("Username:")
-                password = st.text_input("Password:", type="password")
-                logged_in = False
-                
-                if st.button("Login"):
-                    user_id = db.authenticate_user(conn, username, password,)
-                    if user_id > 0:
-                        st.success("Login successful!")
-                        logged_in=True
-                        st.session_state['logged_in'] = logged_in
-                        st.session_state['user_id'] = user_id
-                    else:
-                        st.error("Invalid username or password.")
-                        logged_in=False
-                        
-            elif option == "Register":
-                # Registration
-                logged_in = False
-                st.session_state['logged_in'] = logged_in
-                new_username = st.text_input("Enter new username:")
-                new_password = st.text_input("Enter new password:", type="password")
-                
-                if st.button("Register"):
-                    if db.is_username_taken(conn, (new_username,)):
-                        st.warning("Username already taken. Please choose another one.")
-                    else:
-                        user_id = db.register_user(conn, new_username, new_password)
-                        st.success("Registration successful!")
+            # Login
+        
+            if user_id is None: # If user_id is not in session state, perform login
+
+                if option == "Login":
+                    # Login
+                    username = st.text_input("Username:")
+                    st.session_state['username'] = username
+                    password = st.text_input("Password:", type="password")
+                    logged_in = False
+                    
+                    if st.button("Login"):
+                        user_id = db.authenticate_user(conn, username, password,)
+                        if user_id > 0:
+                            st.success("Login successful!")
+                            logged_in=True
+                            st.session_state['logged_in'] = logged_in
+                            st.session_state['user_id'] = user_id
+                        else:
+                            st.error("Invalid username or password.")
+                            logged_in=False
+                            
+                elif option == "Register":
+                    # Registration
+                    logged_in = False
+                    st.session_state['logged_in'] = logged_in
+                    new_username = st.text_input("Enter new username:")
+                    new_password = st.text_input("Enter new password:", type="password")
+                    
+                    if st.button("Register"):
+                        if db.is_username_taken(conn, (new_username,)):
+                            st.warning("Username already taken. Please choose another one.")
+                        else:
+                            user_id = db.register_user(conn, new_username, new_password)
+                            st.success("Registration successful!")
         
 
     if logged_in:
         
+        st.markdown(f'#### Welcome :blue[{username}]')
         # TODO: delete or recode this
         # SQL query to return circuit_id
         circuit_data = conn.query('''
@@ -132,7 +140,6 @@ def main():
                    , params={"race_name":next_race})
 
         circuit_id = int(circuit_data.iloc[0, 0])
-        st.write(circuit_id)
         
         # Initialize session state
         if "disabled" not in st.session_state:
@@ -141,12 +148,12 @@ def main():
         with st.form("entry_form", clear_on_submit=True):
             
             next_race_date_formatted = next_race_date.strftime('%d %B')
-            st.markdown(f'#### Next race: :red[{next_race}] - {next_race_date_formatted}')
+            st.markdown(f'#### Next race: :red[{next_race}] Grand Prix - {next_race_date_formatted}')
             current_date = datetime.today()
             # Convert the next_race_date to a datetime object
             next_race_datetime = datetime.combine(next_race_date, datetime.min.time())
             time_difference = (next_race_datetime - current_date).days
-            st.markdown(f'*Days until next race: {time_difference}*')
+            # st.markdown(f'*Days until next race: {time_difference}*')
             
             col1, col2 = st.columns(2)
             with col1:
@@ -162,9 +169,6 @@ def main():
                 st.session_state.show_submit_button = False
                 submitted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 current_user = st.session_state['user_id']
-
-                st.header("Check")
-
                 
                 db.save_user_guesses(conn, int(current_user), driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
@@ -227,19 +231,20 @@ def main():
 
     
     # --- Load data ---
-    
-    df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
-    df = df.T
-    cumulative_points = df.cumsum()
-    # --- Plot cumulative points ---
-    with st.container(border=False):
-        st.markdown(f'### :red[2023] Season')
-        st.markdown(f'Winner: **:green[Markus]**')
-        plot.plot_cumulative_points(cumulative_points)
+    with st.container(border=True):
+        df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
+        df = df.T
+        cumulative_points = df.cumsum()
+        # --- Plot cumulative points ---
+        with st.container(border=False):
+            st.markdown(f'### :red[2023] Season')
+            st.markdown(f'Winner: **:green[Markus]**')
+            plot.plot_cumulative_points(cumulative_points)
 
 
     # --- Plot a map ---
-    plot.map_locations()
+    with st.container(border=True):
+        plot.map_locations()
 
 
 def disable():
