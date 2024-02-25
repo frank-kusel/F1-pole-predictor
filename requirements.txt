@@ -5,6 +5,6 @@ plotly
 numpy
 folium
 psycopg2-binary==2.9.9
-sqlalchemy==2.0.26
+sqlalchemy==2.0.27
 st-supabase-connection
 supabase
