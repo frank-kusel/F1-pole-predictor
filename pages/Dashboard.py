@@ -1,4 +1,3 @@
-import functions.database as db
 import streamlit as st
 import pandas as pd
 
