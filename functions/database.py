@@ -52,7 +52,7 @@ def is_username_taken(conn, username):
 
 # Function to authenticate user
 @st.cache_data
-def authenticate_user(conn, _username, _password):
+def authenticate_user(_conn, _username, _password):
     """
     Authenticate user
     :param conn:
