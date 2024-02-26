@@ -52,7 +52,7 @@ def is_username_taken(conn, username):
 
 # Function to authenticate user
 @st.cache_data
-def authenticate_user(_sql, conn, username, password):
+def authenticate_user(conn, _username, _password):
     """
     Authenticate user
     :param conn:
@@ -63,7 +63,7 @@ def authenticate_user(_sql, conn, username, password):
     conn = st.connection("postgresql", type="sql")      
     sql = text('''SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1''')
 
-    user_data = conn.query(sql, params={"username":username, "password":password}, ttl=0.01)
+    user_data = conn.query(sql, params={"username":_username, "password":_password}, ttl=0.01)
 
     if not user_data.empty:
 
