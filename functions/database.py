@@ -52,22 +52,23 @@ def is_username_taken(conn, username):
 
 # Function to authenticate user
 @st.cache_data
-def _query(_sql, params, ttl):
-    conn = st.connection("postgresql", type="sql")
-    return conn.query(_sql, params=params, ttl=ttl)
-
-def authenticate_user(_username, _password):
+def authenticate_user(conn, username, password):
     """
     Authenticate user
-    :param _username:
-    :param _password:
-    :return: user_id if authentication successful, else False
+    :param conn:
+    :param username:
+    :param password:
+    :return: True or False if user has logged in correctly
     """
-    sql = text('''SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1''')
-    user_data = _query(sql, params={"username": _username, "password": _password}, ttl=0.01)
+    conn = st.connection("postgresql", type="sql")      
+    sql = '''SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1'''
+
+    user_data = conn.query(sql, params={"username":username, "password":password}, ttl=0.01)
 
     if not user_data.empty:
+
         user_id = user_data.iloc[0, 0]
+
         return user_id  # Authentication successful
     else:
         return False  # Authentication failed

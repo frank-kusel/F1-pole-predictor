@@ -102,7 +102,7 @@ def main():
                     logged_in = False
                     
                     if st.button("Login"):
-                        user_id = db.authenticate_user(username, password)
+                        user_id = db.authenticate_user(conn, username, password)
                         if user_id > 0:
                             st.success("Login successful!")
                             logged_in=True
