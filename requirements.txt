@@ -5,5 +5,9 @@ plotly
 numpy
 folium
 psycopg2-binary==2.9.9
+<<<<<<< HEAD
+=======
+sqlalchemy==2.0.27
+>>>>>>> 849b625cb8f76c79ec85043cd32d6c00c02d2287
 st-supabase-connection
 supabase
