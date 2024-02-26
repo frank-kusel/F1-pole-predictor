@@ -51,7 +51,8 @@ def is_username_taken(conn, username):
         return False  # Free
 
 # Function to authenticate user
-def authenticate_user(conn, username, password):
+@st.cache_data
+def authenticate_user(_sql, conn, username, password):
     """
     Authenticate user
     :param conn:
