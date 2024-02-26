@@ -51,7 +51,6 @@ def is_username_taken(conn, username):
         return False  # Free
 
 # Function to authenticate user
-@st.cache_data
 def authenticate_user(conn, username, password):
     """
     Authenticate user
@@ -59,8 +58,7 @@ def authenticate_user(conn, username, password):
     :param username:
     :param password:
     :return: True or False if user has logged in correctly
-    """
-    conn = st.connection("postgresql", type="sql")      
+    """ 
     sql = '''SELECT user_id FROM users WHERE username = :username AND password = :password LIMIT 1'''
 
     user_data = conn.query(sql, params={"username":username, "password":password}, ttl=0.01)
