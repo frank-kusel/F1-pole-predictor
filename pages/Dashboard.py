@@ -1,4 +1,4 @@
-import streamlit
+import streamlit as st
 import pandas as pd
 
 # Initialize connection.
@@ -8,12 +8,6 @@ conn = st.connection("postgresql", type="sql")
 The page shows all Supabase tables. 
 Only admin can see this page. 
 '''
-
-
-
-import psycopg2
-import streamlit as st
-import pandas as pd
 
 
 # dialect = "postgresql"
