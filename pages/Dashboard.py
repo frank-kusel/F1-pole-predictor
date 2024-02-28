@@ -17,42 +17,42 @@ import streamlit as st
 import pandas as pd
 
 
-dialect = "postgresql"
-host = "aws-0-eu-west-2.pooler.supabase.com"
-port = "5432"
-database = "postgres"
-username = "postgres.xgubbnhhcfosnylqhlfk"
-password = "F7K11use!ZK"
+# dialect = "postgresql"
+# host = "aws-0-eu-west-2.pooler.supabase.com"
+# port = "5432"
+# database = "postgres"
+# username = "postgres.xgubbnhhcfosnylqhlfk"
+# password = "F7K11use!ZK"
 
 # Connect to PostgreSQL
-conn = psycopg2.connect(
-    dbname="postgres",
-    user="postgres.xgubbnhhcfosnylqhlfk",
-    password="F7K11use!ZK",
-    host="aws-0-eu-west-2.pooler.supabase.com",
-    port="5432"
-)
+# conn = psycopg2.connect(
+#     dbname="postgres",
+#     user="postgres.xgubbnhhcfosnylqhlfk",
+#     password="F7K11use!ZK",
+#     host="aws-0-eu-west-2.pooler.supabase.com",
+#     port="5432"
+# )
 
-# Create a cursor object
-cur = conn.cursor()
+# # Create a cursor object
+# cur = conn.cursor()
 
-# Execute the query
-query = "SELECT * FROM users"
-cur.execute(query)
+# # Execute the query
+# query = "SELECT * FROM users"
+# cur.execute(query)
 
-# Fetch all rows from the result set
-rows = cur.fetchall()
+# # Fetch all rows from the result set
+# rows = cur.fetchall()
 
-# Close the cursor and connection
-cur.close()
-conn.close()
+# # Close the cursor and connection
+# cur.close()
+# conn.close()
 
-# Convert the result set to a pandas DataFrame
-users_df = pd.DataFrame(rows, columns=['Column1', 'Column2', ...])  # Specify column names as per your database schema
+# # Convert the result set to a pandas DataFrame
+# users_df = pd.DataFrame(rows,)  # Specify column names as per your database schema
 
-# Display the DataFrame using Streamlit
-st.subheader('Users')
-st.dataframe(users_df)
+# # Display the DataFrame using Streamlit
+# st.subheader('Users')
+# st.dataframe(users_df)
 
 
 

@@ -1,3 +1,5 @@
+alchemy
+sqlalchemy
 openpyxl
 matplotlib
 pandas
@@ -7,4 +9,3 @@ folium
 psycopg2-binary
 st-supabase-connection
 supabase
-alchemy
