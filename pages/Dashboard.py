@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 
 # Initialize connection.
 
@@ -60,7 +59,7 @@ Only admin can see this page.
 
 # users
 st.subheader('Users')
-users_df = conn.query("SELECT * from users")
+users_df = conn.query(str("SELECT * from users"))
 st.dataframe(users_df, use_container_width=True, hide_index=True)
 
 # user_guesses
