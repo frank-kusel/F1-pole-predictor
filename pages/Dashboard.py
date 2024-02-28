@@ -59,7 +59,7 @@ Only admin can see this page.
 
 # users
 st.subheader('Users')
-users_df = conn.query('SELECT * from users;', ttl=None)
+users_df = conn.query('SELECT * FROM users;', ttl=None)
 st.dataframe(users_df, use_container_width=True, hide_index=True)
 
 # user_guesses
