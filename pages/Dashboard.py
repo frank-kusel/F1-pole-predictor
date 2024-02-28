@@ -1,13 +1,66 @@
 import streamlit as st
 import pandas as pd
+import psycopg2
 
 # Initialize connection.
 conn = st.connection("postgresql", type="sql")
-
+conn = psycopg2.connect()
 '''
 The page shows all Supabase tables. 
 Only admin can see this page. 
 '''
+
+
+
+import psycopg2
+import streamlit as st
+import pandas as pd
+
+
+dialect = "postgresql"
+host = "aws-0-eu-west-2.pooler.supabase.com"
+port = "5432"
+database = "postgres"
+username = "postgres.xgubbnhhcfosnylqhlfk"
+password = "F7K11use!ZK"
+
+# Connect to PostgreSQL
+conn = psycopg2.connect(
+    dbname="postgres",
+    user="postgres.xgubbnhhcfosnylqhlfk",
+    password="F7K11use!ZK",
+    host="aws-0-eu-west-2.pooler.supabase.com",
+    port="5432"
+)
+
+# Create a cursor object
+cur = conn.cursor()
+
+# Execute the query
+query = "SELECT * FROM users"
+cur.execute(query)
+
+# Fetch all rows from the result set
+rows = cur.fetchall()
+
+# Close the cursor and connection
+cur.close()
+conn.close()
+
+# Convert the result set to a pandas DataFrame
+users_df = pd.DataFrame(rows, columns=['Column1', 'Column2', ...])  # Specify column names as per your database schema
+
+# Display the DataFrame using Streamlit
+st.subheader('Users')
+st.dataframe(users_df)
+
+
+
+
+
+
+
+
 
 # users
 st.subheader('Users')
