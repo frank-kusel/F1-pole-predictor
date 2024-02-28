@@ -35,7 +35,6 @@ import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
 import functions.calculate_points as calc_points
-from sqlite3 import Error
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
@@ -65,7 +64,7 @@ def main():
     # conn = st.connection("supabase", type=SupabaseConnection)
     # Initialize connection.
     conn = st.connection("postgresql", type="sql")
-    
+
     if conn is None:
         print("Error: Unable to establish database connection.")
         

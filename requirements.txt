@@ -1,4 +1,3 @@
-alchemy
 sqlalchemy
 openpyxl
 matplotlib
