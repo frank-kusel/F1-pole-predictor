@@ -1,9 +1,9 @@
 streamlit==1.31.1
 psycopg2-binary==2.9.9
 sqlalchemy==1.4.0
+pandas==2.0.2
 openpyxl
 matplotlib
-pandas
 plotly
 numpy
 folium
