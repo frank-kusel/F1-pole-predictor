@@ -1,12 +1,11 @@
 streamlit==1.31.1
-SQLAlchemy==1.4.0
-sqlalchemy
+psycopg2-binary==2.9.9
+sqlalchemy==1.4.0
 openpyxl
 matplotlib
 pandas
 plotly
 numpy
 folium
-psycopg2-binary
 st-supabase-connection
 supabase
