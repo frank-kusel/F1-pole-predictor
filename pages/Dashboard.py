@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import psycopg2
 
 # Initialize connection.
 conn = st.connection("postgresql", type="sql")
