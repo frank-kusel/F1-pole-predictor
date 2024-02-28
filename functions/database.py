@@ -14,15 +14,15 @@ def connect_to_postgresql():
     )
     return conn
 
-# Function to execute query and fetch data
-@st.cache_data
-def fetch_data(_conn, query):
-    cur = _conn.cursor()
-    cur.execute(query)
-    rows = cur.fetchall()
-    df = pd.DataFrame(rows)
-    cur.close()  # Close cursor
-    return df
+# # Function to execute query and fetch data
+# @st.cache_data
+# def fetch_data(_conn, query):
+#     cur = _conn.cursor()
+#     cur.execute(query)
+#     rows = cur.fetchall()
+#     df = pd.DataFrame(rows)
+#     cur.close()  # Close cursor
+#     return df
 
 # Function to insert data
 @st.cache_data

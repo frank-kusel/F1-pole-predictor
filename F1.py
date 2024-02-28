@@ -126,14 +126,14 @@ def main():
                             user_id = db.register_user(conn, new_username, new_password)
                             st.success("Registration successful!")
 
-    with st.container(border=True):
+    with st.container(border=False):
         next_race_date_formatted = next_race_date.strftime('%d %B')
-        st.markdown(f'#### Next race: :red[{next_race}] Grand Prix - {next_race_date_formatted}')
-        st.markdown(f'*{circuit_name}*')        
+        st.info(f'#### :red[{next_race}] Grand Prix - {next_race_date_formatted}')
+        # st.text(f'{circuit_name}')        
 
     if logged_in:
         
-        st.markdown(f'#### Welcome :blue[{username}]')
+        # st.markdown(f'##### Welcome :blue[{username}]')
         # TODO: delete or recode this
         # Fetch circuit ID
         circuit_id = fetch_circuit_id(conn, next_race)
@@ -153,7 +153,7 @@ def main():
         
             
         with st.form("entry_form", clear_on_submit=True):
-            
+            st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')    
             current_date = datetime.today()
             # Convert the next_race_date to a datetime object
             next_race_datetime = datetime.combine(next_race_date, datetime.min.time())
@@ -175,7 +175,7 @@ def main():
                 submitted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 current_user = st.session_state['user_id']
                 
-                db.save_user_guesses(conn, int(current_user), driver_1, driver_2, int(circuit_id), submitted_time)
+                db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
         
     
@@ -208,9 +208,10 @@ def main():
         
         # Fetch user guesses with race names directly from SQL
         guesses_data = fetch_user_guesses(conn, user_id)
+        # guesses_data.drop(columns=['guess_id'], inplace=True)
 
         # Display DataFrame
-        st.markdown('Your previous picks...')
+        st.caption('Your previous picks...')
         st.dataframe(guesses_data, use_container_width=True, hide_index=True)
 
     
