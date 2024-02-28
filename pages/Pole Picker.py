@@ -8,41 +8,52 @@ import pandas as pd
 import plotly.express as px
 import sqlite3
 import plotly.graph_objects as go
+import psycopg2
 
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
 
+@st.cache_data
+def fetch_user_guesses(_conn):
+    guesses_sql = '''   
+                    SELECT
+                        users.username,
+                        user_guesses.driver_1,
+                        user_guesses.driver_2,
+                        race_info.race_name,
+                        TO_CHAR(race_info.date, 'MM-DD') AS race_date,
+                        TO_CHAR(user_guesses.submission_time, 'YYYY') AS submission_year
+                    FROM
+                        user_guesses
+                    JOIN
+                        users ON user_guesses.user_id = users.user_id
+                    JOIN
+                        race_info ON user_guesses.circuit_id = race_info.circuit_id;
+    '''
+    with conn.cursor() as cursor:
+        cursor.execute(guesses_sql)
+        columns = [desc[0] for desc in cursor.description]
+        guesses_db = cursor.fetchall()
+    df = pd.DataFrame(guesses_db, columns=columns)
+    df.rename(columns={'username': 'User',
+                       'driver_1': 'Driver 1',
+                       'driver_2': 'Driver 2',
+                       'race_name': 'Circuit'}, inplace=True)
+    df['Race'] = df['submission_year'] + '-' + df['race_date'] + ' - ' + df['Circuit']
+    df.drop(columns=['submission_year', 'race_date'], inplace=True)
+    return df
+
 # Initialize connection.
-conn = st.connection("postgresql", type="sql")
+conn = psycopg2.connect(
+    dbname=st.secrets.postgresql.database,
+    user=st.secrets.postgresql.username,
+    password=st.secrets.postgresql.password,
+    host=st.secrets.postgresql.host,
+    port=st.secrets.postgresql.port
+)
 
-# Perform query.
-guesses_sql = '''   
-                SELECT
-                    users.username,
-                    user_guesses.driver_1,
-                    user_guesses.driver_2,
-                    race_info.race_name,
-                    TO_CHAR(race_info.date, 'MM-DD') AS race_date,
-                    TO_CHAR(user_guesses.submission_time, 'YYYY') AS submission_year
-                FROM
-                    user_guesses
-                JOIN
-                    users ON user_guesses.user_id = users.user_id
-                JOIN
-                    race_info ON user_guesses.circuit_id = race_info.circuit_id;
-
-'''
-
-guesses_db = conn.query(guesses_sql, ttl=0.0001)
-
-guesses_db.rename(columns={'username': 'User',
-                           'driver_1': 'Driver 1',
-                           'driver_2': 'Driver 2',
-                           'race_name': 'Circuit'},inplace=True)
-guesses_db['Race'] = guesses_db['submission_year'] + '-' + guesses_db['race_date'] + ' - ' + guesses_db['Circuit']
-guesses_db.drop(columns=['submission_year'], inplace=True)
-guesses_db.drop(columns=['race_date'], inplace=True)
-
+# Fetch user guesses
+guesses_db = fetch_user_guesses(conn)
 df = guesses_db
 
 # Add a SelectBox to filter the DataFrame by circuit
@@ -104,18 +115,27 @@ st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False}
 
 
 # driver picks
-driver_picks_sql = """ 
-                    SELECT 
-                        driver, COUNT(*) AS total_count
-                    FROM (
-                        SELECT driver_1 AS driver FROM user_guesses
-                        UNION ALL
-                        SELECT driver_2 AS driver FROM user_guesses
-                    ) AS drivers
-                    GROUP BY driver
-                    ORDER BY total_count DESC;
-"""
-driver_picks_df = conn.query(driver_picks_sql, ttl=0.0001)
+@st.cache_data
+def fetch_driver_picks(_conn):
+    driver_picks_sql = """ 
+                        SELECT 
+                            driver, COUNT(*) AS total_count
+                        FROM (
+                            SELECT driver_1 AS driver FROM user_guesses
+                            UNION ALL
+                            SELECT driver_2 AS driver FROM user_guesses
+                        ) AS drivers
+                        GROUP BY driver
+                        ORDER BY total_count DESC;
+    """
+    with conn.cursor() as cursor:
+        cursor.execute(driver_picks_sql)
+        columns = [desc[0] for desc in cursor.description]
+        driver_picks_db = cursor.fetchall()
+    df = pd.DataFrame(driver_picks_db, columns=columns)
+    return df
+# Fetch driver picks
+driver_picks_df = fetch_driver_picks(conn)
 
 
 st.subheader('Most Popular Driver')

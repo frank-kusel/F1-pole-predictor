@@ -63,7 +63,8 @@ def main():
     # Connect to database
     # conn = st.connection("supabase", type=SupabaseConnection)
     # Initialize connection.
-    conn = st.connection("postgresql", type="sql")
+    # conn = st.connection("postgresql", type="sql")
+    conn = db.connect_to_postgresql()
 
     if conn is None:
         print("Error: Unable to establish database connection.")
@@ -106,6 +107,7 @@ def main():
                             logged_in=True
                             st.session_state['logged_in'] = logged_in
                             st.session_state['user_id'] = user_id
+                            st.session_state['username'] = username
                         else:
                             st.error("Invalid username or password.")
                             logged_in=False
@@ -133,13 +135,16 @@ def main():
         
         st.markdown(f'#### Welcome :blue[{username}]')
         # TODO: delete or recode this
-        # SQL query to return circuit_id
-        circuit_data = conn.query('''
-                   SELECT circuit_id FROM race_info WHERE race_name = :race_name
-                   '''
-                   , params={"race_name":next_race})
+        # Fetch circuit ID
+        circuit_id = fetch_circuit_id(conn, next_race)
+        
+        
+        # circuit_data = conn.query('''
+        #            SELECT circuit_id FROM race_info WHERE race_name = :race_name
+        #            '''
+        #            , params={"race_name":next_race})
 
-        circuit_id = int(circuit_data.iloc[0, 0])
+        # circuit_id = int(circuit_data.iloc[0, 0])
         
         # Initialize session state
         if "disabled" not in st.session_state:
@@ -202,25 +207,7 @@ def main():
     if logged_in:   
         
         # Fetch user guesses with race names directly from SQL
-        # c = conn.cursor()
-        conn = st.connection("postgresql", type="sql")
-        guesses_data = conn.query('''
-                                    SELECT
-                                        ug.guess_id,
-                                        rd.race_name, 
-                                        ug.driver_1, 
-                                        ug.driver_2,
-                                        ug.submission_time 
-                                    FROM
-                                        user_guesses ug
-                                    JOIN 
-                                        race_info rd ON ug.circuit_id = rd.circuit_id
-                                    JOIN
-                                        users ON ug.user_id = users.user_id
-                                    WHERE 
-                                        ug.user_id = :user_id
-        ''', params={"user_id": int(user_id)}, ttl=0.0001)
-        guesses_data = guesses_data.drop(columns=['guess_id'])
+        guesses_data = fetch_user_guesses(conn, user_id)
 
         # Display DataFrame
         st.markdown('Your previous picks...')
@@ -247,6 +234,47 @@ def main():
 def disable():
     st.session_state.disabled = True
 
+
+@st.cache_data
+def fetch_circuit_id(_conn, race_name):
+    """
+    Fetch the circuit ID for a given race name.
+    """
+    query = '''
+            SELECT circuit_id FROM race_info WHERE race_name = %s
+            '''
+    with _conn.cursor() as cursor:
+        cursor.execute(query, (race_name,))
+        circuit_id = cursor.fetchone()[0]
+    return circuit_id
+
+
+
+def fetch_user_guesses(_conn, user_id):
+    """
+    Fetch user guesses with race names directly from SQL.
+    """
+    query = '''
+            SELECT
+                ug.guess_id,
+                rd.race_name, 
+                ug.driver_1, 
+                ug.driver_2,
+                ug.submission_time 
+            FROM
+                user_guesses ug
+            JOIN 
+                race_info rd ON ug.circuit_id = rd.circuit_id
+            JOIN
+                users ON ug.user_id = users.user_id
+            WHERE 
+                ug.user_id = %s
+            '''
+    with _conn.cursor() as cursor:
+        cursor.execute(query, (user_id,))
+        columns = [desc[0] for desc in cursor.description]
+        guesses_data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    return guesses_data
 
 # Run the app
 if __name__ == "__main__":
