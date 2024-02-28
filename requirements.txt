@@ -1,5 +1,6 @@
 streamlit==1.31.1
 SQLAlchemy==1.4.0
+sqlalchemy
 openpyxl
 matplotlib
 pandas
