@@ -4,7 +4,7 @@ import psycopg2
 
 # Initialize connection.
 conn = st.connection("postgresql", type="sql")
-conn = psycopg2.connect()
+
 '''
 The page shows all Supabase tables. 
 Only admin can see this page. 
