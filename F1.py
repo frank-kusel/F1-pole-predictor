@@ -45,7 +45,6 @@ layout = 'centered'
 # ------------------------------------------------------
 
 
-
 # TODO: Show race results
 # TODO: Create a function that only allows race entries once, and once per current next race
 # TODO: Create year filter in pole picker for favourite drivers
@@ -147,7 +146,7 @@ def main():
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
         
-
+        
             
         with st.form("entry_form", clear_on_submit=True):
             
@@ -174,22 +173,19 @@ def main():
                 
                 db.save_user_guesses(conn, int(current_user), driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
-    
-
-    
+        
     
         # Metrics
-        with st.container(border=False):
-            current_points, current_position, total_points, leader_points = st.columns(4)
+        # with st.container(border=False):
+        #     current_points, current_position, total_points, leader_points = st.columns(4)
             
-            points = calc_points.main(user_id, driver_1, driver_2)
+        #     points = calc_points.main(user_id, driver_1, driver_2)
             
-            current_points.container(height=120).metric("Race Points", points, 0)
-            current_position.container(height=120).metric("Current Position", 10, -5)
-            total_points.container(height=120).metric("Total Points", 98, 12)
-            leader_points.container(height=120).metric("Leader Points", 125, 25)
-    
-    
+        #     current_points.container(height=120).metric("Race Points", points, 0)
+        #     current_position.container(height=120).metric("Current Position", 10, -5)
+        #     total_points.container(height=120).metric("Total Points", 98, 12)
+        #     leader_points.container(height=120).metric("Leader Points", 125, 25)
+        
         
     # Rules
     with st.sidebar:

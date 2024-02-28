@@ -16,7 +16,7 @@ def register_user(conn, username, password):
     with conn.session as s:
         s.execute(sql, params=dict(username=username, password=password))
         s.commit()
-        
+
 
 # Function to save user guesses
 def save_user_guesses(conn, user_id, driver_1, driver_2, circuit_id, submission_time):
@@ -49,6 +49,7 @@ def is_username_taken(conn, username):
         return True  # Taken
     else:
         return False  # Free
+
 
 # Function to authenticate user
 def authenticate_user(conn, username, password):
