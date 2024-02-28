@@ -207,8 +207,8 @@ def main():
     if logged_in:   
         
         # Fetch user guesses with race names directly from SQL
-        guesses_data = fetch_user_guesses(conn, user_id)
-        # guesses_data.drop(columns=['guess_id'], inplace=True)
+        guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
+        guesses_data.drop(columns=['guess_id'], inplace=True)
 
         # Display DataFrame
         st.caption('Your previous picks...')
