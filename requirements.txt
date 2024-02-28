@@ -1,5 +1,4 @@
-streamlit
-sqlalchemy
+streamlit==1.31.1
 SQLAlchemy==1.4.0
 openpyxl
 matplotlib
