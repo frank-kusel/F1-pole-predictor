@@ -2,8 +2,7 @@ import streamlit
 import pandas as pd
 
 # Initialize connection.
-# conn = st.connection("postgresql", type="sql")
-conn = streamlit.conn
+conn = st.connection("postgresql", type="sql")
 
 '''
 The page shows all Supabase tables. 
