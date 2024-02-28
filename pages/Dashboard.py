@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
+from sqlalchemy import create_engine
 
 # Initialize connection.
+engine = create_engine()
 conn = st.connection("postgresql", type="sql")
 
 '''

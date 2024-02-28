@@ -9,3 +9,4 @@ folium
 psycopg2-binary
 st-supabase-connection
 supabase
+streamlit==1.31.1
