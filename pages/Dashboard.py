@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
+from streamlit import connection
 
 # Initialize connection.
 
-conn = st.connection("postgresql", type="sql")
+conn = connection("postgresql", type="sql")
+
+# conn = st.connection("postgresql", type="sql")
 
 '''
 The page shows all Supabase tables. 
