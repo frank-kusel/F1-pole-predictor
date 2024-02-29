@@ -80,3 +80,56 @@ def save_user_guesses(_conn, user_id, driver_1, driver_2, circuit_id, submission
     with _conn.cursor() as cursor:
         cursor.execute(query, (user_id, driver_1, driver_2, circuit_id, submission_time))
         _conn.commit()
+
+
+@st.cache_data
+def fetch_user_guesses(_conn):
+    guesses_sql = '''   
+                    SELECT
+                        users.username,
+                        user_guesses.driver_1,
+                        user_guesses.driver_2,
+                        race_info.race_name,
+                        TO_CHAR(race_info.date, 'MM-DD') AS race_date,
+                        TO_CHAR(user_guesses.submission_time, 'YYYY') AS submission_year
+                    FROM
+                        user_guesses
+                    JOIN
+                        users ON user_guesses.user_id = users.user_id
+                    JOIN
+                        race_info ON user_guesses.circuit_id = race_info.circuit_id;
+    '''
+    with _conn.cursor() as cursor:
+        cursor.execute(guesses_sql)
+        columns = [desc[0] for desc in cursor.description]
+        guesses_db = cursor.fetchall()
+    df = pd.DataFrame(guesses_db, columns=columns)
+    df.rename(columns={'username': 'User',
+                       'driver_1': 'Driver 1',
+                       'driver_2': 'Driver 2',
+                       'race_name': 'Circuit'}, inplace=True)
+    df['Race'] = df['submission_year'] + '-' + df['race_date'] + ' - ' + df['Circuit']
+    df.drop(columns=['submission_year', 'race_date'], inplace=True)
+    return df
+
+
+# driver picks
+@st.cache_data
+def fetch_driver_picks(_conn):
+    driver_picks_sql = """ 
+                        SELECT 
+                            driver, COUNT(*) AS total_count
+                        FROM (
+                            SELECT driver_1 AS driver FROM user_guesses
+                            UNION ALL
+                            SELECT driver_2 AS driver FROM user_guesses
+                        ) AS drivers
+                        GROUP BY driver
+                        ORDER BY total_count DESC;
+    """
+    with _conn.cursor() as cursor:
+        cursor.execute(driver_picks_sql)
+        columns = [desc[0] for desc in cursor.description]
+        driver_picks_db = cursor.fetchall()
+    df = pd.DataFrame(driver_picks_db, columns=columns)
+    return df
