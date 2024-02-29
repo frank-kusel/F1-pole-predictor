@@ -62,9 +62,9 @@ def main(user_id, driver1, driver2):
     return max(driver1_points, driver2_points)
 
 # Test the function
-# user_id = 1
-# driver1 = "Esteban Ocon"
-# driver2 = "Lance Stroll"
-# print("Maximum Points:", main(user_id, driver1, driver2))
+user_id = 1
+driver1 = "Esteban Ocon"
+driver2 = "Lance Stroll"
+print("Maximum Points:", main(user_id, driver1, driver2))
 
 

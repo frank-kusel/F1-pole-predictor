@@ -136,6 +136,7 @@ def main():
         # Fetch circuit ID
         circuit_id = fetch_circuit_id(conn, next_race)
         
+       
         
         # circuit_data = conn.query('''
         #            SELECT circuit_id FROM race_info WHERE race_name = :race_name
@@ -179,16 +180,7 @@ def main():
                 
         
     
-        # Metrics
-        # with st.container(border=False):
-        #     current_points, current_position, total_points, leader_points = st.columns(4)
-            
-        #     points = calc_points.main(user_id, driver_1, driver_2)
-            
-        #     current_points.container(height=120).metric("Race Points", points, 0)
-        #     current_position.container(height=120).metric("Current Position", 10, -5)
-        #     total_points.container(height=120).metric("Total Points", 98, 12)
-        #     leader_points.container(height=120).metric("Leader Points", 125, 25)
+
         
         
     # Rules
@@ -208,7 +200,7 @@ def main():
         
         # Fetch user guesses with race names directly from SQL
         guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
-        guesses_data.drop(columns=['guess_id'], inplace=True)
+        # guesses_data.drop(columns=['guess_id'], inplace=True)
 
         # Display DataFrame
         st.caption('Your previous picks...')
@@ -223,6 +215,20 @@ def main():
                         hide_index=True, 
                         use_container_width=True)
 
+    
+        #             # Metrics
+        # with st.container(border=False):
+        #     current_points, current_position, total_points, leader_points = st.columns(4)
+            
+        #     points = calc_points.main(user_id, driver_1, driver_2)
+            
+        #     current_points.container(height=120).metric("Race Points", points, 0)
+        #     current_position.container(height=120).metric("Current Position", 10, -5)
+        #     total_points.container(height=120).metric("Total Points", 98, 12)
+        #     leader_points.container(height=120).metric("Leader Points", 125, 25)
+    
+    
+    
     
     # --- Load data ---
     with st.container(border=True):
