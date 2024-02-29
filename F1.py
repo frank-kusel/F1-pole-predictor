@@ -35,6 +35,7 @@ import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
 import functions.calculate_points as calc_points
+import time
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
@@ -59,7 +60,8 @@ def main():
     # Page info
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
     st.title(page_title + " " + page_icon)
-    
+    if st.button("Driver Picks"):
+        st.switch_page("pages/Driver Picks.py") 
     # Connect to database
     # conn = st.connection("supabase", type=SupabaseConnection)
     # Initialize connection.
@@ -85,7 +87,7 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
-        with st.container(border=True):
+        with st.expander("Login"):
             option = st.radio("Select Option:", ("Login", "Register"), key="register_or_login")
             
 
@@ -153,7 +155,8 @@ def main():
         
             
         with st.form("entry_form", clear_on_submit=True):
-            st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')    
+            st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
+
             current_date = datetime.today()
             # Convert the next_race_date to a datetime object
             next_race_datetime = datetime.combine(next_race_date, datetime.min.time())
@@ -166,7 +169,7 @@ def main():
             with col2:
                 driver_2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver_2")
                     
-            submitted = st.form_submit_button(f"Place your bet - {next_race} Grand Prix", on_click=disable, disabled=st.session_state.disabled)
+            submitted = st.form_submit_button(f"__Submit__ :grey[- {next_race}] :grey[Grand Prix]", on_click=disable, disabled=st.session_state.disabled)
 
             # Save user guesses to a dataframe -> SQLite
             if submitted:
@@ -177,6 +180,7 @@ def main():
                 
                 db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
+                
         
     
         # Metrics
@@ -223,7 +227,6 @@ def main():
         # --- Plot cumulative points ---
         with st.container(border=False):
             st.markdown(f'### :red[2023] Season')
-            st.markdown(f'Winner: **:green[Markus]**')
             plot.plot_cumulative_points(cumulative_points)
 
 

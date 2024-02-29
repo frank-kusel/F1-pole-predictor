@@ -27,15 +27,17 @@ conn = psycopg2.connect(
 
 if logged_in:
     
-
-
     # Fetch user guesses
     guesses_db = db.fetch_user_guesses(conn)
     df = guesses_db
 
     # Add a SelectBox to filter the DataFrame by circuit
-    st.subheader('Driver Picks')
-    selected_circuit = st.selectbox('', sorted(df['Race'].unique(), reverse=True))
+    if st.button("Home"):
+        st.switch_page("F1.py")
+    st.title('Driver Picks')
+    st.info("View driver picks once you've submitted your guess")
+    
+    selected_circuit = st.selectbox('Select Race', sorted(df['Race'].unique(), reverse=True))
     selected_circuit = selected_circuit.split("-")[3].strip()
     filtered_guesses_db = guesses_db[guesses_db['Circuit'] == selected_circuit]
     filtered_guesses_db.drop(columns=['Circuit'], inplace=True)
@@ -80,6 +82,10 @@ if logged_in:
 
     # Update layout
     fig.update_layout(barmode='stack',
+                    dragmode=False,  # Disable panning
+                    # hovermode=False,  # Disable hover
+                    xaxis_fixedrange=True,  # Disable zoom on x-axis
+                    yaxis_fixedrange=True,  # Disable zoom on y-axis
                     yaxis_title= None,
                     showlegend = False,
                     margin=dict(t=5),
@@ -105,11 +111,15 @@ fig = go.Figure(data=[
 
 # Update layout
 fig.update_layout( 
-                  yaxis_title= None,
-                  showlegend = False,
-                  height=800,
-                  margin=dict(t=5),
-                  xaxis=dict(showticklabels=False))  # Hide x-axis tick labels)
+                    dragmode=False,  # Disable panning
+                    # hovermode=False,  # Disable hover
+                    xaxis_fixedrange=True,  # Disable zoom on x-axis
+                    yaxis_fixedrange=True,  # Disable zoom on y-axis
+                    yaxis_title= None,
+                    showlegend = False,
+                    height=800,
+                    margin=dict(t=5),
+                    xaxis=dict(showticklabels=False))  # Hide x-axis tick labels)
 
 fig.update_yaxes(autorange="reversed")
 

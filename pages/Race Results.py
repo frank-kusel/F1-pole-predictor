@@ -52,9 +52,10 @@ def fetch_race_results(season):
     return races
 
 def main():
+    if st.button("Home"):
+        st.switch_page("F1.py")
     st.title("Race Results")
 
-    st.page_link("F1.py", label="Home")
     st.info('View the results of past races, and compare final race final positions with the starting grid position ')
 
     col1, col2 = st.columns(2)
