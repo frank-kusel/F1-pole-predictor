@@ -122,7 +122,7 @@ def main():
                             st.warning("Username already taken. Please choose another one.")
                         else:
                             user_id = db.register_user(conn, new_username, new_password)
-                            st.success("Registration successful!")
+                            st.success("Registration successful! Please login with your username and password")
 
     with st.container(border=False):
         next_race_date_formatted = next_race_date.strftime('%d %B')
@@ -186,14 +186,17 @@ def main():
     # Rules
     with st.sidebar:
         with st.container():
-            with st.expander("Racing Rules"):
-                st.markdown('_Welcome to the F1 Prediction Game! Predict the 10th place driver and earn points._')
-                points_system = {
-                    "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th", "5th"],
-                    "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0.5]
-                }
-                df_points_system = pd.DataFrame(points_system)
-                st.dataframe(points_system, hide_index=True, use_container_width=True)
+            # with st.expander("Racing Rules"):
+            st.markdown('#### Racing Rules')
+            st.markdown('_Welcome to the F1 - 10th Place Cup! Predict the 10th place driver and earn points._')
+            st.markdown('Your first pick earns you the full points, and the second pick gets you half points. Whichever driver gives you the highest score will be used to calculate your points.')
+            st.markdown('Driver picks must be submitted 1 hour before the race starts!')
+            points_system = {
+                "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th"],
+                "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
+            }
+            df_points_system = pd.DataFrame(points_system)
+            st.dataframe(points_system, hide_index=True, use_container_width=True)
     
     
     if logged_in:   
