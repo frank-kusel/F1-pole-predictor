@@ -212,7 +212,16 @@ def main():
 
         # Display DataFrame
         st.caption('Your previous picks...')
-        st.dataframe(guesses_data, use_container_width=True, hide_index=True)
+        st.dataframe(guesses_data,
+                        column_order=("submission_time", "race_name", "driver_1", "driver_2"), 
+                        column_config={
+                            "submission_time": "Submitted",
+                            "race_name": "Grand Prix",
+                            "driver_1": "Driver 1",
+                            "driver_2": "Driver 2"
+                        },
+                        hide_index=True, 
+                        use_container_width=True)
 
     
     # --- Load data ---
