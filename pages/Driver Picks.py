@@ -35,7 +35,7 @@ if logged_in:
     if st.button("Home"):
         st.switch_page("F1.py")
     st.title('Driver Picks')
-    st.info("View driver picks once you've submitted your guess")
+    st.info("View driver picks for past races")
     
     selected_circuit = st.selectbox('Select Race', sorted(df['Race'].unique(), reverse=True))
     selected_circuit = selected_circuit.split("-")[3].strip()
