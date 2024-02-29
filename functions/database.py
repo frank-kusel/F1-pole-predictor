@@ -34,7 +34,6 @@ def insert_data(conn, query, params):
 
 
 # Function to check if username already exists
-@st.cache_data
 def is_username_taken(_conn, username):
     query = 'SELECT * FROM users WHERE username = %s'
     with _conn.cursor() as cursor:
@@ -60,7 +59,6 @@ def authenticate_user(_conn, username, password):
 
 
 # Insert data: Register User
-@st.cache_data
 def register_user(_conn, username, password):
     query = "INSERT INTO users (username, password) VALUES (%s, %s) RETURNING user_id;"
     with _conn.cursor() as cursor:
@@ -70,7 +68,6 @@ def register_user(_conn, username, password):
     return user_id
 
 # Function to save user guesses
-@st.cache_data
 def save_user_guesses(_conn, user_id, driver_1, driver_2, circuit_id, submission_time):
     query = '''
         INSERT INTO user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
