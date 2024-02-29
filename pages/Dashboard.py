@@ -3,7 +3,6 @@ import pandas as pd
 import psycopg2
 
 # Connect to PostgreSQL
-@st.cache_resource
 def connect_to_postgresql():
     conn = psycopg2.connect(
         dbname=st.secrets.postgresql.database,
@@ -15,7 +14,6 @@ def connect_to_postgresql():
     return conn
 
 # Function to execute query and fetch data
-@st.cache_data
 def fetch_data(_conn, query):
     cur = conn.cursor()
     cur.execute(query)

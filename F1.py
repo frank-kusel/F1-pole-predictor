@@ -44,13 +44,9 @@ page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
 
-
+# TODO: Disable button if user has already submitted a guess for next_race
+# TODO: Add race results input table for admin
 # TODO: Show race results
-# TODO: Create a function that only allows race entries once, and once per current next race
-# TODO: Create year filter in pole picker for favourite drivers
-# TODO: prevent the app from refetching driver names and race schedules on each click..
-# TODO: redo login logic.. or use the empty container function: https://discuss.streamlit.io/t/login-form-using-st-form/26722
-# TODO: Create a year filter for each user's past picks
 # TODO: Create stats for total users, races, guesses etc
 
 
