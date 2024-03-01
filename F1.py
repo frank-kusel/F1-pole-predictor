@@ -38,7 +38,7 @@ import functions.ergast as erg
 
 # ---------------------- SETTINGS ----------------------
 
-page_title = "F1 - 10th Place Cup?"
+page_title = "F1 - 10th Place Cup"
 page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
@@ -67,7 +67,7 @@ def main():
         print("Error: Unable to establish database connection.")
         
     # driver_names = erg.drivers()
-    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
+    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hulkenberg")
     
     # race_schedule = erg.race_schedule(2024)
     race_schedule = [
@@ -110,8 +110,8 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
-        option = st.radio("Select Option:", ("Login", "Register"))
         with st.form("Login"):
+            option = st.radio("Select Option:", ("Login", "Register"))  
 
             # Login
         
@@ -169,6 +169,8 @@ def main():
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
         
+        # disabled_state = st.session_state.get("disabled", False)
+        
         with st.form("entry_form", clear_on_submit=True):
 
             # st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
@@ -185,8 +187,7 @@ def main():
 
             # Save user guesses to a dataframe -> SQLite
             if submitted:
-                
-                st.session_state.show_submit_button = False
+                st.session_state.disabled = True
                 submitted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 current_user = st.session_state['user_id']
                 
@@ -273,7 +274,6 @@ def main():
     with st.container(border=True):
         plot.map_locations()
 
-@st.cache_data
 def disable():
     st.session_state.disabled = True
 
