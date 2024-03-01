@@ -55,8 +55,8 @@ def main():
     print("I ran again")
     # Page info
     st.title(page_title + " " + page_icon)
-    # if st.button("Driver Picks"):
-    #     st.switch_page("pages/Driver Picks.py") 
+    if st.button("Driver Picks"):
+        st.switch_page("pages/Driver Picks.py") 
         
     # Connect to database
     # conn = st.connection("supabase", type=SupabaseConnection)
