@@ -84,8 +84,7 @@ def main():
         # Registration or Login selection
         with st.expander("Login"):
             option = st.radio("Select Option:", ["Login", "Register"])
-            option = st.session_state['option'] = option
-            
+
             # Login
         
             if user_id is None: # If user_id is not in session state, perform login
