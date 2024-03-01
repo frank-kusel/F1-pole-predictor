@@ -54,7 +54,7 @@ layout = 'centered'
 def main():
     
     # Page info
-    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
+    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout, showErrorDetails=True)
     st.title(page_title + " " + page_icon)
     if st.button("Driver Picks"):
         st.switch_page("pages/Driver Picks.py") 
