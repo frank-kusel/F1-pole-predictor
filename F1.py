@@ -55,8 +55,8 @@ def main():
     # Page info
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
     st.title(page_title + " " + page_icon)
-    # if st.button("Driver Picks"):
-    #     st.switch_page("pages/Driver Picks.py") 
+    if st.button("Driver Picks"):
+        st.switch_page("pages/Driver Picks.py") 
     # Connect to database
     # conn = st.connection("supabase", type=SupabaseConnection)
     # Initialize connection.
