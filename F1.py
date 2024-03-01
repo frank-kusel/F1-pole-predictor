@@ -221,7 +221,7 @@ def main():
                 "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th"],
                 "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
             }
-            df_points_system = pd.DataFrame(points_system)
+            # df_points_system = pd.DataFrame(points_system)
             st.dataframe(points_system, hide_index=True, use_container_width=True)
     
     
