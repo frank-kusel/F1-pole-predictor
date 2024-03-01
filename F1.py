@@ -121,7 +121,7 @@ def main():
                     # Login
                     username = st.text_input("Username:", key='username')
                     # st.session_state['username'] = username
-                    password = st.text_input("Password:", type="password")
+                    password = st.text_input("Key:")
 
                     st.session_state['logged_in'] = False
                     st.session_state['user_id'] = user_id
