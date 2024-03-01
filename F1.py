@@ -105,7 +105,7 @@ def main():
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
 
-    st.session_state
+    
     
     if not logged_in:
     # with st.expander('Login'):
@@ -151,7 +151,7 @@ def main():
                         else:
                             user_id = db.register_user(conn, new_username, new_password)
                             st.success("Registration successful! Please login with your username and password")
-    st.session_state
+    
     
     with st.container(border=False):
         next_race_date_formatted = next_race_date.strftime('%d %B')
@@ -194,7 +194,7 @@ def main():
                 db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
                 
-    st.session_state    
+        
         
     # Rules
     with st.sidebar:
