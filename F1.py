@@ -222,7 +222,7 @@ def main():
                 "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
             }
             # df_points_system = pd.DataFrame(points_system)
-            st.dataframe(points_system, hide_index=True, use_container_width=True)
+            st.table(points_system)
     
     
     if logged_in:   
