@@ -51,7 +51,7 @@ def fetch_race_results(season):
         
     return races
 
-def main():
+def race_results():
     if st.button("Home"):
         st.switch_page("F1.py")
     st.title("Race Results")
@@ -87,5 +87,4 @@ def color_survived(val):
     color = 'red' if int(val) == 10 else 'black'
     return f'background-color: {color}'
 
-if __name__ == "__main__":
-    main()
+race_results()

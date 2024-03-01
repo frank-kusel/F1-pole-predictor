@@ -1,9 +1,10 @@
 '''
 Fetch live results to be used for points calculations
 '''
-
+import streamlit as st
 import requests
 
+@st.cache_data
 def get_driver_position(driver, race_results):
     # Implement function to retrieve driver's position from race results
     # Search race results for driver and return their finishing position
@@ -18,7 +19,8 @@ def get_driver_position(driver, race_results):
     # If the driver is not found, return None
     return None
 
-def main(user_id, driver1, driver2):
+@st.cache_data
+def points(user_id, driver1, driver2):
     '''
     calculate points based on guess
     :param user_id:
@@ -65,6 +67,6 @@ def main(user_id, driver1, driver2):
 user_id = 1
 driver1 = "Esteban Ocon"
 driver2 = "Lance Stroll"
-print("Maximum Points:", main(user_id, driver1, driver2))
+print("Maximum Points:", points(user_id, driver1, driver2))
 
 

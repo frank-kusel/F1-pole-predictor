@@ -37,7 +37,7 @@ import functions.ergast as erg
 import functions.calculate_points as calc_points
 
 # ---------------------- SETTINGS ----------------------
-race_results = []
+
 page_title = "F1 - 10th Place Cup"
 page_icon = ':racing_car:'
 layout = 'centered'
@@ -51,23 +51,23 @@ layout = 'centered'
 
 # --- MAIN APP ---
 def main():
+    # st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)   
     
     # Page info
-    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
     st.title(page_title + " " + page_icon)
     if st.button("Driver Picks"):
         st.switch_page("pages/Driver Picks.py") 
+        
     # Connect to database
     # conn = st.connection("supabase", type=SupabaseConnection)
-    # Initialize connection.
     # conn = st.connection("postgresql", type="sql")
     conn = db.connect_to_postgresql()
 
     if conn is None:
         print("Error: Unable to establish database connection.")
         
-    driver_names = erg.drivers()
-    # driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
+    # driver_names = erg.drivers()
+    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
     
     race_schedule = erg.race_schedule(2024)
     race_schedule_df = pd.DataFrame(race_schedule)
@@ -78,6 +78,8 @@ def main():
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
+
+    st.session_state
     
     if not logged_in:
     # with st.expander('Login'):
@@ -91,13 +93,12 @@ def main():
 
                 if option == "Login":
                     # Login
-                    username = st.text_input("Username:")
+                    username = st.text_input("Username:", key='username')
                     # st.session_state['username'] = username
                     password = st.text_input("Password:", type="password")
-                    logged_in = False
-                    st.session_state['logged_in'] = logged_in
+
+                    st.session_state['logged_in'] = False
                     st.session_state['user_id'] = user_id
-                    st.session_state['username'] = username
                     
                     if st.button("Login"):
                         user_id = db.authenticate_user(conn, username, password)
@@ -106,7 +107,7 @@ def main():
                             logged_in=True
                             st.session_state['logged_in'] = logged_in
                             st.session_state['user_id'] = user_id
-                            st.session_state['username'] = username
+
                         else:
                             st.error("Invalid username or password.")
                             logged_in=False
@@ -124,42 +125,29 @@ def main():
                         else:
                             user_id = db.register_user(conn, new_username, new_password)
                             st.success("Registration successful! Please login with your username and password")
-
+    st.session_state
+    
     with st.container(border=False):
         next_race_date_formatted = next_race_date.strftime('%d %B')
+        # next_race_date_formatted = next_race_date
         st.info(f'#### :red[{next_race}] Grand Prix - {next_race_date_formatted}')
-        # st.text(f'{circuit_name}')        
+  
 
     if logged_in:
         
-        # st.markdown(f'##### Welcome :blue[{username}]')
-        # TODO: delete or recode this
         # Fetch circuit ID
         circuit_id = fetch_circuit_id(conn, next_race)
-        
-       
-        
-        # circuit_data = conn.query('''
-        #            SELECT circuit_id FROM race_info WHERE race_name = :race_name
-        #            '''
-        #            , params={"race_name":next_race})
 
-        # circuit_id = int(circuit_data.iloc[0, 0])
         
         # Initialize session state
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
         
-        
-            
         with st.form("entry_form", clear_on_submit=True):
+            st.session_state
+
             st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
 
-            current_date = datetime.today()
-            # Convert the next_race_date to a datetime object
-            next_race_datetime = datetime.combine(next_race_date, datetime.min.time())
-            time_difference = (next_race_datetime - current_date).days
-            # st.markdown(f'*Days until next race: {time_difference}*')
             
             col1, col2 = st.columns(2)
             with col1:
@@ -179,21 +167,19 @@ def main():
                 db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
                 
-        
-    
-            
+    st.session_state    
         
     # Rules
     with st.sidebar:
         with st.expander("Change password"):
             with st.form("Change password", clear_on_submit=True, border=False):
-                username = st.text_input("Username:", key='username')
+                user = st.text_input("Username:", key='user')
                 current_password = st.text_input("Current password:", key='current_password')
                 new_password = st.text_input("New password:", key='new_password')
                 submitted_new_pw = st.form_submit_button(f"Change password")
                 
                 if submitted_new_pw:
-                    if db.change_password(conn, username, current_password, new_password):
+                    if db.change_password(conn, user, current_password, new_password):
                         st.success("Password updated. You can login with your new password")
                     else:
                         st.error("Error")
@@ -236,7 +222,7 @@ def main():
         # with st.container(border=False):
         #     current_points, current_position, total_points, leader_points = st.columns(4)
             
-        #     points = calc_points.main(user_id, driver_1, driver_2)
+        #     points = calc_points.points(user_id, driver_1, driver_2)
             
         #     current_points.container(height=120).metric("Race Points", points, 0)
         #     current_position.container(height=120).metric("Current Position", 10, -5)

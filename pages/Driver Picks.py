@@ -6,7 +6,7 @@ Stats for drivers picked are revealed once the user's guess has been submitted.
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import sqlite3
+# import sqlite3
 import plotly.graph_objects as go
 import psycopg2
 import functions.database as db
@@ -14,7 +14,10 @@ import functions.database as db
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
 
+st.session_state
+
 logged_in = st.session_state.get('logged_in')
+
 
 # Initialize connection.
 conn = psycopg2.connect(

@@ -80,7 +80,7 @@ def race_schedule(year):
 
     return race_schedule
 
-@st.cache_data
+# @st.cache_data
 def drivers():
     '''
     Fetch list of driver names from ergast API
