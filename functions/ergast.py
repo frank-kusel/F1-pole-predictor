@@ -47,7 +47,7 @@ def race_schedule(year):
             }
             race_schedule.append(race_details)
             
-        print(race_schedule)
+        # print(race_schedule)
         
     else:
         race_schedule = [
@@ -104,7 +104,7 @@ def drivers():
         # Extract the names of the drivers and store them in a list
         driver_names = [driver["givenName"] + " " + driver["familyName"] for driver in drivers_data]
         
-        print(driver_names)
+        # print(driver_names)
 
     else:
         print("Failed to retrieve driver data from the Ergast API")
@@ -127,7 +127,7 @@ def next_race_name(race_schedule):
         
         # Check if the race date is after the current date
         if race_date > current_date:
-            print('Next race:', race['raceName'])
+            # print('Next race:', race['raceName'])
             return race['raceName'], race_date, circuit_name
     # If no future race is found, return None
     return None
