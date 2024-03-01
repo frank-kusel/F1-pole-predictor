@@ -2,8 +2,6 @@ import streamlit as st
 
 st.title("Welcome")
 
-st.info("News")
-
 
 '''
 Welcome to the F1 - 10th Place Cup, where the thrill of Formula 1 racing meets the excitement of prediction!
