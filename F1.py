@@ -243,20 +243,20 @@ def main():
     
     
     
-    # --- Load data ---
-    with st.container(border=True):
-        df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
-        df = df.T
-        cumulative_points = df.cumsum()
-        # --- Plot cumulative points ---
-        with st.container(border=False):
-            st.markdown(f'### :red[2023] Season')
-            plot.plot_cumulative_points(cumulative_points)
+    # # --- Load data ---
+    # with st.container(border=True):
+    #     df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
+    #     df = df.T
+    #     cumulative_points = df.cumsum()
+    #     # --- Plot cumulative points ---
+    #     with st.container(border=False):
+    #         st.markdown(f'### :red[2023] Season')
+    #         plot.plot_cumulative_points(cumulative_points)
 
 
-    # --- Plot a map ---
-    with st.container(border=True):
-        plot.map_locations()
+    # # --- Plot a map ---
+    # with st.container(border=True):
+    #     plot.map_locations()
 
 
 def disable():
