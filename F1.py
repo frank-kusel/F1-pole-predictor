@@ -264,7 +264,7 @@ def disable():
     st.session_state.disabled = True
 
 
-@st.cache_data
+# @st.cache_data
 def fetch_circuit_id(_conn, race_name):
     """
     Fetch the circuit ID for a given race name.

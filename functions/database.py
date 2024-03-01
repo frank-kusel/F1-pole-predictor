@@ -34,7 +34,7 @@ def insert_data(conn, query, params):
 
 
 # Function to check if username already exists
-@st.cache_data
+# @st.cache_data
 def is_username_taken(_conn, username):
     query = 'SELECT * FROM users WHERE username = %s'
     with _conn.cursor() as cursor:
@@ -46,7 +46,7 @@ def is_username_taken(_conn, username):
             return False  # Free
 
 # Function to authenticate user
-@st.cache_data
+# @st.cache_data
 def authenticate_user(_conn, username, password):
     query = 'SELECT user_id FROM users WHERE username = %s AND password = %s LIMIT 1'
     with _conn.cursor() as cursor:
@@ -80,7 +80,7 @@ def save_user_guesses(_conn, user_id, driver_1, driver_2, circuit_id, submission
         _conn.commit()
 
 
-@st.cache_data
+# @st.cache_data
 def fetch_user_guesses(_conn):
     guesses_sql = '''   
                     SELECT
@@ -112,7 +112,7 @@ def fetch_user_guesses(_conn):
 
 
 # driver picks
-@st.cache_data
+# @st.cache_data
 def fetch_driver_picks(_conn):
     driver_picks_sql = """ 
                         SELECT 
