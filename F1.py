@@ -51,8 +51,8 @@ layout = 'centered'
 
 # --- MAIN APP ---
 def main():
-    # st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)   
-    
+    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)   
+    print("I ran again")
     # Page info
     st.title(page_title + " " + page_icon)
     if st.button("Driver Picks"):
@@ -69,7 +69,33 @@ def main():
     # driver_names = erg.drivers()
     driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
     
-    race_schedule = erg.race_schedule(2024)
+    # race_schedule = erg.race_schedule(2024)
+    race_schedule = [
+            {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
+            {'raceName': 'Saudi Arabian', 'date': '2024-03-09', 'circuitName': 'Jeddah Corniche Circuit'},
+            {'raceName': 'Australian', 'date': '2024-03-24', 'circuitName': 'Albert Park Circuit'},
+            {'raceName': 'Japanese', 'date': '2024-04-07', 'circuitName': 'Suzuka Circuit'},
+            {'raceName': 'Chinese', 'date': '2024-04-21', 'circuitName': 'Shanghai International Circuit'},
+            {'raceName': 'Miami', 'date': '2024-05-05', 'circuitName': 'Miami International Autodrome'},
+            {'raceName': 'Emilia Romagna', 'date': '2024-05-19', 'circuitName': 'Autodromo Enzo e Dino Ferrari'},
+            {'raceName': 'Monaco', 'date': '2024-05-26', 'circuitName': 'Circuit de Monaco'},
+            {'raceName': 'Canadian', 'date': '2024-06-09', 'circuitName': 'Circuit Gilles Villeneuve'},
+            {'raceName': 'Spanish', 'date': '2024-06-23', 'circuitName': 'Circuit de Barcelona-Catalunya'},
+            {'raceName': 'Austrian', 'date': '2024-06-30', 'circuitName': 'Red Bull Ring'},
+            {'raceName': 'British', 'date': '2024-07-07', 'circuitName': 'Silverstone Circuit'},
+            {'raceName': 'Hungarian', 'date': '2024-07-21', 'circuitName': 'Hungaroring'},
+            {'raceName': 'Belgian', 'date': '2024-07-28', 'circuitName': 'Circuit de Spa-Francorchamps'},
+            {'raceName': 'Dutch', 'date': '2024-08-25', 'circuitName': 'Circuit Park Zandvoort'},
+            {'raceName': 'Italian', 'date': '2024-09-01', 'circuitName': 'Autodromo Nazionale di Monza'},
+            {'raceName': 'Azerbaijan', 'date': '2024-09-15', 'circuitName': 'Baku City Circuit'},
+            {'raceName': 'Singapore', 'date': '2024-09-22', 'circuitName': 'Marina Bay Street Circuit'},
+            {'raceName': 'United States', 'date': '2024-10-20', 'circuitName': 'Circuit of the Americas'},
+            {'raceName': 'Mexico City', 'date': '2024-10-27', 'circuitName': 'Autódromo Hermanos Rodríguez'},
+            {'raceName': 'São Paulo', 'date': '2024-11-03', 'circuitName': 'Autódromo José Carlos Pace'},
+            {'raceName': 'Las Vegas', 'date': '2024-11-23', 'circuitName': 'Las Vegas Strip Street Circuit'},
+            {'raceName': 'Qatar', 'date': '2024-12-01', 'circuitName': 'Losail International Circuit'},
+            {'raceName': 'Abu Dhabi', 'date': '2024-12-08', 'circuitName': 'Yas Marina Circuit'}
+            ]
     race_schedule_df = pd.DataFrame(race_schedule)
     race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
     next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
@@ -146,7 +172,7 @@ def main():
         with st.form("entry_form", clear_on_submit=True):
             st.session_state
 
-            st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
+            # st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
             st.markdown(f'Welcome to {circuit_name}')  
 
             
@@ -234,19 +260,19 @@ def main():
     
     
     # --- Load data ---
-    with st.container(border=True):
-        df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
-        df = df.T
-        cumulative_points = df.cumsum()
-        # --- Plot cumulative points ---
-        with st.container(border=False):
-            st.markdown(f'### :red[2023] Season')
-            plot.plot_cumulative_points(cumulative_points)
+    # with st.container(border=True):
+    #     df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
+    #     df = df.T
+    #     cumulative_points = df.cumsum()
+    #     # --- Plot cumulative points ---
+    #     with st.container(border=False):
+    #         st.markdown(f'### :red[2023] Season')
+    #         plot.plot_cumulative_points(cumulative_points)
 
 
-    # --- Plot a map ---
-    with st.container(border=True):
-        plot.map_locations()
+    # # --- Plot a map ---
+    # with st.container(border=True):
+    #     plot.map_locations()
 
 @st.cache_data
 def disable():

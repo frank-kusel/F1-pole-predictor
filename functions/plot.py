@@ -63,10 +63,10 @@ def plot_cumulative_points(cumulative_points):
         # title={'text': 'Leaderboard', 'x': 0.3, 'font': {'size': 24}},
         # xaxis=dict(title='Race'),
         # yaxis=dict(title='Points'),
-        dragmode=False,  # Disable panning
+        # dragmode=False,  # Disable panning
         # hovermode=False,  # Disable hover
-        xaxis_fixedrange=True,  # Disable zoom on x-axis
-        yaxis_fixedrange=True,  # Disable zoom on y-axis
+        # xaxis_fixedrange=True,  # Disable zoom on x-axis
+        # yaxis_fixedrange=True,  # Disable zoom on y-axis
         height=600,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
