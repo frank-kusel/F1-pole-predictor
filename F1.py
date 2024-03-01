@@ -35,7 +35,6 @@ import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
 import functions.calculate_points as calc_points
-import time
 
 # ---------------------- SETTINGS ----------------------
 race_results = []
