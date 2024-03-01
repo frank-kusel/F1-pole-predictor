@@ -292,7 +292,7 @@ def fetch_circuit_id(_conn, race_name):
     return circuit_id
 
 
-@st.cache_data
+# @st.cache_data
 def fetch_user_guesses(_conn, user_id):
     """
     Fetch user guesses with race names directly from SQL.
