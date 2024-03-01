@@ -110,8 +110,8 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
+        option = st.radio("Select Option:", ("Login", "Register"))
         with st.form("Login"):
-            option = st.radio("Select Option:", ["Login", "Register"])
 
             # Login
         
