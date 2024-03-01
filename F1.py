@@ -38,7 +38,7 @@ import functions.calculate_points as calc_points
 
 # ---------------------- SETTINGS ----------------------
 
-page_title = "F1 - 10th Place Cup"
+page_title = "F1 - 10th Place Cup?"
 page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
