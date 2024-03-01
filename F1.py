@@ -53,59 +53,59 @@ layout = 'centered'
 def main():
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)   
     print("I ran again")
-    # Page info
+    # # Page info
     st.title(page_title + " " + page_icon)
-    if st.button("Driver Picks"):
-        st.switch_page("pages/Driver Picks.py") 
+    # if st.button("Driver Picks"):
+    #     st.switch_page("pages/Driver Picks.py") 
         
-    # Connect to database
-    # conn = st.connection("supabase", type=SupabaseConnection)
-    # conn = st.connection("postgresql", type="sql")
-    conn = db.connect_to_postgresql()
+    # # Connect to database
+    # # conn = st.connection("supabase", type=SupabaseConnection)
+    # # conn = st.connection("postgresql", type="sql")
+    # conn = db.connect_to_postgresql()
 
-    if conn is None:
-        print("Error: Unable to establish database connection.")
+    # if conn is None:
+    #     print("Error: Unable to establish database connection.")
         
-    # driver_names = erg.drivers()
-    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
+    # # driver_names = erg.drivers()
+    # driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Sebastian Vettel", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sergeant", "Kevin Magnussen", "Nico Hulkenberg")
     
-    # race_schedule = erg.race_schedule(2024)
-    race_schedule = [
-            {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
-            {'raceName': 'Saudi Arabian', 'date': '2024-03-09', 'circuitName': 'Jeddah Corniche Circuit'},
-            {'raceName': 'Australian', 'date': '2024-03-24', 'circuitName': 'Albert Park Circuit'},
-            {'raceName': 'Japanese', 'date': '2024-04-07', 'circuitName': 'Suzuka Circuit'},
-            {'raceName': 'Chinese', 'date': '2024-04-21', 'circuitName': 'Shanghai International Circuit'},
-            {'raceName': 'Miami', 'date': '2024-05-05', 'circuitName': 'Miami International Autodrome'},
-            {'raceName': 'Emilia Romagna', 'date': '2024-05-19', 'circuitName': 'Autodromo Enzo e Dino Ferrari'},
-            {'raceName': 'Monaco', 'date': '2024-05-26', 'circuitName': 'Circuit de Monaco'},
-            {'raceName': 'Canadian', 'date': '2024-06-09', 'circuitName': 'Circuit Gilles Villeneuve'},
-            {'raceName': 'Spanish', 'date': '2024-06-23', 'circuitName': 'Circuit de Barcelona-Catalunya'},
-            {'raceName': 'Austrian', 'date': '2024-06-30', 'circuitName': 'Red Bull Ring'},
-            {'raceName': 'British', 'date': '2024-07-07', 'circuitName': 'Silverstone Circuit'},
-            {'raceName': 'Hungarian', 'date': '2024-07-21', 'circuitName': 'Hungaroring'},
-            {'raceName': 'Belgian', 'date': '2024-07-28', 'circuitName': 'Circuit de Spa-Francorchamps'},
-            {'raceName': 'Dutch', 'date': '2024-08-25', 'circuitName': 'Circuit Park Zandvoort'},
-            {'raceName': 'Italian', 'date': '2024-09-01', 'circuitName': 'Autodromo Nazionale di Monza'},
-            {'raceName': 'Azerbaijan', 'date': '2024-09-15', 'circuitName': 'Baku City Circuit'},
-            {'raceName': 'Singapore', 'date': '2024-09-22', 'circuitName': 'Marina Bay Street Circuit'},
-            {'raceName': 'United States', 'date': '2024-10-20', 'circuitName': 'Circuit of the Americas'},
-            {'raceName': 'Mexico City', 'date': '2024-10-27', 'circuitName': 'Autódromo Hermanos Rodríguez'},
-            {'raceName': 'São Paulo', 'date': '2024-11-03', 'circuitName': 'Autódromo José Carlos Pace'},
-            {'raceName': 'Las Vegas', 'date': '2024-11-23', 'circuitName': 'Las Vegas Strip Street Circuit'},
-            {'raceName': 'Qatar', 'date': '2024-12-01', 'circuitName': 'Losail International Circuit'},
-            {'raceName': 'Abu Dhabi', 'date': '2024-12-08', 'circuitName': 'Yas Marina Circuit'}
-            ]
-    race_schedule_df = pd.DataFrame(race_schedule)
-    race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
-    next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
+    # # race_schedule = erg.race_schedule(2024)
+    # race_schedule = [
+    #         {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
+    #         {'raceName': 'Saudi Arabian', 'date': '2024-03-09', 'circuitName': 'Jeddah Corniche Circuit'},
+    #         {'raceName': 'Australian', 'date': '2024-03-24', 'circuitName': 'Albert Park Circuit'},
+    #         {'raceName': 'Japanese', 'date': '2024-04-07', 'circuitName': 'Suzuka Circuit'},
+    #         {'raceName': 'Chinese', 'date': '2024-04-21', 'circuitName': 'Shanghai International Circuit'},
+    #         {'raceName': 'Miami', 'date': '2024-05-05', 'circuitName': 'Miami International Autodrome'},
+    #         {'raceName': 'Emilia Romagna', 'date': '2024-05-19', 'circuitName': 'Autodromo Enzo e Dino Ferrari'},
+    #         {'raceName': 'Monaco', 'date': '2024-05-26', 'circuitName': 'Circuit de Monaco'},
+    #         {'raceName': 'Canadian', 'date': '2024-06-09', 'circuitName': 'Circuit Gilles Villeneuve'},
+    #         {'raceName': 'Spanish', 'date': '2024-06-23', 'circuitName': 'Circuit de Barcelona-Catalunya'},
+    #         {'raceName': 'Austrian', 'date': '2024-06-30', 'circuitName': 'Red Bull Ring'},
+    #         {'raceName': 'British', 'date': '2024-07-07', 'circuitName': 'Silverstone Circuit'},
+    #         {'raceName': 'Hungarian', 'date': '2024-07-21', 'circuitName': 'Hungaroring'},
+    #         {'raceName': 'Belgian', 'date': '2024-07-28', 'circuitName': 'Circuit de Spa-Francorchamps'},
+    #         {'raceName': 'Dutch', 'date': '2024-08-25', 'circuitName': 'Circuit Park Zandvoort'},
+    #         {'raceName': 'Italian', 'date': '2024-09-01', 'circuitName': 'Autodromo Nazionale di Monza'},
+    #         {'raceName': 'Azerbaijan', 'date': '2024-09-15', 'circuitName': 'Baku City Circuit'},
+    #         {'raceName': 'Singapore', 'date': '2024-09-22', 'circuitName': 'Marina Bay Street Circuit'},
+    #         {'raceName': 'United States', 'date': '2024-10-20', 'circuitName': 'Circuit of the Americas'},
+    #         {'raceName': 'Mexico City', 'date': '2024-10-27', 'circuitName': 'Autódromo Hermanos Rodríguez'},
+    #         {'raceName': 'São Paulo', 'date': '2024-11-03', 'circuitName': 'Autódromo José Carlos Pace'},
+    #         {'raceName': 'Las Vegas', 'date': '2024-11-23', 'circuitName': 'Las Vegas Strip Street Circuit'},
+    #         {'raceName': 'Qatar', 'date': '2024-12-01', 'circuitName': 'Losail International Circuit'},
+    #         {'raceName': 'Abu Dhabi', 'date': '2024-12-08', 'circuitName': 'Yas Marina Circuit'}
+    #         ]
+    # race_schedule_df = pd.DataFrame(race_schedule)
+    # race_schedule_df['race_with_date'] = race_schedule_df['raceName'] + ' - ' + pd.to_datetime(race_schedule_df['date']).dt.strftime('%d %B')
+    # next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
     
-    # Retrieve user_id from session state
-    user_id = st.session_state.get('user_id')
-    logged_in = st.session_state.get('logged_in')
-    username = st.session_state.get('username')
+    # # Retrieve user_id from session state
+    # user_id = st.session_state.get('user_id')
+    # logged_in = st.session_state.get('logged_in')
+    # username = st.session_state.get('username')
 
-    st.session_state
+    # st.session_state
     
     # if not logged_in:
     # # with st.expander('Login'):
@@ -196,53 +196,53 @@ def main():
                 
     # st.session_state    
         
-    # Rules
-    with st.sidebar:
-        with st.expander("Change password"):
-            with st.form("Change password", clear_on_submit=True, border=False):
-                user = st.text_input("Username:", key='user')
-                current_password = st.text_input("Current password:", key='current_password')
-                new_password = st.text_input("New password:", key='new_password')
-                submitted_new_pw = st.form_submit_button(f"Change password")
+    # # Rules
+    # with st.sidebar:
+    #     with st.expander("Change password"):
+    #         with st.form("Change password", clear_on_submit=True, border=False):
+    #             user = st.text_input("Username:", key='user')
+    #             current_password = st.text_input("Current password:", key='current_password')
+    #             new_password = st.text_input("New password:", key='new_password')
+    #             submitted_new_pw = st.form_submit_button(f"Change password")
                 
-                if submitted_new_pw:
-                    if db.change_password(conn, user, current_password, new_password):
-                        st.success("Password updated. You can login with your new password")
-                    else:
-                        st.error("Error")
+    #             if submitted_new_pw:
+    #                 if db.change_password(conn, user, current_password, new_password):
+    #                     st.success("Password updated. You can login with your new password")
+    #                 else:
+    #                     st.error("Error")
         
-        with st.container():
-            # with st.expander("Racing Rules"):
-            st.markdown('#### Racing Rules')
-            st.markdown('_Welcome to the F1 - 10th Place Cup! Predict the 10th place driver and earn points._')
-            st.markdown('Your first pick earns you the full points, and the second pick gets you half points. Whichever driver gives you the highest score will be used to calculate your points.')
-            st.markdown('Driver picks must be submitted 1 hour before the race starts!')
-            points_system = {
-                "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th"],
-                "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
-            }
-            df_points_system = pd.DataFrame(points_system)
-            st.dataframe(points_system, hide_index=True, use_container_width=True)
+    #     with st.container():
+    #         # with st.expander("Racing Rules"):
+    #         st.markdown('#### Racing Rules')
+    #         st.markdown('_Welcome to the F1 - 10th Place Cup! Predict the 10th place driver and earn points._')
+    #         st.markdown('Your first pick earns you the full points, and the second pick gets you half points. Whichever driver gives you the highest score will be used to calculate your points.')
+    #         st.markdown('Driver picks must be submitted 1 hour before the race starts!')
+    #         points_system = {
+    #             "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th"],
+    #             "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
+    #         }
+    #         df_points_system = pd.DataFrame(points_system)
+    #         st.dataframe(points_system, hide_index=True, use_container_width=True)
     
     
-    if logged_in:   
+    # if logged_in:   
         
-        # Fetch user guesses with race names directly from SQL
-        guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
-        # guesses_data.drop(columns=['guess_id'], inplace=True)
+    #     # Fetch user guesses with race names directly from SQL
+    #     guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
+    #     # guesses_data.drop(columns=['guess_id'], inplace=True)
 
-        # Display DataFrame
-        st.caption('Your previous picks...')
-        st.dataframe(guesses_data,
-                        column_order=("submission_time", "race_name", "driver_1", "driver_2"), 
-                        column_config={
-                            "submission_time": "Submitted",
-                            "race_name": "Grand Prix",
-                            "driver_1": "Driver 1",
-                            "driver_2": "Driver 2"
-                        },
-                        hide_index=True, 
-                        use_container_width=True)
+    #     # Display DataFrame
+    #     st.caption('Your previous picks...')
+    #     st.dataframe(guesses_data,
+    #                     column_order=("submission_time", "race_name", "driver_1", "driver_2"), 
+    #                     column_config={
+    #                         "submission_time": "Submitted",
+    #                         "race_name": "Grand Prix",
+    #                         "driver_1": "Driver 1",
+    #                         "driver_2": "Driver 2"
+    #                     },
+    #                     hide_index=True, 
+    #                     use_container_width=True)
 
     
         #             # Metrics
@@ -274,51 +274,51 @@ def main():
     # with st.container(border=True):
     #     plot.map_locations()
 
-@st.cache_data
-def disable():
-    st.session_state.disabled = True
+# @st.cache_data
+# def disable():
+#     st.session_state.disabled = True
 
 
-@st.cache_data
-def fetch_circuit_id(_conn, race_name):
-    """
-    Fetch the circuit ID for a given race name.
-    """
-    query = '''
-            SELECT circuit_id FROM race_info WHERE race_name = %s
-            '''
-    with _conn.cursor() as cursor:
-        cursor.execute(query, (race_name,))
-        circuit_id = cursor.fetchone()[0]
-    return circuit_id
+# @st.cache_data
+# def fetch_circuit_id(_conn, race_name):
+#     """
+#     Fetch the circuit ID for a given race name.
+#     """
+#     query = '''
+#             SELECT circuit_id FROM race_info WHERE race_name = %s
+#             '''
+#     with _conn.cursor() as cursor:
+#         cursor.execute(query, (race_name,))
+#         circuit_id = cursor.fetchone()[0]
+#     return circuit_id
 
 
-@st.cache_data
-def fetch_user_guesses(_conn, user_id):
-    """
-    Fetch user guesses with race names directly from SQL.
-    """
-    query = '''
-            SELECT
-                ug.guess_id,
-                rd.race_name, 
-                ug.driver_1, 
-                ug.driver_2,
-                ug.submission_time 
-            FROM
-                user_guesses ug
-            JOIN 
-                race_info rd ON ug.circuit_id = rd.circuit_id
-            JOIN
-                users ON ug.user_id = users.user_id
-            WHERE 
-                ug.user_id = %s
-            '''
-    with _conn.cursor() as cursor:
-        cursor.execute(query, (user_id,))
-        columns = [desc[0] for desc in cursor.description]
-        guesses_data = [dict(zip(columns, row)) for row in cursor.fetchall()]
-    return guesses_data
+# @st.cache_data
+# def fetch_user_guesses(_conn, user_id):
+#     """
+#     Fetch user guesses with race names directly from SQL.
+#     """
+#     query = '''
+#             SELECT
+#                 ug.guess_id,
+#                 rd.race_name, 
+#                 ug.driver_1, 
+#                 ug.driver_2,
+#                 ug.submission_time 
+#             FROM
+#                 user_guesses ug
+#             JOIN 
+#                 race_info rd ON ug.circuit_id = rd.circuit_id
+#             JOIN
+#                 users ON ug.user_id = users.user_id
+#             WHERE 
+#                 ug.user_id = %s
+#             '''
+#     with _conn.cursor() as cursor:
+#         cursor.execute(query, (user_id,))
+#         columns = [desc[0] for desc in cursor.description]
+#         guesses_data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+#     return guesses_data
 
 # Run the app
 if __name__ == "__main__":
