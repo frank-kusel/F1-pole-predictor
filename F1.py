@@ -180,7 +180,9 @@ def main():
             with col2:
                 driver_2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver_2")
             
-            st.error('You have already guessed for this race!') 
+            # if db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time):
+            #     st.error('You have already guessed for this race!') 
+                
             submitted = st.form_submit_button(f"__Submit__ :grey[- {next_race}] :grey[Grand Prix]", on_click=disable, disabled=st.session_state.disabled)
 
             # Save user guesses to a dataframe -> SQLite
