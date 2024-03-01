@@ -34,7 +34,7 @@ from datetime import datetime
 import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
-import functions.calculate_points as calc_points
+# import functions.calculate_points as calc_points
 
 # ---------------------- SETTINGS ----------------------
 
