@@ -180,11 +180,23 @@ def main():
                 
         
     
-
-        
+            
         
     # Rules
     with st.sidebar:
+        with st.expander("Change password"):
+            with st.form("Change password", clear_on_submit=True):
+                username = st.text_input("Username:", key='username')
+                current_password = st.text_input("Current password:", key='current_password')
+                new_password = st.text_input("New password:", key='new_password')
+                submitted_new_pw = st.form_submit_button(f"Change password")
+                
+                if submitted_new_pw:
+                    if db.change_password(conn, username, current_password, new_password):
+                        st.success("Password updated. You can login with your new password")
+                    else:
+                        st.error("Error")
+        
         with st.container():
             # with st.expander("Racing Rules"):
             st.markdown('#### Racing Rules')

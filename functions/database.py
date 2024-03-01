@@ -129,3 +129,37 @@ def fetch_driver_picks(_conn):
         driver_picks_db = cursor.fetchall()
     df = pd.DataFrame(driver_picks_db, columns=columns)
     return df
+
+# Function to change user's password
+def change_password(_conn, username, current_password, new_password):
+    """
+    Change user's password.
+    
+    Parameters:
+    - _conn: psycopg2 connection object.
+    - username: Username of the user whose password needs to be changed.
+    - current_password: Current password of the user.
+    - new_password: New password to set for the user.
+    
+    Returns:
+    - True if password changed successfully, False otherwise.
+    """
+    # First, authenticate the user with the current password
+    authenticated_user_id = authenticate_user(_conn, username, current_password)
+    
+    # If authentication fails, return False
+    if not authenticated_user_id:
+        return False
+    
+    # If authentication successful, update the password
+    update_query = 'UPDATE users SET password = %s WHERE username = %s'
+    with _conn.cursor() as cursor:
+        try:
+            cursor.execute(update_query, (new_password, username))
+            _conn.commit()
+            return True  # Password changed successfully
+        except Exception as e:
+            _conn.rollback()
+            print(f"Error occurred while changing password: {e}")
+            return False  # Password change failed
+
