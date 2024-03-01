@@ -157,14 +157,12 @@ def main():
         next_race_date_formatted = next_race_date.strftime('%d %B')
         # next_race_date_formatted = next_race_date
         st.info(f'#### :red[{next_race}] Grand Prix - {next_race_date_formatted}')
-  
 
     if logged_in:
         
         # Fetch circuit ID
         circuit_id = fetch_circuit_id(conn, next_race)
 
-        
         # Initialize session state
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
@@ -174,15 +172,15 @@ def main():
         with st.form("entry_form", clear_on_submit=True):
 
             # st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
-            st.markdown(f'Welcome to {circuit_name}')  
-
+            st.markdown(f'Welcome to {circuit_name}') 
             
             col1, col2 = st.columns(2)
             with col1:
                 driver_1 = st.selectbox(f':green[First] Pick:', sorted(driver_names), key="driver_1")
             with col2:
                 driver_2 = st.selectbox(f':orange[Second] Pick:', sorted(driver_names), key="driver_2")
-                    
+            
+            st.error('You have already guessed for this race!') 
             submitted = st.form_submit_button(f"__Submit__ :grey[- {next_race}] :grey[Grand Prix]", on_click=disable, disabled=st.session_state.disabled)
 
             # Save user guesses to a dataframe -> SQLite

@@ -72,12 +72,30 @@ def register_user(_conn, username, password):
 # Function to save user guesses
 @st.cache_data
 def save_user_guesses(_conn, user_id, driver_1, driver_2, circuit_id, submission_time):
-    query = '''
+    # Check if the user has already submitted a guess for the day
+    today = date.today()
+    formatted_today = today.strftime("%Y-%m-%d")
+    query_check = '''
+        SELECT COUNT(*) 
+        FROM user_guesses 
+        WHERE user_id = %s AND DATE(submission_time) = %s
+    '''
+    with _conn.cursor() as cursor:
+        cursor.execute(query_check, (user_id, formatted_today))
+        count = cursor.fetchone()[0]
+        
+    if count > 0:
+        print("User has already submitted a guess for today.")
+        
+        return
+    
+    # If the user hasn't submitted a guess for the day, proceed to save the guess
+    query_insert = '''
         INSERT INTO user_guesses (user_id, driver_1, driver_2, circuit_id, submission_time)
         VALUES (%s, %s, %s, %s, %s)
     '''
     with _conn.cursor() as cursor:
-        cursor.execute(query, (user_id, driver_1, driver_2, circuit_id, submission_time))
+        cursor.execute(query_insert, (user_id, driver_1, driver_2, circuit_id, submission_time))
         _conn.commit()
 
 
@@ -166,4 +184,31 @@ def change_password(_conn, username, current_password, new_password):
             _conn.rollback()
             print(f"Error occurred while changing password: {e}")
             return False  # Password change failed
+        
+from datetime import date
+
+
+# def has_user_submitted_guess_today(_conn, user_id):
+#     """
+#     Check if a user has already submitted a guess on the current day.
+    
+#     Parameters:
+#     - conn: Database connection object.
+#     - user_id: ID of the user to check.
+    
+#     Returns:
+#     - True if the user has submitted a guess today, False otherwise.
+#     """
+#     today = date.today()
+#     formatted_today = today.strftime("%Y-%m-%d")
+#     query = '''
+#             SELECT COUNT(*) 
+#             FROM user_guesses 
+#             WHERE user_id = %s AND DATE(submission_time) = %s
+#             '''
+#     with _conn.cursor() as cursor:
+#         cursor.execute(query, (user_id, formatted_today))
+#         count = cursor.fetchone()[0]
+#     return count > 0
+
 
