@@ -197,8 +197,8 @@ def main():
         
     # Rules
     with st.sidebar:
-        with st.expander("Change password"):
-            with st.form("Change password", clear_on_submit=True, border=False):
+        with st.expander("Change key"):
+            with st.form("Change key", clear_on_submit=True, border=False):
                 user = st.text_input("Username:", key='user')
                 current_password = st.text_input("Current password:", key='current_password')
                 new_password = st.text_input("New password:", key='new_password')

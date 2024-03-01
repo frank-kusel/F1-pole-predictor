@@ -81,7 +81,7 @@ def save_user_guesses(_conn, user_id, driver_1, driver_2, circuit_id, submission
         _conn.commit()
 
 
-@st.cache_data
+
 def fetch_user_guesses(_conn):
     guesses_sql = '''   
                     SELECT
