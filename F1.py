@@ -110,8 +110,8 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
+        option = st.radio("Select Option:", ("Login", "Register"))  
         with st.form("Login"):
-            option = st.radio("Select Option:", ("Login", "Register"))  
 
             # Login
         
@@ -142,8 +142,8 @@ def main():
                     # Registration
                     logged_in = False
                     st.session_state['logged_in'] = logged_in
-                    new_username = st.text_input("Enter new username:")
-                    new_password = st.text_input("Enter new password:", type="password")
+                    new_username = st.text_input("New Username:")
+                    new_password = st.text_input("New Key:")
                     
                     if st.form_submit_button("Register"):
                         if db.is_username_taken(conn, (new_username,)):

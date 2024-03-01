@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import psycopg2
+from datetime import date
 
 # Connect to PostgreSQL
 @st.cache_resource
@@ -34,7 +35,6 @@ def insert_data(conn, query, params):
 
 
 # Function to check if username already exists
-@st.cache_data
 def is_username_taken(_conn, username):
     query = 'SELECT * FROM users WHERE username = %s'
     with _conn.cursor() as cursor:
@@ -46,7 +46,6 @@ def is_username_taken(_conn, username):
             return False  # Free
 
 # Function to authenticate user
-@st.cache_data
 def authenticate_user(_conn, username, password):
     query = 'SELECT user_id FROM users WHERE username = %s AND password = %s LIMIT 1'
     with _conn.cursor() as cursor:
@@ -152,7 +151,6 @@ def fetch_driver_picks(_conn):
     return df
 
 # Function to change user's password
-@st.cache_data
 def change_password(_conn, username, current_password, new_password):
     """
     Change user's password.
@@ -185,7 +183,7 @@ def change_password(_conn, username, current_password, new_password):
             print(f"Error occurred while changing password: {e}")
             return False  # Password change failed
         
-from datetime import date
+
 
 
 # def has_user_submitted_guess_today(_conn, user_id):
