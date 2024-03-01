@@ -82,8 +82,8 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
-        with st.form("Login"):
-            option = st.radio("Select Option:", ("Login", "Register"), key="register_or_login")
+        with st.expander("Login"):
+            option = st.radio("Select Option:", ["Login", "Register"])
             
             # Login
         
@@ -95,8 +95,11 @@ def main():
                     # st.session_state['username'] = username
                     password = st.text_input("Password:", type="password")
                     logged_in = False
+                    st.session_state['logged_in'] = logged_in
+                    st.session_state['user_id'] = user_id
+                    st.session_state['username'] = username
                     
-                    if st.form_submit_button("Login"):
+                    if st.button("Login"):
                         user_id = db.authenticate_user(conn, username, password)
                         if user_id > 0:
                             st.success("Login successful!")
@@ -115,7 +118,7 @@ def main():
                     new_username = st.text_input("Enter new username:")
                     new_password = st.text_input("Enter new password:", type="password")
                     
-                    if st.form_submit_buttonbutton("Register"):
+                    if st.button("Register"):
                         if db.is_username_taken(conn, (new_username,)):
                             st.warning("Username already taken. Please choose another one.")
                         else:
