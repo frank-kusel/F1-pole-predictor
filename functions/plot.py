@@ -144,4 +144,3 @@ def map_locations():
     # Display the map in Streamlit
     st.markdown('## Race Locations')
     st.plotly_chart(fig, config ={'displayModeBar': False}, use_container_width=True)
-    

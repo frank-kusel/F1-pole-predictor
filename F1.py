@@ -243,27 +243,27 @@ def main():
     
     
     
-    # # --- Load data ---
-    # with st.container(border=True):
-    #     df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
-    #     df = df.T
-    #     cumulative_points = df.cumsum()
-    #     # --- Plot cumulative points ---
-    #     with st.container(border=False):
-    #         st.markdown(f'### :red[2023] Season')
-    #         plot.plot_cumulative_points(cumulative_points)
+    # --- Load data ---
+    with st.container(border=True):
+        df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
+        df = df.T
+        cumulative_points = df.cumsum()
+        # --- Plot cumulative points ---
+        with st.container(border=False):
+            st.markdown(f'### :red[2023] Season')
+            plot.plot_cumulative_points(cumulative_points)
 
 
-    # # --- Plot a map ---
-    # with st.container(border=True):
-    #     plot.map_locations()
+    # --- Plot a map ---
+    with st.container(border=True):
+        plot.map_locations()
 
-
+@st.cache_data
 def disable():
     st.session_state.disabled = True
 
 
-# @st.cache_data
+@st.cache_data
 def fetch_circuit_id(_conn, race_name):
     """
     Fetch the circuit ID for a given race name.
@@ -277,7 +277,7 @@ def fetch_circuit_id(_conn, race_name):
     return circuit_id
 
 
-
+@st.cache_data
 def fetch_user_guesses(_conn, user_id):
     """
     Fetch user guesses with race names directly from SQL.
