@@ -170,7 +170,6 @@ def main():
             st.session_state.disabled = False
         
         with st.form("entry_form", clear_on_submit=True):
-            st.session_state
 
             # st.markdown(f'Hi :blue[{username}], welcome to {circuit_name}')  
             st.markdown(f'Welcome to {circuit_name}')  

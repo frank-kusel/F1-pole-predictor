@@ -14,8 +14,6 @@ import functions.database as db
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
 
-st.session_state
-
 logged_in = st.session_state.get('logged_in')
 
 
