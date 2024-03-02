@@ -103,7 +103,7 @@ def race_results():
         col1, col2 = st.columns(2)
 
         with col1:
-            selected_season = st.selectbox("Select Season", list(range(2023, 1950-1, -1)))
+            selected_season = st.selectbox("Select Season", list(range(2024, 2015, -1)))
 
         with col2:
             races = fetch_race_results(selected_season)
