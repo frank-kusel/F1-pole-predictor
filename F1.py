@@ -30,6 +30,7 @@ In the terminal of the project directory run: streamlit run F1.py
 import streamlit as st
 import pandas as pd
 # import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from datetime import datetime
 import functions.plot as plot
 import functions.database as db
@@ -260,7 +261,45 @@ def main():
         #     leader_points.container(height=120).metric("Leader Points", 125, 25)
     
     
+    # --- Leaderboard ---
     
+    st.subheader('Leaderboard')
+    # Read the Excel file into a DataFrame
+    df = pd.read_excel('temp_results.xlsm', sheet_name='Points')
+
+    # Add a 'Position' column based on the points
+    df['Position'] = df['Points'].rank(ascending=False, method='dense').astype(int)
+    
+    # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
+    df_sorted = df[['Position', 'Name', 'Points']].sort_values(by='Points', ascending=False)
+    
+    
+    # Reset the index to have consecutive integer index starting from 1
+    df_sorted.reset_index(drop=True, inplace=True)
+    
+    # Add a bar column based on points
+    max_points = df_sorted['Points'].max()
+    df_sorted['Bar'] = df_sorted['Points'].apply(lambda x: '|' * int((x / max_points) * 20))
+    
+    # Round the 'Points' column to one decimal place
+    df_sorted['Points'] = df_sorted['Points'].round(1)
+    
+    # Display the DataFrame with formatted points
+    # Define custom colormap from green to black
+    # cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "green"]) 
+    cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "darkgreen"]) 
+    st.dataframe(df_sorted.style.background_gradient(subset=['Points'], cmap=cmap), use_container_width=True, hide_index=True)
+    
+
+    # Display the styled DataFrame with a bar chart representation for the 'Points' column
+    # styled_df = df_sorted.style.bar(subset=['Points'], color='green')
+
+    
+    with st.container(border=True):
+        st.markdown(f'### :red[2024] Season')
+        st.caption('coming soon...')
+        
+
     
     # --- Load data ---
     with st.container(border=True):
