@@ -5,6 +5,7 @@ This script contains a list of functions to fetch data
 import streamlit as st
 import requests
 import pandas as pd
+from datetime import datetime, timedelta
 
 @st.cache_data
 def race_schedule(year):
@@ -112,23 +113,19 @@ def drivers():
     return driver_names
 
 
-import datetime
 
-@st.cache_data
 def next_race_name(race_schedule):
-    # Get the current date
-    current_date = datetime.date.today()
+    # Get the current date and time
+    current_date = datetime.today()
 
     # Iterate through the race schedule to find the next race
-    for race in race_schedule:
+    for race in reversed(race_schedule):
         # Convert the race date string to a datetime object
-        race_date = datetime.datetime.strptime(race['date'], '%Y-%m-%d').date()
-        circuit_name = race['circuitName']
-        
+        race_date = datetime.strptime(race['date'], '%Y-%m-%d')
+
         # Check if the race date is after the current date
-        if race_date > current_date:
-            # print('Next race:', race['raceName'])
-            return race['raceName'], race_date, circuit_name
+        if race_date.date() <= current_date.date():
+            return race['raceName'], race_date.date(), race['circuitName']
     # If no future race is found, return None
     return None
 
