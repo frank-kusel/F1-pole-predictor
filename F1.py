@@ -231,6 +231,9 @@ def main():
         guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
         # guesses_data.drop(columns=['guess_id'], inplace=True)
 
+        # Sort the DataFrame by 'submission_time' column in descending order
+        guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
+
         # Display DataFrame
         st.caption('Your previous picks...')
         st.dataframe(guesses_data,

@@ -44,6 +44,9 @@ if logged_in:
     filtered_guesses_db.drop(columns=['Circuit'], inplace=True)
     filtered_guesses_db.drop(columns=['Race'], inplace=True)
 
+    # Get the number of guesses for the selected race
+    num_guesses = filtered_guesses_db.shape[0]
+    st.caption(f":red[{num_guesses}] players have placed their bets!")
 
     st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
     # Filter the DataFrame by selected circuit using .loc
@@ -77,8 +80,8 @@ if logged_in:
 
     # Create a stacked bar chart using Plotly
     fig = go.Figure(data=[
-        go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='red',text=merged_counts['Total'], textposition='auto'),
-        go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='grey', text=merged_counts['Total'], textposition='auto')
+        go.Bar(name='Driver 1', y=merged_counts['Driver'], x=merged_counts['Driver 1'], orientation='h', marker_color='red',text=merged_counts['Driver 1'], textposition='auto'),
+        go.Bar(name='Driver 2', y=merged_counts['Driver'], x=merged_counts['Driver 2'], orientation='h', marker_color='grey', text=merged_counts['Driver 2'], textposition='auto')
     ])
 
     # Update layout
