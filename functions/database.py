@@ -5,7 +5,6 @@ from datetime import date
 from datetime import datetime
 
 # Connect to PostgreSQL
-
 def connect_to_postgresql():
     conn = psycopg2.connect(
         dbname=st.secrets.postgresql.database,
@@ -15,6 +14,70 @@ def connect_to_postgresql():
         port=st.secrets.postgresql.port
     )
     return conn
+
+
+
+def update_points_in_user_guesses(_conn):
+    # Define the SQL query to select rows with empty points
+    query = """
+        SELECT guess_id, circuit_id, submission_time, driver_1, driver_2 
+        FROM user_guesses 
+        WHERE points IS NULL
+    """
+    
+    with _conn.cursor() as cursor:
+        cursor.execute(query)
+        guesses = cursor.fetchall()
+
+        for guess in guesses:
+            guess_id, circuit_id, submission_time, driver1, driver2 = guess
+
+            # Extract the season from the submission_time (assuming submission_time is in the format 'YYYY-MM-DD hh:mm:ss')
+            season = submission_time.year
+
+            # Define the SQL query to retrieve driver positions
+            query_positions = """
+                SELECT position
+                FROM race_results
+                WHERE circuit_id = %s AND season = %s AND driver = %s
+            """
+            
+            # Fetch driver positions from the database
+            cursor.execute(query_positions, (circuit_id, season, driver1))
+            driver1_position = cursor.fetchone()
+
+            cursor.execute(query_positions, (circuit_id, season, driver2))
+            driver2_position = cursor.fetchone()
+
+
+            # Process the positions
+            driver1_position = driver1_position[0] if driver1_position else None
+            driver2_position = driver2_position[0] if driver2_position else None
+
+            # Calculate points based on the retrieved positions
+            points_system = {
+                "10": 25, "11": 18, "9": 15, "12": 12, "8": 10,
+                "13": 8, "7": 6, "14": 4, "6": 2, "15": 1,
+            }
+
+            driver1_points = points_system.get(str(driver1_position), 0)
+            driver2_points = points_system.get(str(driver2_position), 0) / 2
+
+            # Determine the maximum points between driver1_points and driver2_points
+            max_points = max(driver1_points, driver2_points)
+
+            try:
+                # Update the points in the user_guesses table
+                cursor.execute("UPDATE user_guesses SET points = %s WHERE guess_id = %s", (max_points, guess_id))
+            except Exception as e:
+                print(f"Error updating points for guess_id {guess_id}: {e}")
+    
+    # Commit the changes
+    _conn.commit()
+
+    
+conn = connect_to_postgresql()
+update_points_in_user_guesses(conn)
 
 # # Function to execute query and fetch data
 # @st.cache_data
@@ -183,7 +246,6 @@ def change_password(_conn, username, current_password, new_password):
             _conn.rollback()
             print(f"Error occurred while changing password: {e}")
             return False  # Password change failed
-    return
 
 
 
@@ -252,63 +314,16 @@ def change_password(_conn, username, current_password, new_password):
 
 
 
+# Function to authenticate user
+def authenticate_user(_conn, username, password):
+    query = 'SELECT user_id FROM users WHERE username = %s AND password = %s LIMIT 1'
+    with _conn.cursor() as cursor:
+        cursor.execute(query, (username, password))
+        user_data = cursor.fetchone()
+        if user_data:
+            user_id = user_data[0]
+            return user_id  # Authentication successful
+        else:
+            return False  # Authentication failed
 
 
-
-
-
-
-# def update_points_in_user_guesses(_conn):
-#     query = "SELECT guess_id, circuit_id, submission_time, driver_1, driver_2 FROM user_guesses"
-    
-#     with _conn.cursor() as cursor:
-#         cursor.execute(query)
-#         guesses = cursor.fetchall()
-        
-
-#         for guess in guesses:
-#             guess_id, circuit_id, submission_time, driver1, driver2 = guess
-#             print(guess_id)
-
-#             # Extract the season from the submission_time (assuming submission_time is in the format 'YYYY-MM-DD hh:mm:ss')
-#             season = submission_time.year
-
-#             # Define the SQL query to retrieve driver positions
-#             query_positions = """
-#                 SELECT position
-#                 FROM race_results
-#                 WHERE circuit_id = %s AND season = %s AND driver = %s
-#             """
-            
-#             cursor.execute(query_positions, (circuit_id, season, driver1))
-#             driver1_position = cursor.fetchone()
-#             cursor.execute(query_positions, (circuit_id, season, driver2))
-#             driver2_position = cursor.fetchone()
-
-#             # Process the positions
-#             driver1_position = driver1_position[0] if driver1_position else None
-#             driver2_position = driver2_position[0] if driver2_position else None
-
-#             # Calculate points based on the retrieved positions
-#             points_system = {
-#                 "10": 25, "11": 18, "9": 15, "12": 12, "8": 10,
-#                 "13": 8, "7": 6, "14": 4, "6": 2, "15": 1,
-#             }
-
-#             driver1_points = points_system.get(driver1_position, 0)
-#             driver2_points = points_system.get(driver2_position, 0) / 2
-
-#             # Determine the maximum points between driver1_points and driver2_points
-#             max_points = max(driver1_points, driver2_points)
-
-#             try:
-#                 # Update the points in the user_guesses table
-#                 cursor.execute("UPDATE user_guesses SET points = %s WHERE guess_id = %s", (max_points, guess_id))
-#             except Exception as e:
-#                 print(f"Error updating points for guess_id {guess_id}: {e}")
-    
-#     # Commit the changes
-#     _conn.commit()
-    
-# conn = connect_to_postgresql
-# update_points_in_user_guesses(conn)

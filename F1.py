@@ -35,6 +35,7 @@ from datetime import datetime
 import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
+
 # import functions.calculate_points as calc_points
 
 # ---------------------- SETTINGS ----------------------
@@ -238,12 +239,13 @@ def main():
         # Display DataFrame
         st.caption('Your previous picks...')
         st.dataframe(guesses_data,
-                        column_order=("submission_time", "race_name", "driver_1", "driver_2"), 
+                        column_order=("submission_time", "race_name", "driver_1", "driver_2", "points"), 
                         column_config={
                             "submission_time": "Submitted",
                             "race_name": "Grand Prix",
                             "driver_1": "Driver 1",
-                            "driver_2": "Driver 2"
+                            "driver_2": "Driver 2",
+                            "points": "Points"
                         },
                         hide_index=True, 
                         use_container_width=True)
@@ -345,7 +347,8 @@ def fetch_user_guesses(_conn, user_id):
                 rd.race_name, 
                 ug.driver_1, 
                 ug.driver_2,
-                ug.submission_time 
+                ug.submission_time, 
+                ug.points 
             FROM
                 user_guesses ug
             JOIN 

@@ -49,7 +49,9 @@ if logged_in:
     st.caption(f":red[{num_guesses}] players have placed their bets!")
 
     st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
-    # Filter the DataFrame by selected circuit using .loc
+    
+    
+    # Filter the DataFrame by selected circuit
     filtered_df = df[df['Circuit'] == selected_circuit]
 
     # Count occurrences of each driver as Driver 1 and Driver 2 separately
