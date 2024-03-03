@@ -75,9 +75,6 @@ def update_points_in_user_guesses(_conn):
     # Commit the changes
     _conn.commit()
 
-    
-conn = connect_to_postgresql()
-update_points_in_user_guesses(conn)
 
 # # Function to execute query and fetch data
 # @st.cache_data

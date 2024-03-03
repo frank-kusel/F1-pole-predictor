@@ -237,6 +237,7 @@ def main():
         # guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
 
         # Display DataFrame
+        db.update_points_in_user_guesses(conn)
         st.caption('Your previous picks...')
         st.dataframe(guesses_data,
                         column_order=("submission_time", "race_name", "driver_1", "driver_2", "points"), 
