@@ -113,19 +113,19 @@ def drivers():
     return driver_names
 
 
-
 def next_race_name(race_schedule):
     # Get the current date and time
     current_date = datetime.today()
 
     # Iterate through the race schedule to find the next race
-    for race in reversed(race_schedule):
+    for race in (race_schedule):
         # Convert the race date string to a datetime object
         race_date = datetime.strptime(race['date'], '%Y-%m-%d')
 
         # Check if the race date is after the current date
-        if race_date.date() <= current_date.date():
+        if race_date.date() >= current_date.date():
             return race['raceName'], race_date.date(), race['circuitName']
+        
     # If no future race is found, return None
     return None
 
