@@ -123,7 +123,7 @@ def main():
                     # Login
                     username = st.text_input("Username:", key='username')
                     # st.session_state['username'] = username
-                    password = st.text_input("Key:")
+                    password = st.text_input("Key (password):")
 
                     st.session_state['logged_in'] = False
                     st.session_state['user_id'] = user_id
@@ -145,7 +145,7 @@ def main():
                     logged_in = False
                     st.session_state['logged_in'] = logged_in
                     new_username = st.text_input("New Username:")
-                    new_password = st.text_input("New Key:")
+                    new_password = st.text_input("New Key (password):")
                     
                     if st.form_submit_button("Register"):
                         if db.is_username_taken(conn, (new_username,)):
