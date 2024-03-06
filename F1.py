@@ -269,7 +269,7 @@ def main():
     
     st.subheader('Leaderboard')
     # Read the Excel file into a DataFrame
-    df = pd.read_excel('temp_results.xlsm', sheet_name='Points')
+    df = pd.read_excel('temp_results.xlsx', sheet_name='Points')
 
     # Add a 'Position' column based on the points
     df['Position'] = df['Points'].rank(ascending=False, method='dense').astype(int)
