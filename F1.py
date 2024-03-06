@@ -275,7 +275,7 @@ def main():
     
     # Add a bar column based on points
     max_points = leaderboard_df['Points'].max()
-    leaderboard_df['Bar'] = leaderboard_df['Points'].apply(lambda x: '|' * int((x / max_points) * 25))
+    leaderboard_df['Bar'] = leaderboard_df['Points'].apply(lambda x: '|' * int((x / max_points) * 20))
     
     # Round the 'Points' column to one decimal place
     leaderboard_df['Points'] = leaderboard_df['Points'].round(1)
