@@ -269,7 +269,7 @@ def main():
     
     st.subheader('Leaderboard')
     # Read the Excel file into a DataFrame
-    df = pd.read_excel('temp_results.xlsx', sheet_name='Points')
+    df = pd.read_excel('temp_results.xlsm', sheet_name='Points')
 
     # Add a 'Position' column based on the points
     df['Position'] = df['Points'].rank(ascending=False, method='dense').astype(int)
@@ -307,7 +307,7 @@ def main():
     
     # --- Load data ---
     with st.container(border=True):
-        df = pd.read_excel('F1_data.xlsm', sheet_name='Results', index_col=0)
+        df = pd.read_excel('F1_data.xlsx', sheet_name='Results', index_col=0)
         df = df.T
         cumulative_points = df.cumsum()
         # --- Plot cumulative points ---
