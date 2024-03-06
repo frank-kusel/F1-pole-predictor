@@ -159,6 +159,7 @@ def main():
         next_race_date_formatted = next_race_date.strftime('%d %B')
         # next_race_date_formatted = next_race_date
         st.info(f'#### :red[{next_race}] Grand Prix - {next_race_date_formatted}')
+        st.image('circuit_ID_2.png')
 
     if logged_in:
         
