@@ -112,49 +112,53 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
-        option = st.radio("Select Option:", ("Login", "Register"))  
-        with st.form("Login"):
+        with st.expander("Login to vote"):
+            st.caption("Note: login with your same profile to save your points! Send a '🔑' message on the whatsapp group if you want to request a password reset to 'password' 😊.")
+            
+            option = st.radio("", ("Login", "Register"))
+              
+            with st.form("Login"):
 
-            # Login
-        
-            if user_id is None: # If user_id is not in session state, perform login
+                # Login
+            
+                if user_id is None: # If user_id is not in session state, perform login
 
-                if option == "Login":
-                    # Login
-                    username = st.text_input("Username:", key='username')
-                    # st.session_state['username'] = username
-                    password = st.text_input("Key (password):")
+                    if option == "Login":
+                        # Login
+                        username = st.text_input("Username:", key='username')
+                        # st.session_state['username'] = username
+                        password = st.text_input("Key (password):")
 
-                    st.session_state['logged_in'] = False
-                    st.session_state['user_id'] = user_id
-                    user_name = st.session_state['user_name'] = username
-                    
-                    if st.form_submit_button("Login"):
-                        user_id = db.authenticate_user(conn, username, password)
-                        if user_id > 0:
-                            st.success("Login successful!")
-                            logged_in=True
-                            st.session_state['logged_in'] = logged_in
-                            st.session_state['user_id'] = user_id
+                        st.session_state['logged_in'] = False
+                        st.session_state['user_id'] = user_id
+                        user_name = st.session_state['user_name'] = username
+                        
+                        if st.form_submit_button("Login"):
+                            user_id = db.authenticate_user(conn, username, password)
+                            if user_id > 0:
+                                st.success("Login successful!")
+                                logged_in=True
+                                st.session_state['logged_in'] = logged_in
+                                st.session_state['user_id'] = user_id
 
-                        else:
-                            st.error("Invalid username or password.")
-                            logged_in=False
-                            
-                elif option == "Register":
-                    # Registration
-                    logged_in = False
-                    st.session_state['logged_in'] = logged_in
-                    new_username = st.text_input("New Username:")
-                    new_password = st.text_input("New Key (password):")
-                    
-                    if st.form_submit_button("Register"):
-                        if db.is_username_taken(conn, (new_username,)):
-                            st.warning("Username already taken. Please choose another one.")
-                        else:
-                            user_id = db.register_user(conn, new_username, new_password)
-                            st.success("Registration successful! Please login with your username and password")
-    
+                            else:
+                                st.error("Invalid username or password.")
+                                logged_in=False
+                                
+                    elif option == "Register":
+                        # Registration
+                        logged_in = False
+                        st.session_state['logged_in'] = logged_in
+                        new_username = st.text_input("New Username:")
+                        new_password = st.text_input("New Key (password):")
+                        
+                        if st.form_submit_button("Register"):
+                            if db.is_username_taken(conn, (new_username,)):
+                                st.warning("Username already taken. Please choose another one.")
+                            else:
+                                user_id = db.register_user(conn, new_username, new_password)
+                                st.success("Registration successful! Please login with your username and password")
+
     
     with st.container(border=False):
         next_race_date_formatted = next_race_date.strftime('%d %B')
