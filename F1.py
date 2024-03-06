@@ -127,6 +127,7 @@ def main():
 
                     st.session_state['logged_in'] = False
                     st.session_state['user_id'] = user_id
+                    user_name = st.session_state['user_name'] = username
                     
                     if st.form_submit_button("Login"):
                         user_id = db.authenticate_user(conn, username, password)
@@ -158,7 +159,8 @@ def main():
     with st.container(border=False):
         next_race_date_formatted = next_race_date.strftime('%d %B')
         # next_race_date_formatted = next_race_date
-        st.info(f'#### :red[{next_race}] Grand Prix - {next_race_date_formatted}')
+
+        st.info(f'#### :red[{next_race}] :grey[Grand Prix ] {next_race_date_formatted}')
         st.image('circuit_ID_2.png', output_format="PNG")
 
     if logged_in:
@@ -231,79 +233,93 @@ def main():
     if logged_in:   
         
         # Fetch user guesses with race names directly from SQL
+        db.update_points_in_user_guesses(conn)
         guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
-        # guesses_data.drop(columns=['guess_id'], inplace=True)
+        sorted_guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
+        # Apply the style to the DataFrame
+        
+        cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "dodgerblue"])
+        sorted_guesses_data = (
+            sorted_guesses_data.style
+            .background_gradient(subset=['points'], cmap=cmap)
+            .format({'points': '{:.1f}'})
+        )
 
-        # # Sort the DataFrame by 'submission_time' column in descending order
-        # guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
 
         # Display DataFrame
-        db.update_points_in_user_guesses(conn)
         st.caption('Your previous picks...')
-        st.dataframe(guesses_data,
-                        column_order=("submission_time", "race_name", "driver_1", "driver_2", "points"), 
+
+        
+        st.dataframe(sorted_guesses_data,
+                        column_order=( "race_name", "points", "driver_1", "driver_2", "submission_time"), 
                         column_config={
-                            "submission_time": "Submitted",
                             "race_name": "Grand Prix",
+                            "points": "Points",
                             "driver_1": "Driver 1",
                             "driver_2": "Driver 2",
-                            "points": "Points"
+                            "submission_time": "Submitted"
                         },
                         hide_index=True, 
                         use_container_width=True)
 
+
     
-        #             # Metrics
-        # with st.container(border=False):
-        #     current_points, current_position, total_points, leader_points = st.columns(4)
-            
-        #     points = calc_points.points(user_id, driver_1, driver_2)
-            
-        #     current_points.container(height=120).metric("Race Points", points, 0)
-        #     current_position.container(height=120).metric("Current Position", 10, -5)
-        #     total_points.container(height=120).metric("Total Points", 98, 12)
-        #     leader_points.container(height=120).metric("Leader Points", 125, 25)
     
     
     # --- Leaderboard ---
     
     st.subheader('Leaderboard')
-    # Read the Excel file into a DataFrame
-    df = pd.read_excel('temp_results.xlsm', sheet_name='Points')
-
-    # Add a 'Position' column based on the points
-    df['Position'] = df['Points'].rank(ascending=False, method='dense').astype(int)
     
-    # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
-    df_sorted = df[['Position', 'Name', 'Points']].sort_values(by='Points', ascending=False)
-    
-    
-    # Reset the index to have consecutive integer index starting from 1
-    df_sorted.reset_index(drop=True, inplace=True)
+    selected_year = st.selectbox("Select a yaer", [2024, 2023])
+    leaderboard_df = generate_leaderboard(conn, selected_year)
     
     # Add a bar column based on points
-    max_points = df_sorted['Points'].max()
-    df_sorted['Bar'] = df_sorted['Points'].apply(lambda x: '|' * int((x / max_points) * 20))
+    max_points = leaderboard_df['Points'].max()
+    leaderboard_df['Bar'] = leaderboard_df['Points'].apply(lambda x: '|' * int((x / max_points) * 50))
     
     # Round the 'Points' column to one decimal place
-    df_sorted['Points'] = df_sorted['Points'].round(1)
+    leaderboard_df['Points'] = leaderboard_df['Points'].round(1)
     
     # Display the DataFrame with formatted points
     # Define custom colormap from green to black
     # cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "green"]) 
-    cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "darkgreen"]) 
-    st.dataframe(df_sorted.style.background_gradient(subset=['Points'], cmap=cmap), use_container_width=True, hide_index=True)
+    cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "green"]) 
+    # Apply styling, including background gradient and position highlights
+    styled_leaderboard = leaderboard_df.style \
+        .background_gradient(subset=['Points'], cmap=cmap) \
+        .format({'Points': '{:.1f}'}) \
+        .set_table_styles([{'selector': '.row_heading', 'props': [('text-align', 'left')]}]) \
+        .applymap(highlight_positions, subset=pd.IndexSlice[:, 'Position'])
+
     
+    if logged_in: 
 
-    # Display the styled DataFrame with a bar chart representation for the 'Points' column
-    # styled_df = df_sorted.style.bar(subset=['Points'], color='green')
+            
+            # Metrics
+            # with st.container(border=False):
+            user_name = st.session_state['user_name']
+            # Determine the position of the current username in the leaderboard
+            # username = st.session_state.get('username')
+            current_position = leaderboard_df[leaderboard_df['Name'] == user_name]['Position'].values
+            current_points = leaderboard_df[leaderboard_df['Name'] == user_name]['Points'].values
+            
+            message = st.chat_message("🏆")
+            message.write(f':grey[#] :red[{ current_position[0]}] - :grey[{user_name}] - :red[{current_points[0]}] :grey[points]')
 
+                # st.metric(label="Position", value=current_position, delta="-")
+                # st.metric(label="Points", value=current_points)
+                # current_points.container(height=120).metric("Race Points", points, 0)
+                # current_position.container(height=120).metric("Current Position", 10, -5)
+                # total_points.container(height=120).metric("Total Points", 98, 12)
+                # leader_points.container(height=120).metric("Leader Points", 125, 25)
+        
+    
+    # Display the styled DataFrame
+    st.dataframe(styled_leaderboard, use_container_width=True, hide_index=True)
     
     with st.container(border=True):
         st.markdown(f'### :red[2024] Season')
         st.caption('coming soon...')
-        
-
     
     # --- Load data ---
     with st.container(border=True):
@@ -323,6 +339,10 @@ def main():
 def disable():
     st.session_state.disabled = True
 
+# Highlight maximum values in the 'points' column in green
+def highlight_max(s):
+    is_max = s == s.max()
+    return ['color: green' if v else '' for v in is_max]
 
 @st.cache_data
 def fetch_circuit_id(_conn, race_name):
@@ -336,6 +356,39 @@ def fetch_circuit_id(_conn, race_name):
         cursor.execute(query, (race_name,))
         circuit_id = cursor.fetchone()[0]
     return circuit_id
+
+
+def highlight_positions(val):
+    if val in [1, 2, 3]:
+        return 'font-weight: bold; color: green'
+    if val in [10]:
+        return 'font-weight: bold; color: red'
+    else:
+        return ''
+
+def generate_leaderboard(_conn, year):
+    # Query the database to get the total points for each user_id and their username
+    query = """
+        SELECT u.username, SUM(ug.points) AS total_points
+        FROM user_guesses AS ug
+        INNER JOIN users AS u ON ug.user_id = u.user_id
+        WHERE EXTRACT(YEAR FROM ug.submission_time) = %s
+        GROUP BY ug.user_id, u.username
+    """
+    
+    # Execute the query with the year parameter and fetch the results into a DataFrame
+    user_points_df = pd.read_sql_query(query, _conn, params=(year,))
+    
+    # Add a 'Position' column based on the points
+    user_points_df['Position'] = user_points_df['total_points'].rank(ascending=False, method='dense').astype(int)
+    
+    # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
+    leaderboard_df = user_points_df[['Position', 'username', 'total_points']].sort_values(by='total_points', ascending=False)
+    
+    # Rename the columns for clarity
+    leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points'}, inplace=True)
+    
+    return leaderboard_df
 
 
 # @st.cache_data

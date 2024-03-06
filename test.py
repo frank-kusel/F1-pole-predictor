@@ -4,6 +4,60 @@ import psycopg2
 from datetime import date
 from datetime import datetime
 
+def connect_to_postgresql():
+    conn = psycopg2.connect(
+        dbname=st.secrets.postgresql.database,
+        user=st.secrets.postgresql.username,
+        password=st.secrets.postgresql.password,
+        host=st.secrets.postgresql.host,
+        port=st.secrets.postgresql.port
+    )
+    return conn
+
+conn = connect_to_postgresql()
+
+
+
+def generate_leaderboard(conn, year):
+    # Query the database to get the total points for each user_id and their username
+    query = """
+        SELECT u.username, SUM(ug.points) AS total_points
+        FROM user_guesses AS ug
+        INNER JOIN users AS u ON ug.user_id = u.user_id
+        WHERE EXTRACT(YEAR FROM ug.submission_time) = %s
+        GROUP BY ug.user_id, u.username
+    """
+    
+    # Execute the query with the year parameter and fetch the results into a DataFrame
+    user_points_df = pd.read_sql_query(query, conn, params=(year,))
+    
+    # Add a 'Position' column based on the points
+    user_points_df['Position'] = user_points_df['total_points'].rank(ascending=False, method='dense').astype(int)
+    
+    # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
+    leaderboard_df = user_points_df[['Position', 'username', 'total_points']].sort_values(by='total_points', ascending=False)
+    
+    # Rename the columns for clarity
+    leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points'}, inplace=True)
+    
+    return leaderboard_df
+
+# Example usage:
+# Assuming you have a database connection named 'conn' and 'st' for displaying the DataFrame
+
+year = 2024  # Example year, change it accordingly
+leaderboard_df = generate_leaderboard(conn, year)
+st.dataframe(leaderboard_df)
+
+
+
+
+
+
+
+
+
+
 # # Connect to PostgreSQL
 # def connect_to_postgresql():
 #     conn = psycopg2.connect(
