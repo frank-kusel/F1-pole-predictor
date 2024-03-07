@@ -120,8 +120,8 @@ if logged_in:
     st.caption('List of drivers selected for this race')
     with st.container(border=True):
         st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'scrollZoom':False})
-
-st.page_link("F1.py",label="Login to view guesses", icon="🔑", use_container_width=False)
+else:
+    st.page_link("F1.py",label="Login to view guesses", icon="🔑", use_container_width=False)
 
 # Fetch driver picks
 driver_picks_df = db.fetch_driver_picks(conn)
