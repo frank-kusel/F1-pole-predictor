@@ -113,7 +113,7 @@ def main():
     # with st.expander('Login'):
         # Registration or Login selection
         with st.expander("Login to vote"):
-            st.caption("Note: login with your same profile to save your points! Send a '🔑' message on the whatsapp group if you want to request a password reset to 'password' 😊.")
+            st.caption("Log in with your existing profile to save your points! Need a password reset? Just send a '🔑' via the WhatsApp group. Default password is 'password'. ")
             
             option = st.radio("", ("Login", "Register"))
               
@@ -274,7 +274,7 @@ def main():
     
     st.subheader('Leaderboard')
     
-    selected_year = st.selectbox("Select a yaer", [2024, 2023])
+    selected_year = st.selectbox("Select year", [2024, 2023])
     leaderboard_df = generate_leaderboard(conn, selected_year)
     
     # Add a bar column based on points
