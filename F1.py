@@ -40,7 +40,7 @@ import functions.ergast as erg
 
 # ---------------------- SETTINGS ----------------------
 
-page_title = "F1 - 10th Place Cup"
+page_title = ":red[F1] - 10th Place Cup"
 page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
@@ -53,7 +53,7 @@ layout = 'centered'
 
 # --- MAIN APP ---
 def main():
-    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)   
+    st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout, menu_items={'Report a Bug': 'mailto:frankuse1@gmail.com'})   
     print("I ran again")
     # Page info
     st.title(page_title + " " + page_icon)
