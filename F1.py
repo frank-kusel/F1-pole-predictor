@@ -54,11 +54,17 @@ layout = 'centered'
 # --- MAIN APP ---
 def main():
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout, menu_items={'Report a Bug': 'mailto:frankuse1@gmail.com'})   
-    print("I ran again")
+    
     # Page info
     st.title(page_title + " " + page_icon)
-    if st.button("Driver Picks"):
-        st.switch_page("pages/Driver Picks.py") 
+    
+    with st.expander("Menu"):
+        st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
+        st.page_link("pages/Races.py", label="Races", icon="🏎️")
+        st.page_link("pages/Stats.py", label="Stats", icon="🧐")
+        st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
+
+
         
     # Connect to database
     # conn = st.connection("supabase", type=SupabaseConnection)
@@ -112,7 +118,9 @@ def main():
     if not logged_in:
     # with st.expander('Login'):
         # Registration or Login selection
-        with st.expander("Login to vote"):
+        with st.expander("Login"):
+            
+            st.markdown("Login to vote!")
             st.caption("Log in with your existing profile to save your points! Need a password reset? Just send a '🔑' via the WhatsApp group. Default password is 'password'. ")
             
             option = st.radio("", ("Login", "Register"))

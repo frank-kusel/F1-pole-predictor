@@ -10,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import psycopg2
 import functions.database as db
+import matplotlib.colors as mcolors
 
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
@@ -39,20 +40,37 @@ if logged_in:
     st.info("View driver picks for different races")
     
     selected_circuit = st.selectbox('Select Race', sorted(df['Race'].unique(), reverse=True))
-    selected_circuit = selected_circuit.split("-")[3].strip()
-    filtered_guesses_db = guesses_db[guesses_db['Circuit'] == selected_circuit]
+    
+    selected_circuit_name = selected_circuit.split("-")[3].strip()
+    selected_circuit_year = selected_circuit.split("-")[0]
+    
+    
+    filtered_guesses_db = guesses_db[(guesses_db['Circuit'] == selected_circuit_name) 
+                                     & (guesses_db['Year'] == selected_circuit_year)]
+    
     filtered_guesses_db.drop(columns=['Circuit'], inplace=True)
     filtered_guesses_db.drop(columns=['Race'], inplace=True)
+    filtered_guesses_db.drop(columns=['Year'], inplace=True)
 
     # Get the number of guesses for the selected race
     num_guesses = filtered_guesses_db.shape[0]
-    st.caption(f":red[{num_guesses}] players have placed their bets!")
+    st.caption(f":red[{num_guesses}] bets placed 😬")
+
+
+    cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "dodgerblue"])
+    filtered_guesses_db = (
+        filtered_guesses_db.style
+        .background_gradient(subset=['Points'], cmap=cmap)
+        .format({'Points': '{:.1f}'})
+    )
+
 
     st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
     
     
-    # Filter the DataFrame by selected circuit
-    filtered_df = df[df['Circuit'] == selected_circuit]
+    # Filter the DataFrame by selected circuit and year
+    filtered_df = df[(df['Circuit'] == selected_circuit_name) & (df['Year'] == selected_circuit_year)]
+
 
     # Count occurrences of each driver as Driver 1 and Driver 2 separately
     driver_1_counts = filtered_df['Driver 1'].value_counts().reset_index()
@@ -89,25 +107,27 @@ if logged_in:
     # Update layout
     fig.update_layout(barmode='stack',
                     dragmode=False,  # Disable panning
-                    # hovermode=False,  # Disable hover
+                    hovermode=False,  # Disable hover
                     xaxis_fixedrange=True,  # Disable zoom on x-axis
                     yaxis_fixedrange=True,  # Disable zoom on y-axis
                     yaxis_title= None,
                     showlegend = False,
-                    margin=dict(t=5),
+                    margin=dict(t=2),
                     xaxis=dict(showticklabels=False))  # Hide x-axis tick labels
 
     # Display the Plotly figure
-    st.subheader('Race Picks')
-    st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False})
-else:
+    st.subheader('Driver Picks')
+    st.caption('List of drivers selected for this race')
+    with st.container(border=True):
+        st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'scrollZoom':False})
     st.page_link("F1.py",label="Login to view guesses", icon="🔘", use_container_width=True)
 
 # Fetch driver picks
 driver_picks_df = db.fetch_driver_picks(conn)
 
 
-st.subheader('Most Popular Driver')
+st.subheader("Formula '1 Point' Drivers")
+st.caption('Most Popular 10th Pick Drivers of all time 🤨')
 # st.dataframe(driver_picks_df, use_container_width=True, hide_index=True)
 
 # Create a stacked bar chart using Plotly
@@ -118,16 +138,18 @@ fig = go.Figure(data=[
 # Update layout
 fig.update_layout( 
                     dragmode=False,  # Disable panning
-                    # hovermode=False,  # Disable hover
+                    hovermode=False,  # Disable hover
                     xaxis_fixedrange=True,  # Disable zoom on x-axis
                     yaxis_fixedrange=True,  # Disable zoom on y-axis
                     yaxis_title= None,
+                    xaxis_title=None,
                     showlegend = False,
-                    height=800,
-                    margin=dict(t=5),
+                    height=700,
+                    margin=dict(t=2),
                     xaxis=dict(showticklabels=False))  # Hide x-axis tick labels)
 
 fig.update_yaxes(autorange="reversed")
 
 # Display the Plotly figure
-st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'editable': False})
+with st.container(border=True):
+    st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'editable': False})

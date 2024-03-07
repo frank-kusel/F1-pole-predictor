@@ -166,9 +166,10 @@ def fetch_user_guesses(_conn):
                         users.username,
                         user_guesses.driver_1,
                         user_guesses.driver_2,
+                        user_guesses.points,
                         race_info.race_name,
                         TO_CHAR(race_info.date, 'MM-DD') AS race_date,
-                        TO_CHAR(user_guesses.submission_time, 'YYYY') AS submission_year
+                        TO_CHAR(user_guesses.submission_time, 'YYYY') AS year
                     FROM
                         user_guesses
                     JOIN
@@ -180,13 +181,19 @@ def fetch_user_guesses(_conn):
         cursor.execute(guesses_sql)
         columns = [desc[0] for desc in cursor.description]
         guesses_db = cursor.fetchall()
+        
     df = pd.DataFrame(guesses_db, columns=columns)
     df.rename(columns={'username': 'User',
                        'driver_1': 'Driver 1',
                        'driver_2': 'Driver 2',
-                       'race_name': 'Circuit'}, inplace=True)
-    df['Race'] = df['submission_year'] + '-' + df['race_date'] + ' - ' + df['Circuit']
-    df.drop(columns=['submission_year', 'race_date'], inplace=True)
+                       'race_name': 'Circuit',
+                       'year': 'Year', 
+                       'points': 'Points'
+                       }, inplace=True)
+    
+    df['Race'] = df['Year'] + '-' + df['race_date'] + ' - ' + df['Circuit']
+    df.drop(columns=['race_date'], inplace=True)
+    # df.drop(columns=['submission_year', 'race_date'], inplace=True)
     return df
 
 
