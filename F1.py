@@ -387,6 +387,7 @@ def generate_leaderboard(_conn, year):
         FROM user_guesses AS ug
         INNER JOIN users AS u ON ug.user_id = u.user_id
         WHERE EXTRACT(YEAR FROM ug.submission_time) = %s
+        AND ug.points IS NOT NULL
         GROUP BY ug.user_id, u.username
     """
     
