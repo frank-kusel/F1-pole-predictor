@@ -127,7 +127,7 @@ else:
 driver_picks_df = db.fetch_driver_picks(conn)
 
 st.subheader("Formula '1 Point' Drivers")
-st.caption('Most Popular 10th Pick Drivers of all time 🤨')
+st.caption('Most Popular 10th Pick Drivers - 2024 edition 😎')
 # st.dataframe(driver_picks_df, use_container_width=True, hide_index=True)
 
 # Create a stacked bar chart using Plotly

@@ -200,15 +200,18 @@ def fetch_user_guesses(_conn):
 # driver picks
 def fetch_driver_picks(_conn):
     driver_picks_sql = """ 
-                        SELECT 
-                            driver, COUNT(*) AS total_count
-                        FROM (
-                            SELECT driver_1 AS driver FROM user_guesses
-                            UNION ALL
-                            SELECT driver_2 AS driver FROM user_guesses
-                        ) AS drivers
-                        GROUP BY driver
-                        ORDER BY total_count DESC;
+                    SELECT 
+                        EXTRACT(YEAR FROM submission_time) AS year,
+                        driver, 
+                        COUNT(*) AS total_count
+                    FROM (
+                        SELECT driver_1 AS driver, submission_time FROM user_guesses WHERE EXTRACT(YEAR FROM submission_time) = 2024
+                        UNION ALL
+                        SELECT driver_2 AS driver, submission_time FROM user_guesses WHERE EXTRACT(YEAR FROM submission_time) = 2024
+                    ) AS drivers
+                    GROUP BY year, driver
+                    ORDER BY year DESC, total_count DESC;
+
     """
     with _conn.cursor() as cursor:
         cursor.execute(driver_picks_sql)
