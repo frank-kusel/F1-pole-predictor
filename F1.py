@@ -45,11 +45,9 @@ page_icon = ':racing_car:'
 layout = 'centered'
 # ------------------------------------------------------
 
-# TODO: Disable button if user has already submitted a guess for next_race
 # TODO: Add race results input table for admin
-# TODO: Show race results
 # TODO: Create stats for total users, races, guesses etc
-
+# TODO: link constructor to each driver. Show some stats on popular constructors
 
 # --- MAIN APP ---
 def main():
@@ -58,6 +56,7 @@ def main():
     # Page info
     st.title(page_title + " " + page_icon)
     
+   
     with st.expander("Menu"):
         st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
         st.page_link("pages/Races.py", label="Races", icon="🏎️")
@@ -74,7 +73,9 @@ def main():
     if conn is None:
         print("Error: Unable to establish database connection.")
         
+    
     # driver_names = erg.drivers()
+    # st.dataframe(driver_names)
     driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hulkenberg")
 
     # race_schedule = erg.race_schedule(2024)

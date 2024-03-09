@@ -198,7 +198,6 @@ def fetch_user_guesses(_conn):
 
 
 # driver picks
-@st.cache_data
 def fetch_driver_picks(_conn):
     driver_picks_sql = """ 
                         SELECT 
