@@ -69,6 +69,8 @@ def main():
     # conn = st.connection("supabase", type=SupabaseConnection)
     # conn = st.connection("postgresql", type="sql")
     conn = db.connect_to_postgresql()
+    db.update_points_in_user_guesses(conn)
+    
 
     if conn is None:
         print("Error: Unable to establish database connection.")
@@ -243,10 +245,10 @@ def main():
             st.table(points_system)
     
     
+    
     if logged_in:   
         
         # Fetch user guesses with race names directly from SQL
-        db.update_points_in_user_guesses(conn)
         guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
         sorted_guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
         # Apply the style to the DataFrame
@@ -370,7 +372,6 @@ def fetch_circuit_id(_conn, race_name):
         circuit_id = cursor.fetchone()[0]
     return circuit_id
 
-
 def highlight_positions(val):
     if val in [1, 2, 3]:
         return 'font-weight: bold; color: green'
@@ -402,7 +403,6 @@ def generate_leaderboard(_conn, year):
     leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points'}, inplace=True)
     
     return leaderboard_df
-
 
 # @st.cache_data
 def fetch_user_guesses(_conn, user_id):

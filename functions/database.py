@@ -22,7 +22,7 @@ def update_points_in_user_guesses(_conn):
     query = """
         SELECT guess_id, circuit_id, submission_time, driver_1, driver_2 
         FROM user_guesses 
-        WHERE points IS NULL
+        WHERE points IS NULL;
     """
     
     with _conn.cursor() as cursor:
@@ -48,7 +48,10 @@ def update_points_in_user_guesses(_conn):
 
             cursor.execute(query_positions, (circuit_id, season, driver2))
             driver2_position = cursor.fetchone()
-
+            
+            # Check if either driver position is None, and exit the function if so
+            if driver1_position is None or driver2_position is None:
+                return
 
             # Process the positions
             driver1_position = driver1_position[0] if driver1_position else None
@@ -130,7 +133,7 @@ def register_user(_conn, username, password):
     return user_id
 
 # Function to save user guesses
-@st.cache_data
+
 def save_user_guesses(_conn, user_id, driver_1, driver_2, circuit_id, submission_time):
     # Check if the user has already submitted a guess for the day
     today = date.today()
@@ -252,7 +255,6 @@ def change_password(_conn, username, current_password, new_password):
             _conn.rollback()
             print(f"Error occurred while changing password: {e}")
             return False  # Password change failed
-
 
 
 # def calculate_points(_conn, circuit_id, season, driver1, driver2):
