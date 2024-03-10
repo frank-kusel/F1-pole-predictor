@@ -42,8 +42,8 @@ if logged_in:
     df = guesses_db
 
     # Add a SelectBox to filter the DataFrame by circuit
-    if st.button("Home"):
-        st.switch_page("F1.py")
+    # if st.button("Home"):
+    #     st.switch_page("F1.py")
     st.title('Driver Picks')
     st.info("View driver picks for different races")
     
