@@ -15,6 +15,14 @@ import matplotlib.colors as mcolors
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
 
+with st.popover("Menu"):
+    st.page_link("F1.py", label="Home", icon="🏠")
+    st.page_link("pages/Races.py", label="Races", icon="🏎️")
+    st.page_link("pages/Stats.py", label="Stats", icon="🧐")
+    st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
+
+st.title('Driver Picks')
+
 logged_in = st.session_state.get('logged_in')
 
 

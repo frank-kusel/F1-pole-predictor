@@ -1,7 +1,25 @@
 import streamlit as st
 
+with st.popover("Menu"):
+    st.page_link("F1.py", label="Home", icon="🏠")
+    st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
+    st.page_link("pages/Races.py", label="Races", icon="🏎️")
+    st.page_link("pages/Stats.py", label="Stats", icon="🧐")
+
 st.title("Welcome")
 
+with st.expander('Racing Rules'):
+    # with st.expander("Racing Rules"):
+    st.markdown('#### Racing Rules')
+    st.markdown('_Welcome to the F1 - 10th Place Cup! Predict the 10th place driver and earn points._')
+    st.markdown('Your first pick earns you the full points, and the second pick gets you half points. Whichever driver gives you the highest score will be used to calculate your points.')
+    st.markdown('Driver picks must be submitted 1 hour before the race starts!')
+    points_system = {
+        "Position": ["10th", "11th", "9th", "12th", "8th", "13th", "7th", "14th", "6th", "15th"],
+        "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
+    }
+    # df_points_system = pd.DataFrame(points_system)
+    st.table(points_system)
 
 '''
 Welcome to the F1 - 10th Place Cup, where the thrill of Formula 1 racing meets the excitement of prediction!
@@ -16,3 +34,4 @@ Don't worry if you're new to prediction games; our app makes it easy and fun to 
 
 So buckle up, get ready to experience the adrenaline of F1 racing like never before, and may the best predictor win!
 '''
+

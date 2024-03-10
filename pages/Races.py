@@ -12,6 +12,13 @@ import pandas as pd
 # TODO: Filter race by calling a new url, which might be quicker? OR print all previous races to a database
 # TODO: Show a table showing all past race results and driver positions in order of driver points
 
+
+with st.popover("Menu"):
+    st.page_link("F1.py", label="Home", icon="🏠")
+    st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
+    st.page_link("pages/Stats.py", label="Stats", icon="🧐")
+    st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
+
 race_schedule = [
         {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
         {'raceName': 'Saudi Arabian', 'date': '2024-03-09', 'circuitName': 'Jeddah Corniche Circuit'},
@@ -79,8 +86,8 @@ def fetch_race_results(season):
     return races
 
 def race_results():
-    if st.button("Home"):
-        st.switch_page("F1.py")
+    # if st.button("Home"):
+    #     st.switch_page("F1.py")
     st.title("Races")
 
     st.info('View the season :red[**Schedule**] and  :red[**Results**] to compare final race positions vs starting grid positions.')
