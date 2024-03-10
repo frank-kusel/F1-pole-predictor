@@ -9,14 +9,15 @@ st.info('Stats for the discerning user 🧐')
 
 st.text('Coming soon...')
 
-st.text_input("Suggestion: ")
-suggestion_button = st.button('Submit suggestion', key='suggestions')
-if suggestion_button:
-    st.text("I don't do anything yet...")
+# st.text_input("Suggestion: ")
+# suggestion_button = st.button('Submit suggestion', key='suggestions')
+# if suggestion_button:
+#     st.text("I don't do anything yet...")
 
 st.subheader('Races')
 st.markdown(f" :red[Predicatable-prix] - race with the most winners")
 st.markdown(f" :red[Fast-and-confuscious] - races with no winners")
+st.markdown(f"- :green[Saudi Arabian Grand Prix]")
 
 st.subheader('Players')
 st.markdown(f" :red[Maximum-verstappen] - player with longest streak in 1st place")

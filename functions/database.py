@@ -45,7 +45,7 @@ def update_points_in_user_guesses(_conn):
             # Fetch driver positions from the database
             cursor.execute(query_positions, (circuit_id, season, driver1))
             driver1_position = cursor.fetchone()
-
+            
             cursor.execute(query_positions, (circuit_id, season, driver2))
             driver2_position = cursor.fetchone()
             
@@ -56,7 +56,7 @@ def update_points_in_user_guesses(_conn):
             # Process the positions
             driver1_position = driver1_position[0] if driver1_position else None
             driver2_position = driver2_position[0] if driver2_position else None
-
+          
             # Calculate points based on the retrieved positions
             points_system = {
                 "10": 25, "11": 18, "9": 15, "12": 12, "8": 10,
