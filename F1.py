@@ -57,7 +57,7 @@ def main():
     st.title(page_title + " " + page_icon)
     
    
-    with st.expander("Menu"):
+    with st.popover("Menu"):
         st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
         st.page_link("pages/Races.py", label="Races", icon="🏎️")
         st.page_link("pages/Stats.py", label="Stats", icon="🧐")
