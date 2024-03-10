@@ -78,7 +78,7 @@ def main():
     
     # driver_names = erg.drivers()
     # st.dataframe(driver_names)
-    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Perez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hulkenberg")
+    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
 
     # race_schedule = erg.race_schedule(2024)
     race_schedule = [
@@ -176,7 +176,7 @@ def main():
         # next_race_date_formatted = next_race_date
 
         st.info(f'#### :red[{next_race}] :grey[Grand Prix ] {next_race_date_formatted}')
-        st.image('circuit_ID_2.png', output_format="PNG")
+        st.image('circuit_ID_3.png')
 
     if logged_in:
         
