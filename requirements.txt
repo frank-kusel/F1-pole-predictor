@@ -1,7 +1,6 @@
-# streamlit==1.32.1
-psycopg2-binary==2.9.9
-sqlalchemy==1.4.0
-pandas==2.2.1
+psycopg2-binary
+sqlalchemy
+pandas
 openpyxl
 matplotlib
 plotly
