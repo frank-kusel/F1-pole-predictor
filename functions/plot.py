@@ -31,7 +31,7 @@ def plot_cumulative_points(cumulative_points):
                 name=user,
                 line=dict(color='red', width=2)
             ))
-        elif final_points >= 0.5*cumulative_points_top_20.max().max():
+        elif final_points >= 0.2*cumulative_points_top_20.max().max():
             if cumulative_points_top_20[user].max() == cumulative_points_top_20.max().max():
                 fig.add_trace(go.Scatter(
                     x=cumulative_points.index,
@@ -120,7 +120,7 @@ def plot_cumulative_points(cumulative_points):
         # hovermode=False,  # Disable hover
         xaxis_fixedrange=True,  # Disable zoom on x-axis
         yaxis_fixedrange=True,  # Disable zoom on y-axis
-        # height=800,
+        height=700,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
