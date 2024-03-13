@@ -11,22 +11,31 @@ def plot_cumulative_points(cumulative_points):
     # Get the index of the 10th position
     tenth_position = cumulative_points.iloc[-1].sort_values().index[9]
 
-    # Plot cumulative points for each user
-    for user in cumulative_points.columns:
-        final_points = cumulative_points[user].iloc[-1]
+    # Sort the cumulative points by the final points
+    sorted_cumulative_points = cumulative_points.iloc[-1].sort_values(ascending=False)
+
+    # Get the top 20 names
+    top_20_names = sorted_cumulative_points.index[:20]
+
+    # Filter the cumulative points DataFrame to include only the top 20 names
+    cumulative_points_top_20 = cumulative_points[top_20_names]
+
+    # Plot cumulative points for each user (only the top 20 names)
+    for user in cumulative_points_top_20.columns:
+        final_points = cumulative_points_top_20[user].iloc[-1]
         if user == tenth_position:
             fig.add_trace(go.Scatter(
                 x=cumulative_points.index,
-                y=cumulative_points[user],
+                y=cumulative_points_top_20[user],
                 mode='lines+markers',
                 name=user,
                 line=dict(color='red', width=2)
             ))
-        elif final_points >= 0.5*cumulative_points.max().max():
-            if cumulative_points[user].max() == cumulative_points.max().max():
+        elif final_points >= 0.5*cumulative_points_top_20.max().max():
+            if cumulative_points_top_20[user].max() == cumulative_points_top_20.max().max():
                 fig.add_trace(go.Scatter(
                     x=cumulative_points.index,
-                    y=cumulative_points[user],
+                    y=cumulative_points_top_20[user],
                     mode='lines+markers',
                     name=user,
                     line=dict(color='green', width=3)
@@ -34,7 +43,7 @@ def plot_cumulative_points(cumulative_points):
             else:
                 fig.add_trace(go.Scatter(
                     x=cumulative_points.index,
-                    y=cumulative_points[user],
+                    y=cumulative_points_top_20[user],
                     mode='lines',
                     name=user,
                     line=dict(width=1),
@@ -43,7 +52,7 @@ def plot_cumulative_points(cumulative_points):
         else:
             fig.add_trace(go.Scatter(
                 x=cumulative_points.index,
-                y=cumulative_points[user],
+                y=cumulative_points_top_20[user],
                 mode='lines',
                 name=user,
                 line=dict(color='grey', width=1),
@@ -111,7 +120,7 @@ def plot_cumulative_points(cumulative_points):
         # hovermode=False,  # Disable hover
         xaxis_fixedrange=True,  # Disable zoom on x-axis
         yaxis_fixedrange=True,  # Disable zoom on y-axis
-        height=800,
+        # height=800,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
