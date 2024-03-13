@@ -1,6 +1,6 @@
 import streamlit as st
 
-with st.popover("Menu"):
+with st.expander("Menu"):
     st.page_link("F1.py", label="Home", icon="🏠")
     st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
     st.page_link("pages/Races.py", label="Races", icon="🏎️")
@@ -19,7 +19,7 @@ with st.expander('Racing Rules'):
         "Points": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
     }
     # df_points_system = pd.DataFrame(points_system)
-    st.table(points_system)
+    st.dataframe(points_system, use_container_width=False, hide_index=True)
 
 '''
 Welcome to the F1 - 10th Place Cup, where the thrill of Formula 1 racing meets the excitement of prediction!

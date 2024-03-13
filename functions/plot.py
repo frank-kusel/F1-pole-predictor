@@ -8,17 +8,28 @@ def plot_cumulative_points(cumulative_points):
     # Create a Plotly figure
     fig = go.Figure()
 
+    # Get the index of the 10th position
+    tenth_position = cumulative_points.iloc[-1].sort_values().index[9]
+
     # Plot cumulative points for each user
     for user in cumulative_points.columns:
         final_points = cumulative_points[user].iloc[-1]
-        if final_points >= 180:
+        if user == tenth_position:
+            fig.add_trace(go.Scatter(
+                x=cumulative_points.index,
+                y=cumulative_points[user],
+                mode='lines+markers',
+                name=user,
+                line=dict(color='red', width=2)
+            ))
+        elif final_points >= 0.5*cumulative_points.max().max():
             if cumulative_points[user].max() == cumulative_points.max().max():
                 fig.add_trace(go.Scatter(
                     x=cumulative_points.index,
                     y=cumulative_points[user],
-                    mode='lines',
+                    mode='lines+markers',
                     name=user,
-                    line=dict(color='rgb(255, 51, 51)', width=3)
+                    line=dict(color='green', width=3)
                 ))
             else:
                 fig.add_trace(go.Scatter(
@@ -26,8 +37,8 @@ def plot_cumulative_points(cumulative_points):
                     y=cumulative_points[user],
                     mode='lines',
                     name=user,
-                    line=dict(width=2),
-                    opacity=0.3
+                    line=dict(width=1),
+                    opacity=0.5
                 ))
         else:
             fig.add_trace(go.Scatter(
@@ -36,27 +47,64 @@ def plot_cumulative_points(cumulative_points):
                 mode='lines',
                 name=user,
                 line=dict(color='grey', width=1),
-                opacity=0.3
+                opacity=0.2
             ))
 
-    # Annotate the plot with the name of the leader for each race
-    prev_leader = None
-    for i, race in enumerate(cumulative_points.index):
-        leader = cumulative_points.loc[race].idxmax()
-        leader_points = cumulative_points.loc[race, leader]
-        if leader != prev_leader:
-            fig.add_annotation(
-                x=i,
-                y=leader_points,
-                text=leader,
-                showarrow=True,
-                arrowcolor='grey',
-                arrowside='end',
-                arrowhead=1,
-                font=dict(color='yellow'),
-                opacity=0.5
-            )
-            prev_leader = leader
+
+    # Initialize variables to track the previous leaders and their corresponding race names
+    prev_leaders = None
+    prev_race = None
+
+    # Annotate the plot with the name of the leader(s) for each race
+    for race in cumulative_points.index:
+        leaders = cumulative_points.loc[race][cumulative_points.loc[race] == cumulative_points.loc[race].max()].index.tolist()
+        leader_text = '\n'.join(leaders)
+        
+        # Check if the leaders are different from the previous race
+        if leaders != prev_leaders:
+            # Add annotation for the first unique race label
+            if prev_race is not None:
+                fig.add_annotation(
+                    x=prev_race,
+                    y=cumulative_points.loc[prev_race].max(),
+                    text=', '.join(prev_leaders),
+                    showarrow=True,
+                    arrowcolor='grey',
+                    arrowside='end',
+                    arrowhead=6,
+                    font=dict(color='grey'),
+                    opacity=0.5,
+                    textangle=-90,
+                    xanchor='left',
+                    ax=0,
+                    ay=-30,                    
+                )
+            
+            # Update previous leaders and race
+            prev_leaders = leaders
+            prev_race = race
+
+    # Add annotation for the last unique race label
+    if prev_race is not None:
+        fig.add_annotation(
+            x=prev_race,
+            y=cumulative_points.loc[prev_race].max(),
+            text=', '.join(prev_leaders),
+            showarrow=True,
+            arrowcolor='green',
+            arrowside='end',
+            arrowhead=6,
+            font=dict(color='green'),
+            opacity=1,
+            textangle=-90,
+            xanchor='left',
+            ax=0,
+            ay=-30,   
+        )
+
+
+
+
 
     # Update layout
     fig.update_layout(
@@ -67,7 +115,7 @@ def plot_cumulative_points(cumulative_points):
         # hovermode=False,  # Disable hover
         xaxis_fixedrange=True,  # Disable zoom on x-axis
         yaxis_fixedrange=True,  # Disable zoom on y-axis
-        height=600,
+        height=850,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
