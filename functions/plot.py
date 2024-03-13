@@ -56,9 +56,8 @@ def plot_cumulative_points(cumulative_points):
     prev_race = None
 
     # Annotate the plot with the name of the leader(s) for each race
-    for race in cumulative_points.index:
+    for race in enumerate(cumulative_points.index[1:], start=1):
         leaders = cumulative_points.loc[race][cumulative_points.loc[race] == cumulative_points.loc[race].max()].index.tolist()
-        leader_text = '\n'.join(leaders)
         
         # Check if the leaders are different from the previous race
         if leaders != prev_leaders:
