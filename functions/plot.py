@@ -56,7 +56,7 @@ def plot_cumulative_points(cumulative_points):
     prev_race = None
 
     # Annotate the plot with the name of the leader(s) for each race
-    for race in cumulative_points.index:
+    for race in cumulative_points.index[1:]:
         leaders = cumulative_points.loc[race][cumulative_points.loc[race] == cumulative_points.loc[race].max()].index.tolist()
         
         # Check if the leaders are different from the previous race
@@ -111,7 +111,7 @@ def plot_cumulative_points(cumulative_points):
         # hovermode=False,  # Disable hover
         xaxis_fixedrange=True,  # Disable zoom on x-axis
         yaxis_fixedrange=True,  # Disable zoom on y-axis
-        height=1000,
+        height=800,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
