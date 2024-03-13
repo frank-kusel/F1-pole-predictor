@@ -102,8 +102,6 @@ def plot_cumulative_points(cumulative_points):
         )
 
 
-
-
     # Update layout
     fig.update_layout(
         # title={'text': 'Leaderboard', 'x': 0.3, 'font': {'size': 24}},
