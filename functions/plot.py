@@ -115,7 +115,7 @@ def plot_cumulative_points(cumulative_points):
         # hovermode=False,  # Disable hover
         xaxis_fixedrange=True,  # Disable zoom on x-axis
         yaxis_fixedrange=True,  # Disable zoom on y-axis
-        height=850,
+        # height=850,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
