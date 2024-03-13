@@ -234,7 +234,7 @@ def main():
     st.dataframe(styled_leaderboard, use_container_width=True, hide_index=True)
     
     # 2024 Season
-    with st.container(border=True):
+    with st.container(border=False):
         
         # Assuming `cursor` is your database cursor object and `conn` is your database connection object
         query = """

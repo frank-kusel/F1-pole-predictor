@@ -129,7 +129,7 @@ def plot_cumulative_points(cumulative_points):
             bgcolor=st.get_option("theme.backgroundColor"),
             bordercolor=st.get_option("theme.backgroundColor"),
             font=dict(color='white'),
-            itemsizing='constant'  # Ensure legend items have constant size
+            # itemsizing='constant'  # Ensure legend items have constant size
         ),
         plot_bgcolor=st.get_option("theme.backgroundColor"),
         paper_bgcolor=st.get_option("theme.backgroundColor"),
