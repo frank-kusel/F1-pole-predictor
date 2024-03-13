@@ -56,7 +56,7 @@ def plot_cumulative_points(cumulative_points):
     prev_race = None
 
     # Annotate the plot with the name of the leader(s) for each race
-    for race in enumerate(cumulative_points.index[1:], start=1):
+    for race in cumulative_points.index:
         leaders = cumulative_points.loc[race][cumulative_points.loc[race] == cumulative_points.loc[race].max()].index.tolist()
         
         # Check if the leaders are different from the previous race
@@ -104,34 +104,34 @@ def plot_cumulative_points(cumulative_points):
 
 
 
-
     # Update layout
     fig.update_layout(
         # title={'text': 'Leaderboard', 'x': 0.3, 'font': {'size': 24}},
         # xaxis=dict(title='Race'),
         # yaxis=dict(title='Points'),
-        # dragmode=False,  # Disable panning
+        dragmode=False,  # Disable panning
         # hovermode=False,  # Disable hover
         xaxis_fixedrange=True,  # Disable zoom on x-axis
         yaxis_fixedrange=True,  # Disable zoom on y-axis
-        # height=850,
+        height=1000,
         yaxis_gridwidth=False,
         yaxis_showgrid=False,  # Remove horizontal grid lines
         xaxis_tickangle=-90,
         xaxis_showline=False,
         yaxis_showline=False,
         xaxis_tickmode='array',
-        xaxis_tickvals=list(range(22)),  # Assuming 22 races
-        yaxis_range=[0, cumulative_points.max().max() + 50],
+        # xaxis_tickvals=list(range(22)),  # Assuming 22 races
+        yaxis_range=[0, cumulative_points.max().max()+20],
         legend=dict(
-            orientation='h',
+            orientation='h',  # Horizontal orientation
             yanchor='bottom',
-            y=1,
+            y=1.2,
             xanchor='center',
             x=0.5,
             bgcolor=st.get_option("theme.backgroundColor"),
             bordercolor=st.get_option("theme.backgroundColor"),
-            font=dict(color='white')
+            font=dict(color='white'),
+            itemsizing='constant'  # Ensure legend items have constant size
         ),
         plot_bgcolor=st.get_option("theme.backgroundColor"),
         paper_bgcolor=st.get_option("theme.backgroundColor"),
