@@ -23,7 +23,7 @@ def plot_cumulative_points(cumulative_points):
     # Plot cumulative points for each user (only the top 20 names)
     for user in cumulative_points_top_20.columns:
         final_points = cumulative_points_top_20[user].iloc[-1]
-        if user == tenth_position:
+        if user == 0:
             fig.add_trace(go.Scatter(
                 x=cumulative_points.index,
                 y=cumulative_points_top_20[user],
