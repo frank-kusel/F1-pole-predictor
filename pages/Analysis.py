@@ -3,6 +3,10 @@ import streamlit as st
 import fastf1
 import plotly.graph_objects as go
 
+st.header("Analysis")
+
+st.info("Analysis from the previous race")
+
 session = fastf1.get_session(2024, 2, 'R')
 # session.load(telemetry=False, weather=False)
 session.load()
@@ -148,6 +152,7 @@ fig.update_layout(
 )
 
 # Show the plot using Streamlit
+st.markdown(f'### Driver Position vs Laps')
 st.plotly_chart(fig, config ={'displayModeBar': False, 'scrollZoom':False}, use_container_width=True)
 
 
