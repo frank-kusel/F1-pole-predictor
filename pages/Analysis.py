@@ -57,13 +57,13 @@ for _, corner in circuit_info.corners.iterrows():
     track_x, track_y = rotate([corner['X'], corner['Y']], angle=track_angle)
 
     # Draw a circle next to the track.
-    fig.add_trace(go.Scatter(x=[text_x], y=[text_y], mode='markers', marker=dict(color='grey', size=16)))
+    fig.add_trace(go.Scatter(x=[text_x], y=[text_y], mode='markers', marker=dict(color='grey', size=14)))
 
     # Draw a line from the track to this circle.
     fig.add_trace(go.Scatter(x=[track_x, text_x], y=[track_y, text_y], mode='lines', line=dict(color='grey')))
 
     # Finally, print the corner number inside the circle.
-    fig.add_trace(go.Scatter(x=[text_x], y=[text_y], text=[txt], mode='text', textfont=dict(size=12, color='black')))
+    fig.add_trace(go.Scatter(x=[text_x], y=[text_y], text=[txt], mode='text', textfont=dict(size=10, color='black')))
 
 # Set the layout
 fig.update_layout(
@@ -76,7 +76,7 @@ fig.update_layout(
     yaxis=dict(visible=False),
     showlegend=False,
     # aspectratio=dict(x=1, y=1),
-    margin=dict(l=0, r=0, t=40, b=0)  # Adjust margins to fit the title
+    # margin=dict(l=0, r=0, t=40, b=0)  # Adjust margins to fit the title
 )
 
 # Show the plot
