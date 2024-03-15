@@ -121,7 +121,10 @@ def main():
                     if st.form_submit_button("Login"):
                         user_id = db.authenticate_user(conn, username, password)
                         user_id = db.authenticate_user(conn, username, password)
-                        st.success("Login successful!") if user_id > 0 else st.error("Invalid username or password.")
+                        if user_id > 0:
+                            st.success("Login successful!")
+                        else:
+                            st.error("Invalid username or password.")
                         logged_in = st.session_state['logged_in'] = user_id > 0
                             
                 elif option == "Register":
