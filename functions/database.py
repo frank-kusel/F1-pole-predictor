@@ -51,6 +51,7 @@ def update_points_in_user_guesses(_conn):
             
             # Check if either driver position is None, and exit the function if so
             if driver1_position is None or driver2_position is None:
+                st.error("Error: Selected driver not found in race results")
                 return
 
             # Process the positions

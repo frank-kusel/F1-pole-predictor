@@ -60,14 +60,15 @@ def main():
 
     # Database connection
     conn = db.connect_to_postgresql()
-    db.update_points_in_user_guesses(conn)
+    
     if conn is None:
         print("Error: Unable to establish database connection.")
         
     # Fetch drivers, race_schedule, next_race, next_race_date, circuit_name
-    # driver_names = erg.drivers()
     # race_schedule = erg.race_schedule(2024)
-    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
+    driver_names = erg.drivers()
+    if driver_names is None:
+        driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
     race_schedule = [
             {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
             {'raceName': 'Saudi Arabian', 'date': '2024-03-09', 'circuitName': 'Jeddah Corniche Circuit'},
@@ -120,12 +121,15 @@ def main():
                     
                     if st.form_submit_button("Login"):
                         user_id = db.authenticate_user(conn, username, password)
-                        user_id = db.authenticate_user(conn, username, password)
                         if user_id > 0:
                             st.success("Login successful!")
+                            logged_in=True
+                            st.session_state['logged_in'] = logged_in
+                            st.session_state['user_id'] = user_id
+
                         else:
                             st.error("Invalid username or password.")
-                        logged_in = st.session_state['logged_in'] = user_id > 0
+                            logged_in=False
                             
                 elif option == "Register":
                     st.session_state['logged_in'] = logged_in = False
@@ -183,6 +187,8 @@ def main():
         # Fetch user guesses with race names directly from SQL
         guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
         sorted_guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
+        # sorted_guesses_data = guesses_data
+        # sorted_guesses_data
 
         cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "dodgerblue"])
         sorted_guesses_data = (
@@ -330,6 +336,8 @@ def main():
             with st.container(border=False):
                 st.markdown(f'### :red[2023] Season')
                 plot.plot_cumulative_points(pivot_df)
+    
+    db.update_points_in_user_guesses(conn)
     
     # --- Plot a map ---
     with st.container(border=True):

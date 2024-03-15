@@ -5,6 +5,13 @@ from datetime import date
 from datetime import datetime
 import functions.database as db
 
+
+st.markdown('Keep an eye on this space for new features and updates...')
+
+st.markdown('#### :green[Updates]')
+st.text('2024-03-03 : Points column added to view how many points your previous picks scored.')   
+st.text('2024-03-02 : Races Page added.')
+
 # conn = db.connect_to_postgresql()
 # db.update_points_in_user_guesses(conn)
 
