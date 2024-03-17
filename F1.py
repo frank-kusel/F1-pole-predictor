@@ -55,8 +55,9 @@ def main():
         st.page_link("pages/Races.py", label="Races", icon="🏎️")
         st.page_link("pages/Stats.py", label="Stats", icon="🧐")
         st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
-        
+
     st.title(f"{page_title}")
+    
 
     # Database connection
     conn = db.connect_to_postgresql()
@@ -154,8 +155,7 @@ def main():
         # st.error(f'#### :red[{next_race}] :grey[Grand Prix ] {next_race_date_formatted}')
         st.error(f'#### {next_race} :grey[Grand Prix ] {next_race_date_formatted}')
         st.caption(f"Days until race: :red[{days_until_race}]")
-        st.image('circuit_ID_3.png')
-        st.caption(f'{circuit_name}')
+        st.image('circuit_ID_3.png', caption=f'{circuit_name}')
         
     # If logged in, show personal stats
     if logged_in:

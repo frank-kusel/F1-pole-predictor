@@ -15,14 +15,15 @@ import matplotlib.colors as mcolors
 # TODO: Figure out how to access the session state from the main page in this page.
 # TODO: Find a way to only show these results when race results are submitted
 
+
 with st.expander("Menu"):
     st.page_link("F1.py", label="Home", icon="🏠")
     st.page_link("pages/Races.py", label="Races", icon="🏎️")
     st.page_link("pages/Stats.py", label="Stats", icon="🧐")
     st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
 
-st.title('Driver Picks')
-
+# st.title('Driver Picks')
+st.image('F_10_Helmet.png', use_column_width=True)
 logged_in = st.session_state.get('logged_in')
 
 
@@ -45,7 +46,7 @@ if logged_in:
     # if st.button("Home"):
     #     st.switch_page("F1.py")
 
-    st.info("View driver picks for different races")
+    st.error("View driver picks for different races")
     
     selected_circuit = st.selectbox('Select Race', sorted(df['Race'].unique(), reverse=True))
     
