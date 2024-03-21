@@ -13,7 +13,7 @@ import pandas as pd
 # TODO: Show a table showing all past race results and driver positions in order of driver points
 
 
-with st.expander("Menu"):
+with st.popover("Menu"):
     st.page_link("F1.py", label="Home", icon="🏠")
     st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
     st.page_link("pages/Stats.py", label="Stats", icon="🧐")

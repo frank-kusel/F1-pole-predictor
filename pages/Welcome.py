@@ -1,6 +1,6 @@
 import streamlit as st
 
-with st.expander("Menu"):
+with st.popover("Menu"):
     st.page_link("F1.py", label="Home", icon="🏠")
     st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
     st.page_link("pages/Races.py", label="Races", icon="🏎️")

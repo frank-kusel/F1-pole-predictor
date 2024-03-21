@@ -16,7 +16,7 @@ import matplotlib.colors as mcolors
 # TODO: Find a way to only show these results when race results are submitted
 
 
-with st.expander("Menu"):
+with st.popover("Menu"):
     st.page_link("F1.py", label="Home", icon="🏠")
     st.page_link("pages/Races.py", label="Races", icon="🏎️")
     st.page_link("pages/Stats.py", label="Stats", icon="🧐")

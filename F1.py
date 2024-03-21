@@ -50,7 +50,7 @@ def main():
     st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout,
                         menu_items={'Report a Bug': 'mailto:frankuse1@gmail.com'})
     # Navigation menu
-    with st.expander("Menu"):
+    with st.popover("Menu"):
         st.page_link("pages/Driver Picks.py", label="Driver Picks", icon="🏇")
         st.page_link("pages/Races.py", label="Races", icon="🏎️")
         st.page_link("pages/Stats.py", label="Stats", icon="🧐")
@@ -107,7 +107,7 @@ def main():
     
     # If not logged in, show login form
     if not logged_in:
-        with st.expander("Login"):
+        with st.popover("Login"):
             st.markdown("Login to vote!")
             st.caption("Log in with your existing profile to save your points! Need a password reset? Just send a '🔑' via the WhatsApp group. Default password is 'password'. ")
             option = st.radio("", ("Login", "Register"))
