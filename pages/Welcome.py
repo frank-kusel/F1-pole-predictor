@@ -8,6 +8,8 @@ with st.popover("Menu"):
 
 st.title("Welcome")
 
+st.image('Tortoise.png', use_column_width=True)
+
 with st.expander('Racing Rules'):
     # with st.expander("Racing Rules"):
     st.markdown('#### Racing Rules')

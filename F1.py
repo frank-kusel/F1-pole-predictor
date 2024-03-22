@@ -34,6 +34,10 @@ import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
 from datetime import datetime
+import fastf1.plotting
+import numpy as np
+import fastf1
+import plotly.graph_objects as go
 
 # TODO: Create stats for total users, races, guesses etc
 # TODO: link constructor to each driver. Show some stats on popular constructors
@@ -103,7 +107,7 @@ def main():
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
-    
+        
     
     # If not logged in, show login form
     if not logged_in:
@@ -156,6 +160,8 @@ def main():
         st.error(f'#### {next_race} :grey[Grand Prix ] {next_race_date_formatted}')
         st.caption(f"Days until race: :red[{days_until_race}]")
         st.image('circuit_ID_3.png', caption=f'{circuit_name}')
+       
+        
         
     # If logged in, show personal stats
     if logged_in:
@@ -230,7 +236,7 @@ def main():
     selected_year = st.selectbox("Select year", [2024, 2023])
     leaderboard_df = generate_leaderboard(conn, selected_year)
     styled_leaderboard = style_leaderboard(leaderboard_df)
-
+    
     # Metrics
     if logged_in:
             user_name = st.session_state['user_name']

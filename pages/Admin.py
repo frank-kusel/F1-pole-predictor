@@ -6,6 +6,8 @@ import pandas as pd
 
 st.title("Admin")
 
+st.image('admin_mascot.png', use_column_width=True, caption='Stop. Admin only 👀')
+
 # Create admin section
 password = 'cakecakecake'
 
