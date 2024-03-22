@@ -26,7 +26,7 @@ with st.popover("Menu"):
     st.page_link("pages/Stats.py", label="Stats", icon="🧐")
     st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
 
-st.image('F_10_pixel.png', use_column_width=True)
+st.image('F_10_Pixel.png', use_column_width=True)
 
 race_schedule = [
         {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
