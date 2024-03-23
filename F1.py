@@ -111,7 +111,7 @@ def main():
     
     # If not logged in, show login form
     if not logged_in:
-        with st.popover("Login"):
+        with st.expander("👉Login to Vote"):
             st.markdown("Login to vote!")
             st.caption("Log in with your existing profile to save your points! Need a password reset? Just send a '🔑' via the WhatsApp group. Default password is 'password'. ")
             option = st.radio("", ("Login", "Register"))
