@@ -252,12 +252,15 @@ def main():
     # Metrics
     if logged_in:
             user_name = st.session_state['user_name']
-            current_position = leaderboard_df[leaderboard_df['Name'] == user_name]['Position'].values
-            current_points = leaderboard_df[leaderboard_df['Name'] == user_name]['Points'].values
+            # Check if the 'Name' column is equal to 'user_name' or 'user_name 🤑'
+            current_position = leaderboard_df[(leaderboard_df['Name'] == user_name) | (leaderboard_df['Name'] == f"{user_name} 🤑")]['Position'].values
+            current_points = leaderboard_df[(leaderboard_df['Name'] == user_name) | (leaderboard_df['Name'] == f"{user_name} 🤑")]['Points'].values
+
             message = st.chat_message("🏆")
             message.write(f':grey[#] :red[{ current_position[0]}] - :grey[{user_name}] - :red[{current_points[0]}] :grey[points]')   
     
     # Display the styled DataFrame
+    st.caption("🤑 -> premium players")
     st.dataframe(styled_leaderboard, use_container_width=True, hide_index=True)
     
     # 2024 Season
