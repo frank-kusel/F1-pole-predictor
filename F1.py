@@ -233,8 +233,20 @@ def main():
     # --- Leaderboard ---
     st.subheader('Leaderboard')
     
-    selected_year = st.selectbox("Select year", [2024, 2023])
+    selected_year = st.selectbox("Select year", [2024, 2023]) 
+    
     leaderboard_df = generate_leaderboard(conn, selected_year)
+    
+    # Filter the DataFrame based on Names including the '$' symbol
+    filter_options = ['All', 'Premium', 'Non-Premium']
+    filter_option = st.selectbox("Filter Leaderboard", filter_options)
+    
+    # Apply filtering based on the selected option
+    if filter_option == 'Premium':
+        leaderboard_df = leaderboard_df[leaderboard_df['Name'].str.endswith('🤑')]
+    elif filter_option == 'Non-Premium':
+        leaderboard_df = leaderboard_df[~leaderboard_df['Name'].str.endswith('🤑')]
+   
     styled_leaderboard = style_leaderboard(leaderboard_df)
     
     # Metrics
@@ -381,12 +393,12 @@ def highlight_positions(val):
 def generate_leaderboard(_conn, year):
     # Query the database to get the total points for each user_id and their username
     query = """
-        SELECT u.username, SUM(ug.points) AS total_points
+        SELECT u.username, u.premium, SUM(ug.points) AS total_points
         FROM user_guesses AS ug
         INNER JOIN users AS u ON ug.user_id = u.user_id
         WHERE EXTRACT(YEAR FROM ug.submission_time) = %s
         AND ug.points IS NOT NULL
-        GROUP BY ug.user_id, u.username
+        GROUP BY ug.user_id, u.username, u.premium
     """
     
     # Execute the query with the year parameter and fetch the results into a DataFrame
@@ -396,10 +408,15 @@ def generate_leaderboard(_conn, year):
     user_points_df['Position'] = user_points_df['total_points'].rank(ascending=False, method='dense').astype(int)
     
     # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
-    leaderboard_df = user_points_df[['Position', 'username', 'total_points']].sort_values(by='total_points', ascending=False)
+    leaderboard_df = user_points_df[['Position', 'username', 'total_points', 'premium']].sort_values(by='total_points', ascending=False)
     
     # Rename the columns for clarity
     leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points'}, inplace=True)
+    
+     # Check if the 'Premium' column exists in the DataFrame
+    if 'premium' in leaderboard_df.columns:
+        # Add $ symbol to the name if Premium is not NULL
+        leaderboard_df['Name'] = leaderboard_df.apply(lambda row: f"{row['Name']} 🤑" if row['premium'] is not None else row['Name'], axis=1)
     
     return leaderboard_df
 
@@ -441,6 +458,9 @@ def style_leaderboard(leaderboard_df):
     
     # Define custom colormap from green to black
     cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "green"]) 
+    
+    # Drop the 'premium' column
+    leaderboard_df.drop('premium', axis=1, inplace=True)
     
     # Apply styling, including background gradient and position highlights
     styled_leaderboard = leaderboard_df.style \
