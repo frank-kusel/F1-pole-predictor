@@ -6,3 +6,4 @@ F1 Pole Predictor forecasts the 10th pole position in Formula 1 races. Analyze r
 *Harness the excitement of Formula 1 racing by accurately forecasting the 10th pole position. Dive into the world of motorsport strategy and precision prediction with our interactive app. Stay ahead of the pack, analyze race data, and master the art of podium prognostication. Join us as we elevate the race day experience one prediction at a time!*
 
 ![Screenshot](/data/image.png)
+![Screenshot](/data/qr.png)
