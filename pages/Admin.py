@@ -51,6 +51,16 @@ def fetch_circuit_id(_conn, race_name):
     return circuit_id
 
 
+def show_users():
+    conn = db.connect_to_postgresql()
+    sql = "SELECT * FROM users"
+    with conn.cursor() as cursor:
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        df_users = pd.DataFrame(rows, columns=['user_id', 'username', 'password', 'premium'])
+        
+    return df_users
+
 if key == password:
     
     conn = db.connect_to_postgresql()
@@ -125,5 +135,17 @@ if key == password:
             
         # Database connection
         conn = db.connect_to_postgresql()
-        insert_race_results(conn, circuit_id, edited_df, season)
+        insert_race_results(conn, circuit_id, edited_df, season)    
 
+    # Show a database of the usernames and passwords from the databse users table
+    st.subheader('Users')
+    st.dataframe(show_users(), hide_index=True)
+
+
+    
+
+
+
+
+    
+    

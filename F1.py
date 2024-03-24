@@ -241,17 +241,92 @@ def main():
     
     leaderboard_df = generate_leaderboard(conn, selected_year)
     
-    # Filter the DataFrame based on Names including the '$' symbol
-    filter_options = ['All', 'Premium', 'Non-Premium']
-    filter_option = st.selectbox("Filter Leaderboard", filter_options)
     
-    # Apply filtering based on the selected option
-    if filter_option == 'Premium':
-        leaderboard_df = leaderboard_df[leaderboard_df['Name'].str.endswith('🤑')]
-    elif filter_option == 'Non-Premium':
-        leaderboard_df = leaderboard_df[~leaderboard_df['Name'].str.endswith('🤑')]
+    
+    # TODO: add the premium filter
+    # # Filter the DataFrame based on Names including the '$' symbol
+    # filter_options = ['All', 'Premium', 'Non-Premium']
+    # filter_option = st.selectbox("Filter Leaderboard", filter_options)
+    
+    # # Apply filtering based on the selected option
+    # if filter_option == 'Premium':
+    #     leaderboard_df = leaderboard_df[leaderboard_df['Name'].str.endswith('🤑')]
+    # elif filter_option == 'Non-Premium':
+    #     leaderboard_df = leaderboard_df[~leaderboard_df['Name'].str.endswith('🤑')]
    
-    styled_leaderboard = style_leaderboard(leaderboard_df)
+    
+    
+    query = """
+            SELECT
+                ri.race_name,
+                u.username,
+                ri.date,
+                ug.submission_time,
+                SUM(ug.points) OVER (PARTITION BY u.username ORDER BY ri.date) AS cumulative_points
+            FROM
+                user_guesses ug
+            JOIN
+                users u ON ug.user_id = u.user_id
+            JOIN
+                race_info ri ON ug.circuit_id = ri.circuit_id
+            WHERE
+                EXTRACT(YEAR FROM ug.submission_time) = 2024
+            ORDER BY
+                ri.date, u.username;
+    """
+
+    with conn.cursor() as cursor:
+
+        # Execute the query and fetch the results
+        cursor.execute(query)
+        columns = [desc[0] for desc in cursor.description]
+        data = cursor.fetchall()
+
+        # Create a DataFrame from the fetched data
+        df = pd.DataFrame(data, columns=columns)
+        
+        # Convert 'date' column to datetime format
+        df['date'] = pd.to_datetime(df['date'])
+
+        # Concatenate MM-DD from 'date' with 'race_name'
+        df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
+
+        # Pivot the DataFrame to get the desired format without reordering the index
+        pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
+        
+        # Fill NaN values with the previous non-null value (forward fill)
+        pivot_df.fillna(method='ffill', inplace=True)
+        
+        # Fill remaining None values with 0
+        pivot_df.fillna(0, inplace=True)
+    
+        # Get the race date of the latest race
+        latest_race_date = pivot_df.index[-1]
+        
+        # Get the race date of the previous race
+        prev_race_date_index = pivot_df[pivot_df.index < latest_race_date].index.max()
+        prev_race_date = prev_race_date_index if prev_race_date_index is not None else latest_race_date
+        
+        # Get the previous race positions
+        prev_race_positions = pivot_df.loc[prev_race_date]
+        
+        # Sort the points for the previous race and calculate positions
+        prev_race_sorted = prev_race_positions.sort_values()
+        prev_race_positions = prev_race_sorted.rank(ascending=False, method='dense')
+    
+        # Iterate over each user in the leaderboard dataframe to get the arrow and positions_moved
+        leaderboard_df['↕️'], leaderboard_df['↕️#'] = zip(*leaderboard_df.apply(lambda row: get_arrow(prev_race_positions[row['Name']], row['Position']), axis=1))    
+    
+        # Reorder columns from Position, Name, Points, Paid, Bar, Arrow, ? to Position, Paid, Name, Arrow, ?, Points, Bar
+        # leaderboard_df = leaderboard_df[['Position', 'Paid', 'Name', '↕️', '?', 'Points']]
+        # Rename columns using the rename() method
+        leaderboard_df['Paid'] = leaderboard_df['Paid'].replace('paid', '🤑')
+        leaderboard_df.rename(columns={'Position': '#', 'Paid': '🤑'}, inplace=True)
+        # leaderboard_df = leaderboard_df.rename(columns={'Position': '#'})
+        # Reorder columns
+        leaderboard_df = leaderboard_df[['#', '↕️', '↕️#', 'Name', 'Points']]
+
+        styled_leaderboard = style_leaderboard(leaderboard_df)  
     
     # Metrics
     if logged_in:
@@ -264,7 +339,8 @@ def main():
             message.write(f':grey[#] :red[{ current_position[0]}] - :grey[{user_name}] - :red[{current_points[0]}] :grey[points]')   
     
     # Display the styled DataFrame
-    st.caption("🤑 -> premium players")
+    # st.caption("🤑 -> premium players")
+
     st.dataframe(styled_leaderboard, use_container_width=True, hide_index=True)
     
     # 2024 Season
@@ -305,10 +381,16 @@ def main():
 
             # Concatenate MM-DD from 'date' with 'race_name'
             df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
-
+            
             # Pivot the DataFrame to get the desired format without reordering the index
             pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
-
+          
+            # Fill NaN values with the previous non-null value (forward fill)
+            pivot_df.fillna(method='ffill', inplace=True)
+            
+            # Fill remaining None values with 0
+            pivot_df.fillna(0, inplace=True)
+            
             # --- Plot cumulative points ---
             with st.container(border=False):
                 st.markdown(f'### :red[2024] Season')
@@ -416,15 +498,15 @@ def generate_leaderboard(_conn, year):
     
     # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
     leaderboard_df = user_points_df[['Position', 'username', 'total_points', 'premium']].sort_values(by='total_points', ascending=False)
-    
+
     # Rename the columns for clarity
-    leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points'}, inplace=True)
+    leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points', 'premium':'Paid'}, inplace=True)
     
      # Check if the 'Premium' column exists in the DataFrame
     if 'premium' in leaderboard_df.columns:
         # Add $ symbol to the name if Premium is not NULL
-        leaderboard_df['Name'] = leaderboard_df.apply(lambda row: f"{row['Name']} 🤑" if row['premium'] is not None else row['Name'], axis=1)
-    
+        # leaderboard_df['Name'] = leaderboard_df.apply(lambda row: f"{row['Name']} 🤑" if row['premium'] is not None else row['Name'], axis=1)
+        None
     return leaderboard_df
 
 # @st.cache_data
@@ -467,17 +549,32 @@ def style_leaderboard(leaderboard_df):
     cmap = mcolors.LinearSegmentedColormap.from_list("", ["#0E1117", "green"]) 
     
     # Drop the 'premium' column
-    leaderboard_df.drop('premium', axis=1, inplace=True)
+    # leaderboard_df.drop('premium', axis=1, inplace=True)
     
     # Apply styling, including background gradient and position highlights
     styled_leaderboard = leaderboard_df.style \
         .background_gradient(subset=['Points'], cmap=cmap) \
         .format({'Points': '{:.1f}'}) \
         .set_table_styles([{'selector': '.row_heading', 'props': [('text-align', 'left')]}]) \
-        .map(highlight_positions, subset=pd.IndexSlice[:, 'Position'])
+        .map(highlight_positions, subset=pd.IndexSlice[:, '#'])
     
     return styled_leaderboard
 
+# Function to determine arrow direction
+def get_arrow(prev_position, current_position):
+    if prev_position < current_position:
+        arrow = '💔'  
+        positions_moved = -round(abs(prev_position - current_position))
+        return arrow, positions_moved
+    elif prev_position > current_position:
+        arrow = '💚'  
+        positions_moved = +round(abs(prev_position - current_position))
+        return arrow, positions_moved
+    else:
+        arrow = '😶'  
+        positions_moved = 0
+        return arrow, positions_moved
+    
 
 if __name__ == "__main__":
     main()
