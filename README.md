@@ -8,5 +8,5 @@ F1 Pole Predictor forecasts the 10th pole position in Formula 1 races. Analyze r
 ![Screenshot](/data/image.png)
 ![Screenshot](/data/qr.png)
 
-!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/FranktheTank]
+!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/FranktheTank])
 
