@@ -102,7 +102,7 @@ def main():
             ]
         
     next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
-    
+    st.session_state['next_race_date'] = next_race_date
     # Retrieve user_id from session state
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
@@ -192,6 +192,10 @@ def main():
         
         # Fetch user guesses with race names directly from SQL
         guesses_data = pd.DataFrame(fetch_user_guesses(conn, user_id))
+        
+        latest_submission_time = guesses_data['submission_time'].max()
+        st.session_state['latest_submission_time'] = latest_submission_time
+        
         sorted_guesses_data = guesses_data.sort_values(by='submission_time', ascending=False)
         # sorted_guesses_data = guesses_data
         # sorted_guesses_data
