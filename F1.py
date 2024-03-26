@@ -159,7 +159,14 @@ def main():
         # st.error(f'#### :red[{next_race}] :grey[Grand Prix ] {next_race_date_formatted}')
         st.error(f'#### {next_race} :grey[Grand Prix ] {next_race_date_formatted}')
         st.caption(f"Days until race: :red[{days_until_race}]")
-        st.image('circuit_ID_3.png', caption=f'{circuit_name}')
+        
+        # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
+        map = 'japan'
+        map_image = f'{map}.svg' 
+        #prepend '/track maps/' to map_image
+        map_image = 'track maps/' + map_image
+        map_image_lowercase = map_image.lower()
+        st.image(map_image_lowercase, caption=f'{circuit_name}', use_column_width=True)
        
         
         

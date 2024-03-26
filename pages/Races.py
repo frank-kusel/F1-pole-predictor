@@ -159,7 +159,7 @@ st.header("Analysis")
 
 st.info("Analysis from the previous race")
 
-session = fastf1.get_session(2024, 2, 'R')
+session = fastf1.get_session(2024, 3, 'R')
 # session.load(telemetry=False, weather=False)
 session.load()
 
