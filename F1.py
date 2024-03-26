@@ -332,7 +332,7 @@ def main():
     if logged_in:
             user_name = st.session_state['user_name']
             # Check if the 'Name' column is equal to 'user_name' or 'user_name 🤑'
-            current_position = leaderboard_df[(leaderboard_df['Name'] == user_name) | (leaderboard_df['Name'] == f"{user_name} 🤑")]['Position'].values
+            current_position = leaderboard_df[(leaderboard_df['Name'] == user_name) | (leaderboard_df['Name'] == f"{user_name} 🤑")]['#'].values
             current_points = leaderboard_df[(leaderboard_df['Name'] == user_name) | (leaderboard_df['Name'] == f"{user_name} 🤑")]['Points'].values
 
             message = st.chat_message("🏆")
