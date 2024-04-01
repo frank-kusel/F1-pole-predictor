@@ -10,12 +10,12 @@ The app is getting fairly complex, so if anyone wants to improve the code, pleas
 
 *Harness the excitement of Formula 1 racing by accurately forecasting the 10th pole position. Dive into the world of motorsport strategy and precision prediction with our interactive app. Stay ahead of the pack, analyze race data, and master the art of podium prognostication. Join us as we elevate the race day experience one prediction at a time!*
 
-
-![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/f4cab980-9318-4743-bcb5-f20ebbf42dc6)
-![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/c43b9304-5956-41bf-9681-380922201389)
-![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/11413862-cd6c-4119-83a6-c781514a8a6e)
-![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/9f687d48-51f4-48dd-a6b9-b4ae814fe9a8)
-<img width="316" alt="image" src="https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/999de8ff-af6f-4d3e-adfc-1f7614471a49">
-
-
-
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/496f2c2c-940e-456e-ad81-bb5e28cf6b6c)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/b81fc772-aab4-48cb-8e7f-436c08797065)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/1d155475-53de-45c0-810d-2e19dcd602ff)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/e490f083-70bc-436b-a1ea-ca18b2d373f4)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/b22d474a-2869-4a5f-bad8-54cc880d4138)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/2ee3bf36-b234-4440-9c96-d918199af298)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/434fd029-430c-4974-b4b5-7ca27325ee45)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/f039b346-fb26-4f52-aa5e-61a3c744fac7)
+![image](https://github.com/frank-kusel/F1-pole-predictor/assets/47039743/3726c071-f1ee-4ce1-811e-97eab2100f03)
