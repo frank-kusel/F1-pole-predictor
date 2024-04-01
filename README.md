@@ -4,9 +4,7 @@ F1 Pole Predictor allows users to predict the 10th pole position in Formula 1 ra
 This is a hobby project of mine, and a lot of effort has been made to create a fun 'guessing' game to make F1 more intereseting. 
 The app is getting fairly complex, so if anyone wants to improve the code, please feel free to help out. 
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/FranktheTank)
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/FranktheTank){:target="_blank"}
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/FranktheTank)
 
 ## Aim of the game
 
