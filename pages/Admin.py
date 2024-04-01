@@ -3,6 +3,7 @@ import streamlit as st
 import functions.database as db
 import functions.ergast as erg
 import pandas as pd
+import pages.Races as race
 
 st.title("Admin")
 
@@ -13,7 +14,6 @@ password = 'cakecakecake'
 
 key = st.text_input('Admin:')
 
-# Function to insert race results into the database
 # Function to insert race results into the database
 def insert_race_results(conn, circuit_id, df_race_results, season):
     try:
@@ -61,9 +61,14 @@ def show_users():
         
     return df_users
 
+
 if key == password:
     
     conn = db.connect_to_postgresql()
+    
+    # Show a database of the usernames and passwords from the databse users table
+    # st.subheader('Users')
+    # st.dataframe(show_users(), hide_index=True)
     
     # Sample list of driver names
     driver_names = erg.drivers()
@@ -108,20 +113,63 @@ if key == password:
     race_names = [race['raceName'] for race in race_schedule]
 
     # Display the form with data editor for user input
+    
+    season = st.selectbox('Season',(2024, 2025))
+    selected_race = st.selectbox('Race Name', race_names)
+    st.info('Make sure the race and year is correct before submitting. Submitting will overwrite previous race results. *:red[This form uploads and overwrites race results for the selected race and season. Use with caution!]*')
+    
+    with st.form(key='auto_race_results_form'):
+        
+        st.subheader(":green[Automatic] Entry")
+        st.caption('If official race results are available for the selected race, submit this form to upload results. Otherwise, you will need to manually enter race results.')
+
+        ### Fetch latest race results from Ergast API ###
+        race_results = race.fetch_race_results(2024)
+        raw_df = pd.DataFrame(race_results)
+        
+        # remove "Grand Prix" from the raceName
+        raw_df['raceName'] = raw_df['raceName'].str.replace(' Grand Prix', '')
+        df = raw_df[raw_df["raceName"] == selected_race]
+    
+        # Join the name and surname
+        df['givenName'] = df['givenName'] + ' ' + df['familyName']
+
+        upload_race_results_df = df[['givenName', 'position']].copy()
+
+        # rename 'givenName' to 'driver'
+        upload_race_results_df = upload_race_results_df.rename(columns={'givenName': 'driver'})
+
+        st.dataframe(upload_race_results_df, height=738 , hide_index=True)
+        submitted = st.form_submit_button("Submit")
+
+        # Process the submitted data
+        if submitted:
+            circuit_id = fetch_circuit_id(conn, selected_race)
+            st.text(selected_race)
+            st.text(f'Circuit id: {circuit_id}')
+            # Here you can perform any processing or database operations with the submitted data
+            for index, row in upload_race_results_df.iterrows():
+                driver_name = row['driver']
+                position = row['position']
+                
+            # Database connection
+            conn = db.connect_to_postgresql()
+            insert_race_results(conn, circuit_id, upload_race_results_df, season)  
+
+
+
+
+
+    # Display the form with data editor for user input
     with st.form(key='race_results_form'):
         
-        st.error('*:red[This form uploads and overwrites race results for the selected race and season. Use with caution!]*')
-        
-        # Display the data editor for user input
-        season = st.selectbox('Season',(2024, 2025))
-        selected_race = st.selectbox('Race Name', race_names)
-        st.text("Enter '0' if the driver was not part of the race")
-        edited_df = st.data_editor(df_race_results, key='race_results', height=770)
+        st.subheader(":blue[Manual] Entry")
+                
+        st.caption("Enter '0' if the driver was not part of the race.")
+        edited_df = st.data_editor(df_race_results, key='race_results', height=770, hide_index=True)
 
-        # Add a submit button
-        st.text('Make sure the race and year is correct before submitting')
-        st.text('Note: Submitting will overwrite previous race results')
-        submitted = st.form_submit_button("Submit")
+        submitted = st.form_submit_button("Submit")       
+        
 
     # Process the submitted data
     if submitted:
@@ -137,9 +185,7 @@ if key == password:
         conn = db.connect_to_postgresql()
         insert_race_results(conn, circuit_id, edited_df, season)    
 
-    # Show a database of the usernames and passwords from the databse users table
-    st.subheader('Users')
-    st.dataframe(show_users(), hide_index=True)
+
 
 
     

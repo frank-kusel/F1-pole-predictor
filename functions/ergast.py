@@ -150,3 +150,30 @@ def previous_race_date(race_schedule):
     return previous_race_date
 
 
+def get_latest_race_results():
+    # Define the API endpoint
+    api_url = "https://ergast.com/api/f1/current/last/results.json"
+
+    try:
+        # Send GET request to the API endpoint
+        response = requests.get(api_url)
+
+        # Check if request was successful (status code 200)
+        if response.status_code == 200:
+            # Parse JSON response
+            data = response.json()
+
+            # Extract relevant race information
+            race_name = data['MRData']['RaceTable']['Races'][0]['raceName']
+            race_date = data['MRData']['RaceTable']['Races'][0]['date']
+            circuit_name = data['MRData']['RaceTable']['Races'][0]['Circuit']['circuitName']
+            results = data['MRData']['RaceTable']['Races'][0]['Results']
+
+            return race_name, race_date, circuit_name, results
+        else:
+            # Print error message if request was unsuccessful
+            print(f"Error: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
