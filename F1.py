@@ -249,17 +249,16 @@ def main():
     leaderboard_df = generate_leaderboard(conn, selected_year)
     
     
-    
-    # TODO: add the premium filter
-    # # Filter the DataFrame based on Names including the '$' symbol
-    # filter_options = ['All', 'Premium', 'Non-Premium']
-    # filter_option = st.selectbox("Filter Leaderboard", filter_options)
-    
-    # # Apply filtering based on the selected option
-    # if filter_option == 'Premium':
-    #     leaderboard_df = leaderboard_df[leaderboard_df['Name'].str.endswith('🤑')]
-    # elif filter_option == 'Non-Premium':
-    #     leaderboard_df = leaderboard_df[~leaderboard_df['Name'].str.endswith('🤑')]
+    # Filter the DataFrame based on the '🤑' column
+    filter_options = ['All', 'Premium', 'Non-Premium']
+    filter_option = st.selectbox("Filter Leaderboard", filter_options)
+
+    # Apply filtering based on the selected option
+    if filter_option == 'Premium':
+        leaderboard_df = leaderboard_df[leaderboard_df['Paid'].notnull()]
+    elif filter_option == 'Non-Premium':
+        leaderboard_df = leaderboard_df[leaderboard_df['Paid'].isnull()]
+
    
     
     
@@ -297,6 +296,12 @@ def main():
 
         # Concatenate MM-DD from 'date' with 'race_name'
         df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
+        
+        # Filter the df to exclude the submission_times that are after the prev_race_date
+        # TODO: when the race happens, the leaderboard might not update because of this filtration... check what happens here
+        prev_race_date = erg.previous_race_date(race_schedule)
+        prev_race_date = datetime.combine(prev_race_date, datetime.min.time())
+        df = df[df['date'] <= prev_race_date]
 
         # Pivot the DataFrame to get the desired format without reordering the index
         pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
@@ -322,7 +327,7 @@ def main():
         prev_race_positions = prev_race_sorted.rank(ascending=False, method='dense')
     
         # Iterate over each user in the leaderboard dataframe to get the arrow and positions_moved
-        leaderboard_df['↕️'], leaderboard_df['↕️#'] = zip(*leaderboard_df.apply(lambda row: get_arrow(prev_race_positions[row['Name']], row['Position']), axis=1))    
+        leaderboard_df['↕️'], leaderboard_df['?'] = zip(*leaderboard_df.apply(lambda row: get_arrow(prev_race_positions[row['Name']], row['Position']), axis=1))    
     
         # Reorder columns from Position, Name, Points, Paid, Bar, Arrow, ? to Position, Paid, Name, Arrow, ?, Points, Bar
         # leaderboard_df = leaderboard_df[['Position', 'Paid', 'Name', '↕️', '?', 'Points']]
@@ -331,7 +336,7 @@ def main():
         leaderboard_df.rename(columns={'Position': '#', 'Paid': '🤑'}, inplace=True)
         # leaderboard_df = leaderboard_df.rename(columns={'Position': '#'})
         # Reorder columns
-        leaderboard_df = leaderboard_df[['#', '↕️', '↕️#', 'Name', 'Points']]
+        leaderboard_df = leaderboard_df[['#', '↕️', '?', 'Name', 'Points', '🤑']]
 
         styled_leaderboard = style_leaderboard(leaderboard_df)  
     
@@ -349,6 +354,7 @@ def main():
     # st.caption("🤑 -> premium players")
 
     st.dataframe(styled_leaderboard, use_container_width=True, hide_index=True)
+
     
     # 2024 Season
     with st.container(border=True):

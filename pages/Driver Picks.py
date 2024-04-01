@@ -12,12 +12,10 @@ import psycopg2
 import functions.database as db
 import matplotlib.colors as mcolors
 from datetime import timedelta
-
-# TODO: Figure out how to access the session state from the main page in this page.
-# TODO: Find a way to only show these results when race results are submitted
+from datetime import datetime
 
 
-def has_user_voted(last_submitted, race_date):
+def has_user_voted_for_selected_circuit(last_submitted, race_date):
     # Convert last_submitted to datetime.date format
     last_submitted_date = last_submitted.date()
     # Calculate the difference between the last submission date and the race date
@@ -27,7 +25,6 @@ def has_user_voted(last_submitted, race_date):
         return True
     else:
         return False
-
 
 with st.popover("Menu"):
     st.page_link("F1.py", label="Home", icon="🏠")
@@ -54,23 +51,21 @@ if logged_in:
     last_submitted = st.session_state.get('latest_submission_time')
     next_race_date = st.session_state.get('next_race_date')
     
-    if has_user_voted(last_submitted, next_race_date):
+    # Fetch user guesses
+    guesses_db = db.fetch_user_guesses(conn)
+    df = guesses_db
+
+    st.error("View driver picks for different races")
     
-        # Fetch user guesses
-        guesses_db = db.fetch_user_guesses(conn)
-        df = guesses_db
+    selected_circuit = st.selectbox('Select Race', sorted(df['Race'].unique(), reverse=True))
 
-        # Add a SelectBox to filter the DataFrame by circuit
-        # if st.button("Home"):
-        #     st.switch_page("F1.py")
-
-        st.error("View driver picks for different races")
-        
-        selected_circuit = st.selectbox('Select Race', sorted(df['Race'].unique(), reverse=True))
-        
+    selected_circuit_date = datetime.strptime(selected_circuit.split(" - ")[0], '%Y-%m-%d').date()
+    
+    if has_user_voted_for_selected_circuit(last_submitted, selected_circuit_date):
+    
         selected_circuit_name = selected_circuit.split("-")[3].strip()
         selected_circuit_year = selected_circuit.split("-")[0]
-        
+
         
         filtered_guesses_db = guesses_db[(guesses_db['Circuit'] == selected_circuit_name) 
                                         & (guesses_db['Year'] == selected_circuit_year)]
@@ -91,13 +86,10 @@ if logged_in:
             .format({'Points': '{:.1f}'})
         )
 
-
         st.dataframe(filtered_guesses_db, hide_index=True, use_container_width=True)
-        
         
         # Filter the DataFrame by selected circuit and year
         filtered_df = df[(df['Circuit'] == selected_circuit_name) & (df['Year'] == selected_circuit_year)]
-
 
         # Count occurrences of each driver as Driver 1 and Driver 2 separately
         driver_1_counts = filtered_df['Driver 1'].value_counts().reset_index()
@@ -148,7 +140,7 @@ if logged_in:
         with st.container(border=True):
             st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'scrollZoom':False})
     else:
-        st.page_link("F1.py",label="You must submit a vote to see the driver picks", icon="☝️", use_container_width=False)
+        st.page_link("F1.py",label="Submit a guess first to view the selected race", icon="☝️", use_container_width=False)
 else:
     st.page_link("F1.py",label="Login to view guesses", icon="🔑", use_container_width=False)
 

@@ -129,3 +129,24 @@ def next_race_name(race_schedule):
     # If no future race is found, return None
     return None
 
+def previous_race_date(race_schedule):
+    # Get the current date and time
+    current_date = datetime.today()
+
+    previous_race = None
+
+    # Iterate through the race schedule to find the previous race
+    for race in race_schedule:
+        # Convert the race date string to a datetime object
+        race_date = datetime.strptime(race['date'], '%Y-%m-%d')
+
+        # Check if the race date is before the current date
+        if race_date.date() < current_date.date():
+            # If previous_race is None or the current race_date is more recent than the one previously found,
+            # update previous_race
+            if previous_race is None or race_date.date() > previous_race.date():
+                previous_race_date = race_date.date()
+
+    return previous_race_date
+
+
