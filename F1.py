@@ -61,7 +61,7 @@ def main():
         st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
 
     st.title(f"{page_title}")
-    
+    db.update_points_in_user_guesses(conn)
 
     # Database connection
     conn = db.connect_to_postgresql()
@@ -457,7 +457,7 @@ def main():
                 st.markdown(f'### :red[2023] Season')
                 plot.plot_cumulative_points(pivot_df)
     
-    db.update_points_in_user_guesses(conn)
+    # db.update_points_in_user_guesses(conn)
     
     # --- Plot a map ---
     with st.container(border=True):
