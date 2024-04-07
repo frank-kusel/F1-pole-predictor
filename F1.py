@@ -107,8 +107,6 @@ def main():
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
-
-    db.update_points_in_user_guesses(conn)
     
     # If not logged in, show login form
     if not logged_in:
@@ -288,7 +286,7 @@ def main():
         cursor.execute(query)
         columns = [desc[0] for desc in cursor.description]
         data = cursor.fetchall()
-
+        
         # Create a DataFrame from the fetched data
         df = pd.DataFrame(data, columns=columns)
         
@@ -301,9 +299,10 @@ def main():
         # Filter the df to exclude the submission_times that are after the prev_race_date
         # TODO: when the race happens, the leaderboard might not update because of this filtration... check what happens here
         prev_race_date = erg.previous_race_date(race_schedule)
-        prev_race_date = datetime.combine(prev_race_date, datetime.min.time())
+        prev_race_date = datetime.combine(prev_race_date, datetime.max.time())
+        
         df = df[df['date'] <= prev_race_date]
-
+        
         # Pivot the DataFrame to get the desired format without reordering the index
         pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
         
@@ -312,7 +311,7 @@ def main():
         
         # Fill remaining None values with 0
         pivot_df.fillna(0, inplace=True)
-    
+        
         # Get the race date of the latest race
         latest_race_date = pivot_df.index[-1]
         
@@ -323,13 +322,28 @@ def main():
         # Get the previous race positions
         prev_race_positions = pivot_df.loc[prev_race_date]
         
+
         # Sort the points for the previous race and calculate positions
         prev_race_sorted = prev_race_positions.sort_values()
         prev_race_positions = prev_race_sorted.rank(ascending=False, method='dense')
-    
+
+
+
+        all_users = leaderboard_df['Name']
+        
+        # Identify users in all_users that are not in prev_race_positions
+        new_users = all_users[~all_users.isin(prev_race_positions.index)]
+
+        # Add new users to prev_race_positions with a default position of -1
+        for user in new_users:
+            prev_race_positions[user] = -1
+
+        
+        
         # Iterate over each user in the leaderboard dataframe to get the arrow and positions_moved
+        
         leaderboard_df['↕️'], leaderboard_df['?'] = zip(*leaderboard_df.apply(lambda row: get_arrow(prev_race_positions[row['Name']], row['Position']), axis=1))    
-    
+        
         # Reorder columns from Position, Name, Points, Paid, Bar, Arrow, ? to Position, Paid, Name, Arrow, ?, Points, Bar
         # leaderboard_df = leaderboard_df[['Position', 'Paid', 'Name', '↕️', '?', 'Points']]
         # Rename columns using the rename() method
@@ -395,9 +409,20 @@ def main():
 
             # Concatenate MM-DD from 'date' with 'race_name'
             df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
-            
+
+            # Combine race_name and username to identify duplicates
+            df['key'] = df['race_name'] + '_' + df['username']
+
+            # Drop duplicate rows based on the combined key
+            df_cleaned = df.drop_duplicates(subset='key', keep='first')
+
+            # Drop the temporary 'key' column
+            df_cleaned = df_cleaned.drop(columns=['key'])
+
+
+
             # Pivot the DataFrame to get the desired format without reordering the index
-            pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
+            pivot_df = df_cleaned.pivot(index='race_with_date', columns='username', values='cumulative_points')
           
             # Fill NaN values with the previous non-null value (forward fill)
             pivot_df.fillna(method='ffill', inplace=True)
@@ -463,6 +488,8 @@ def main():
     # --- Plot a map ---
     with st.container(border=True):
         plot.map_locations()
+
+    
 
 def disable():
     st.session_state.disabled = True
@@ -576,6 +603,11 @@ def style_leaderboard(leaderboard_df):
 
 # Function to determine arrow direction
 def get_arrow(prev_position, current_position):
+
+    if prev_position == -1:
+            return '🌱', '-'
+
+
     if prev_position < current_position:
         arrow = '💔'  
         positions_moved = -round(abs(prev_position - current_position))

@@ -73,11 +73,12 @@ def update_points_in_user_guesses(_conn):
             try:
                 # Update the points in the user_guesses table
                 cursor.execute("UPDATE user_guesses SET points = %s WHERE guess_id = %s", (max_points, guess_id))
+                print(driver1_position, driver2_position, max_points)
             except Exception as e:
                 print(f"Error updating points for guess_id {guess_id}: {e}")
     
-    # Commit the changes
-    _conn.commit()
+        # Commit the changes
+        _conn.commit()
 
 
 # # Function to execute query and fetch data

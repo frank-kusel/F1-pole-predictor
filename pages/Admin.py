@@ -7,6 +7,9 @@ import pages.Races as race
 
 st.title("Admin")
 
+conn = db.connect_to_postgresql()
+db.update_points_in_user_guesses(conn)
+
 st.image('admin_mascot.png', use_column_width=True, caption='Stop. Admin only 👀')
 
 # Create admin section
