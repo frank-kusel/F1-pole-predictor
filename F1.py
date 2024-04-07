@@ -65,7 +65,7 @@ def main():
 
     # Database connection
     conn = db.connect_to_postgresql()
-    db.update_points_in_user_guesses(conn)
+    
     if conn is None:
         print("Error: Unable to establish database connection.")
         
@@ -107,7 +107,8 @@ def main():
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
-        
+
+    db.update_points_in_user_guesses(conn)
     
     # If not logged in, show login form
     if not logged_in:
