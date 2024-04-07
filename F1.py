@@ -61,11 +61,11 @@ def main():
         st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
 
     st.title(f"{page_title}")
-    db.update_points_in_user_guesses(conn)
+    
 
     # Database connection
     conn = db.connect_to_postgresql()
-    
+    db.update_points_in_user_guesses(conn)
     if conn is None:
         print("Error: Unable to establish database connection.")
         
