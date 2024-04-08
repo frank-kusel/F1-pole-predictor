@@ -300,11 +300,36 @@ def main():
         # TODO: when the race happens, the leaderboard might not update because of this filtration... check what happens here
         prev_race_date = erg.previous_race_date(race_schedule)
         prev_race_date = datetime.combine(prev_race_date, datetime.max.time())
+
+
+        race_before_prev_race_date = erg.race_before_previous_date(race_schedule)
+        race_before_prev_race_date = datetime.combine(race_before_prev_race_date, datetime.max.time())
         
+
         df = df[df['date'] <= prev_race_date]
-        
+
+        # Drop duplicate rows based on the combined key
+        # df_cleaned = df.drop_duplicates(subset='username', keep='last')
+
+
+
+
+        # Combine race_name and username to identify duplicates
+        df['key'] = df['race_name'] + '_' + df['username']
+
+        # Drop duplicate rows based on the combined key
+        df_cleaned = df.drop_duplicates(subset='key', keep='first')
+
+        # Drop the temporary 'key' column
+        df_cleaned = df_cleaned.drop(columns=['key'])
+
+
+
+
+
+
         # Pivot the DataFrame to get the desired format without reordering the index
-        pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
+        pivot_df = df_cleaned.pivot(index='race_with_date', columns='username', values='cumulative_points')
         
         # Fill NaN values with the previous non-null value (forward fill)
         pivot_df.fillna(method='ffill', inplace=True)
@@ -322,12 +347,10 @@ def main():
         # Get the previous race positions
         prev_race_positions = pivot_df.loc[prev_race_date]
         
-
         # Sort the points for the previous race and calculate positions
         prev_race_sorted = prev_race_positions.sort_values()
-        prev_race_positions = prev_race_sorted.rank(ascending=False, method='dense')
-
-
+        prev_race_positions = prev_race_sorted.rank(ascending=False, method='min')
+        
 
         all_users = leaderboard_df['Name']
         
@@ -338,8 +361,7 @@ def main():
         for user in new_users:
             prev_race_positions[user] = -1
 
-        
-        
+
         # Iterate over each user in the leaderboard dataframe to get the arrow and positions_moved
         
         leaderboard_df['↕️'], leaderboard_df['?'] = zip(*leaderboard_df.apply(lambda row: get_arrow(prev_race_positions[row['Name']], row['Position']), axis=1))    
@@ -535,7 +557,7 @@ def generate_leaderboard(_conn, year):
     user_points_df = pd.read_sql_query(query, _conn, params=(year,))
     
     # Add a 'Position' column based on the points
-    user_points_df['Position'] = user_points_df['total_points'].rank(ascending=False, method='dense').astype(int)
+    user_points_df['Position'] = user_points_df['total_points'].rank(ascending=False, method='min').astype(int)
     
     # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
     leaderboard_df = user_points_df[['Position', 'username', 'total_points', 'premium']].sort_values(by='total_points', ascending=False)
@@ -549,6 +571,39 @@ def generate_leaderboard(_conn, year):
         # leaderboard_df['Name'] = leaderboard_df.apply(lambda row: f"{row['Name']} 🤑" if row['premium'] is not None else row['Name'], axis=1)
         None
     return leaderboard_df
+
+def generate_prev_leaderboard(_conn, year):
+    # Query the database to get the total points for each user_id and their username
+    query = """
+        SELECT u.username, u.premium, SUM(ug.points) AS total_points
+        FROM user_guesses AS ug
+        INNER JOIN users AS u ON ug.user_id = u.user_id
+        WHERE EXTRACT(YEAR FROM ug.submission_time) = %s
+        AND ug.points IS NOT NULL
+        AND ug.circuit_id <> (SELECT circuit_id FROM race_info WHERE date = (SELECT MAX(date) FROM race_info))
+        GROUP BY ug.user_id, u.username, u.premium
+    """
+    
+    # Execute the query with the year parameter and fetch the results into a DataFrame
+    user_points_df = pd.read_sql_query(query, _conn, params=(year,))
+    
+    # Add a 'Position' column based on the points
+    user_points_df['Position'] = user_points_df['total_points'].rank(ascending=False, method='min').astype(int)
+    
+    # Select only the required columns 'Name' and 'Points', and order by 'Points' descending
+    leaderboard_df = user_points_df[['Position', 'username', 'total_points', 'premium']].sort_values(by='total_points', ascending=False)
+
+    # Rename the columns for clarity
+    leaderboard_df.rename(columns={'username': 'Name', 'total_points': 'Points', 'premium':'Paid'}, inplace=True)
+    
+    # Check if the 'Premium' column exists in the DataFrame
+    if 'premium' in leaderboard_df.columns:
+        # Add $ symbol to the name if Premium is not NULL
+        # leaderboard_df['Name'] = leaderboard_df.apply(lambda row: f"{row['Name']} 🤑" if row['premium'] is not None else row['Name'], axis=1)
+        None
+    
+    return leaderboard_df
+
 
 # @st.cache_data
 def fetch_user_guesses(_conn, user_id):
