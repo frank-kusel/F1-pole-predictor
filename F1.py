@@ -161,8 +161,8 @@ def main():
         st.caption(f"Days until race: :red[{days_until_race}]")
         
         # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
-        map = 'japan'
-        map_image = f'{map}.svg' 
+        map = next_race
+        map_image = f'{map}.png'
         #prepend '/track maps/' to map_image
         map_image = 'track maps/' + map_image
         map_image_lowercase = map_image.lower()
@@ -435,7 +435,7 @@ def main():
 
         with conn.cursor() as cursor:
 
-            # Execute the query and fetch the results
+        # Execute the query and fetch the results
             cursor.execute(query)
             columns = [desc[0] for desc in cursor.description]
             data = cursor.fetchall()
