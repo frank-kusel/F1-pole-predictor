@@ -394,7 +394,7 @@ def main():
 
     
     # 2024 Season
-    with st.container(border=True):
+    with st.container(border=False):
         
         # Assuming `cursor` is your database cursor object and `conn` is your database connection object
         query = """
@@ -459,7 +459,7 @@ def main():
                 
     
     # 2023 Season
-    with st.container(border=True):
+    with st.container(border=False):
         
         # Assuming `cursor` is your database cursor object and `conn` is your database connection object
         query = """
