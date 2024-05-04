@@ -172,6 +172,6 @@ fig.update_layout(
 fig.update_yaxes(autorange="reversed")
 
 # Display the Plotly figure
-with st.container(border=True):
+with st.container(border=False):
     st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'editable': False})
     
