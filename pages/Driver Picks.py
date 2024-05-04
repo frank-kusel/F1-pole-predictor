@@ -137,7 +137,7 @@ if logged_in:
         # Display the Plotly figure
         st.subheader('Driver Picks')
         st.caption('List of drivers selected for this race')
-        with st.container(border=True):
+        with st.container(border=False):
             st.plotly_chart(fig, use_container_width=True, config ={'displayModeBar': False, 'scrollZoom':False})
     else:
         st.page_link("F1.py",label="Submit a guess first to view the selected race", icon="☝️", use_container_width=False)
