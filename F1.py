@@ -160,11 +160,11 @@ def main():
         st.caption(f"Days until race: :red[{days_until_race}]")
         
         # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
-        map = 'Miami'
+        map = next_race
         map_image = f'{map}.png'
         #prepend '/track maps/' to map_image
         map_image = 'track maps/' + map_image
-        map_image_lowercase = map_image.lower()
+        map_image_lowercase = map_image
         st.image(map_image_lowercase, caption=f'{circuit_name}', use_column_width=True)
        
         
