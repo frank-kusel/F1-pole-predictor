@@ -22,6 +22,7 @@ st.text('Coming soon...')
 
 st.subheader('Races')
 st.markdown(f" :red[Predicatable-prix] - race with the most winners")
+st.markdown(f"- :green[Japanese Grand Prix - 15 Winners]")
 st.markdown(f" :red[Fast-and-confuscious] - races with no winners")
 st.markdown(f"- :green[Saudi Arabian Grand Prix]")
 

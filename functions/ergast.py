@@ -149,6 +149,28 @@ def previous_race_date(race_schedule):
 
     return previous_race_date
 
+def race_before_previous_date(race_schedule):
+    # Get the current date
+    current_date = datetime.today().date()
+
+    previous_race_date = None
+    race_before_previous_date = None
+
+    # Iterate through the race schedule to find the race before the previous race
+    for race in race_schedule:
+        # Convert the race date string to a datetime object
+        race_date = datetime.strptime(race['date'], '%Y-%m-%d').date()
+
+        # Check if the race date is before the current date
+        if race_date < current_date:
+            # Update race_before_previous_date if we find a race before the previous race date
+            if previous_race_date is not None and race_date > previous_race_date:
+                race_before_previous_date = previous_race_date
+            # Update previous_race_date to track the latest race date before the current date
+            previous_race_date = race_date
+
+    return race_before_previous_date
+
 
 def get_latest_race_results():
     # Define the API endpoint
