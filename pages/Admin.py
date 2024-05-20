@@ -80,8 +80,8 @@ if key == password:
 
     # Create a DataFrame to hold the data
     df_race_results = pd.DataFrame({
-        'Driver': driver_names,
-        'Position': [None] * len(driver_names)
+        'driver': driver_names,
+        'position': [None] * len(driver_names)
     })
 
     race_schedule = erg.race_schedule(2024)
@@ -181,8 +181,8 @@ if key == password:
         st.text(f'Circuit id: {circuit_id}')
         # Here you can perform any processing or database operations with the submitted data
         for index, row in edited_df.iterrows():
-            driver_name = row['Driver']
-            position = row['Position']
+            driver_name = row['driver']
+            position = row['position']
             
         # Database connection
         conn = db.connect_to_postgresql()
