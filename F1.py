@@ -161,7 +161,7 @@ def main():
         
         # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
         map = next_race
-        map_image = f'{map}.png'
+        map_image = f'{map}.svg'
         #prepend '/track maps/' to map_image
         map_image = 'track maps/' + map_image
         map_image_lowercase = map_image
