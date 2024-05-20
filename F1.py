@@ -163,7 +163,7 @@ def main():
         map = next_race
         map_image = f'{map}.svg'
         #prepend '/track maps/' to map_image
-        map_image = 'track maps/' + map_image
+        map_image = 'track_maps/' + map_image
         map_image_lowercase = map_image
         st.image(map_image_lowercase, caption=f'{circuit_name}', use_column_width=True)
        
