@@ -515,12 +515,12 @@ def main():
             df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
 
             # Pivot the DataFrame to get the desired format without reordering the index
-            pivot_df = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
+            pivot_df2 = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
 
             # --- Plot cumulative points ---
             with st.container(border=False):
                 st.markdown(f'### :red[2023] Season')
-                plot.plot_cumulative_points(pivot_df)
+                plot.plot_cumulative_points(pivot_df2)
     
     # db.update_points_in_user_guesses(conn)
     

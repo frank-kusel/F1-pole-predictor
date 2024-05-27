@@ -187,14 +187,3 @@ if key == password:
         # Database connection
         conn = db.connect_to_postgresql()
         insert_race_results(conn, circuit_id, edited_df, season)    
-
-
-
-
-    
-
-
-
-
-    
-    
