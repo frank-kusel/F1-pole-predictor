@@ -73,7 +73,7 @@ def main():
     # race_schedule = erg.race_schedule(2024)
     # driver_names = erg.drivers()
     # if driver_names is None:
-    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
+    driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Oliver Bearman", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alexander Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
     race_schedule = [
             {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
             {'raceName': 'Saudi Arabian', 'date': '2024-03-09', 'circuitName': 'Jeddah Corniche Circuit'},
@@ -160,12 +160,29 @@ def main():
         st.caption(f"Days until race: :red[{days_until_race}]")
         
         # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
+        
         map = next_race
-        map_image = f'{map}.svg'
-        #prepend '/track maps/' to map_image
-        map_image = 'track_maps/' + map_image
-        map_image_lowercase = map_image
-        st.image(map_image_lowercase, caption=f'{circuit_name}', use_column_width=True)
+        track_maps_folder = 'track_maps/'
+        extensions = ['.svg', '.png']
+        
+        # Initialize map_image as None
+        map_image = None
+
+        # Loop through extensions to find the map file
+        for ext in extensions:
+            map_image_path = f'{track_maps_folder}{map}{ext}'
+            try:
+                with open(map_image_path):
+                    map_image = map_image_path
+                    break
+            except FileNotFoundError:
+                continue
+
+        if map_image:
+            # Display the image
+            st.image(map_image, caption=f'{circuit_name}', use_column_width=True)
+        else:
+            st.error(f'Map image for {map} not found.')
        
         
         
