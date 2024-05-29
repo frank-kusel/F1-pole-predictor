@@ -16,7 +16,7 @@ import plotly.graph_objects as go
 def main():
     st.image("F_10_Pixel.png", use_column_width=True)
     navigation_menu()
-    session = fastf1.get_session(2024, 3, "R")
+    session = fastf1.get_session(2024, 8, "R")
     session.load()
     race_results()
     display_analysis(session)
