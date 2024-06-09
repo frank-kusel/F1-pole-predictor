@@ -525,8 +525,8 @@ def main():
     # db.update_points_in_user_guesses(conn)
     
     # --- Plot a map ---
-    with st.container(border=False):
-        plot.map_locations()
+    # with st.container(border=False):
+    #     plot.map_locations()
 
     
 
