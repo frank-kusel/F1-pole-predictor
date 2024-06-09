@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-@st.cache_data
+# @st.cache_data
 def plot_cumulative_points(cumulative_points):
     # Create a Plotly figure
     fig = go.Figure()
