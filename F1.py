@@ -472,7 +472,7 @@ def main():
             # --- Plot cumulative points ---
             with st.container(border=False):
                 st.markdown(f'### :red[2024] Season')
-                # plot.plot_cumulative_points(pivot_df)
+                plot.plot_cumulative_points(pivot_df)
                 
     
     # 2023 Season
@@ -525,8 +525,8 @@ def main():
     # db.update_points_in_user_guesses(conn)
     
     # --- Plot a map ---
-    with st.container(border=False):
-        plot.map_locations()
+    # with st.container(border=False):
+        # plot.map_locations()
 
     
 
