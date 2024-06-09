@@ -476,51 +476,51 @@ def main():
                 
     
     # 2023 Season
-    with st.container(border=False):
+    # with st.container(border=False):
         
-        # Assuming `cursor` is your database cursor object and `conn` is your database connection object
-        query = """
-                SELECT
-                    ri.race_name,
-                    u.username,
-                    ri.date,
-                    ug.submission_time,
-                    SUM(ug.points) OVER (PARTITION BY u.username ORDER BY ri.date) AS cumulative_points
-                FROM
-                    user_guesses ug
-                JOIN
-                    users u ON ug.user_id = u.user_id
-                JOIN
-                    race_info ri ON ug.circuit_id = ri.circuit_id
-                WHERE
-                    EXTRACT(YEAR FROM ug.submission_time) = 2023
-                ORDER BY
-                    ri.date, u.username;
-        """
+    #     # Assuming `cursor` is your database cursor object and `conn` is your database connection object
+    #     query = """
+    #             SELECT
+    #                 ri.race_name,
+    #                 u.username,
+    #                 ri.date,
+    #                 ug.submission_time,
+    #                 SUM(ug.points) OVER (PARTITION BY u.username ORDER BY ri.date) AS cumulative_points
+    #             FROM
+    #                 user_guesses ug
+    #             JOIN
+    #                 users u ON ug.user_id = u.user_id
+    #             JOIN
+    #                 race_info ri ON ug.circuit_id = ri.circuit_id
+    #             WHERE
+    #                 EXTRACT(YEAR FROM ug.submission_time) = 2023
+    #             ORDER BY
+    #                 ri.date, u.username;
+    #     """
 
-        with conn.cursor() as cursor:
+    #     with conn.cursor() as cursor:
 
-        # Execute the query and fetch the results
-            cursor.execute(query)
-            columns = [desc[0] for desc in cursor.description]
-            data = cursor.fetchall()
+    #     # Execute the query and fetch the results
+    #         cursor.execute(query)
+    #         columns = [desc[0] for desc in cursor.description]
+    #         data = cursor.fetchall()
 
-            # Create a DataFrame from the fetched data
-            df = pd.DataFrame(data, columns=columns)
+    #         # Create a DataFrame from the fetched data
+    #         df = pd.DataFrame(data, columns=columns)
             
-            # Convert 'date' column to datetime format
-            df['date'] = pd.to_datetime(df['date'])
+    #         # Convert 'date' column to datetime format
+    #         df['date'] = pd.to_datetime(df['date'])
 
-            # Concatenate MM-DD from 'date' with 'race_name'
-            df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
+    #         # Concatenate MM-DD from 'date' with 'race_name'
+    #         df['race_with_date'] = df['date'].dt.strftime('%m-%d') + ' ' + df['race_name']
 
-            # Pivot the DataFrame to get the desired format without reordering the index
-            pivot_df2 = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
+    #         # Pivot the DataFrame to get the desired format without reordering the index
+    #         pivot_df2 = df.pivot(index='race_with_date', columns='username', values='cumulative_points')
 
-            # --- Plot cumulative points ---
-            with st.container(border=False):
-                st.markdown(f'### :red[2023] Season')
-                plot.plot_cumulative_points(pivot_df2)
+    #         # --- Plot cumulative points ---
+    #         with st.container(border=False):
+    #             st.markdown(f'### :red[2023] Season')
+    #             plot.plot_cumulative_points(pivot_df2)
     
     # db.update_points_in_user_guesses(conn)
     
