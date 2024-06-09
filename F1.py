@@ -472,7 +472,7 @@ def main():
             # --- Plot cumulative points ---
             with st.container(border=False):
                 st.markdown(f'### :red[2024] Season')
-                plot.plot_cumulative_points(pivot_df)
+                # plot.plot_cumulative_points(pivot_df)
                 
     
     # 2023 Season
