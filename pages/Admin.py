@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit as st
 import functions.database as db
 import functions.ergast as erg
 import pandas as pd
@@ -27,11 +26,11 @@ def insert_race_results(conn, circuit_id, df_race_results, season):
             # Insert new race results into the database
             for index, row in df_race_results.iterrows():
                 # Check if the driver is not NULL before inserting
-                if int(row['Position']) != 0:
-                    st.write(row['Position'])
+                if int(row['position']) != 0:
+                    st.write(row['position'])
                     cursor.execute(
                         "INSERT INTO race_results (circuit_id, driver, position, season) VALUES (%s, %s, %s, %s)",
-                        (circuit_id, row['Driver'], row['Position'], season)
+                        (circuit_id, row['driver'], row['position'], season)
                     )
 
         conn.commit()
@@ -75,9 +74,12 @@ if key == password:
     
     # Sample list of driver names
     driver_names = erg.drivers()
+    
     if driver_names is None:
-        driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alex Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
+        driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Guanyu Zhou", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alexander Albon", "Logan Sargeant", "Kevin Magnussen", "Nico Hülkenberg")
 
+    driver_names
+    
     # Create a DataFrame to hold the data
     df_race_results = pd.DataFrame({
         'driver': driver_names,
