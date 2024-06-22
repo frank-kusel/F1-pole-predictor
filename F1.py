@@ -34,7 +34,7 @@ import functions.plot as plot
 import functions.database as db
 import functions.ergast as erg
 from datetime import datetime
-import fastf1.plotting
+# import fastf1.plotting
 import numpy as np
 import fastf1
 import plotly.graph_objects as go
