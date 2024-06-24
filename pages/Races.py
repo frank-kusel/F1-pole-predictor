@@ -7,19 +7,19 @@ import requests
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-import fastf1.plotting
+# import fastf1.plotting
 import numpy as np
 import streamlit as st
-import fastf1
+# import fastf1
 import plotly.graph_objects as go
 
 def main():
     st.image("F_10_Pixel.png", use_column_width=True)
     navigation_menu()
-    session = fastf1.get_session(2024, 8, "R")
+    # session = fastf1.get_session(2024, 8, "R")
     session.load()
     race_results()
-    display_analysis(session)
+    # display_analysis(session)
 
 
 def navigation_menu():
