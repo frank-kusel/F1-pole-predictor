@@ -29,7 +29,7 @@ def navigation_menu():
         st.page_link("pages/Stats.py", label="Stats", icon="🧐")
         st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
 
-@st.cache_data
+# @st.cache_data
 def fetch_race_results(season):
     races = []
     offset = 0
