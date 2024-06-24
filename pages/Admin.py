@@ -2,7 +2,6 @@ import streamlit as st
 import functions.database as db
 import functions.ergast as erg
 import pandas as pd
-# import pages.Races as race
 
 st.title("Admin")
 
