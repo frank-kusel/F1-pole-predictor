@@ -53,7 +53,7 @@ def fetch_race_results(season):
                     "driverID": result["Driver"]["driverId"],
                     "givenName": result["Driver"]["givenName"],
                     "familyName": result["Driver"]["familyName"],
-                    "position": result["Position"],
+                    "position": result["Pos"],
                     "constructorID": result["Constructor"]["constructorId"],
                     "grid": result["grid"],
                     "speed": result["FastestLap"]["AverageSpeed"]["speed"] if "speed" in result else None,
