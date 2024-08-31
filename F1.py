@@ -73,6 +73,7 @@ def main():
     # race_schedule = erg.race_schedule(2024)
     # driver_names = erg.drivers()
     # if driver_names is None:
+    
     driver_names = ("Lewis Hamilton", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Daniel Ricciardo", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alexander Albon", "Franco Colapinto", "Kevin Magnussen", "Nico Hülkenberg")
     race_schedule = [
             {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
