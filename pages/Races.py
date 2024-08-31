@@ -7,19 +7,19 @@ import requests
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-import fastf1.plotting
+# import fastf1.plotting
 import numpy as np
 import streamlit as st
-import fastf1
+# import fastf1
 import plotly.graph_objects as go
 
 def main():
     st.image("F_10_Pixel.png", use_column_width=True)
     navigation_menu()
-    session = fastf1.get_session(2024, 8, "R")
+    # session = fastf1.get_session(2024, 8, "R")
     session.load()
     race_results()
-    display_analysis(session)
+    # display_analysis(session)
 
 
 def navigation_menu():
@@ -29,7 +29,7 @@ def navigation_menu():
         st.page_link("pages/Stats.py", label="Stats", icon="🧐")
         st.page_link("pages/Welcome.py", label="Welcome", icon="😃")
 
-@st.cache_data
+# @st.cache_data
 def fetch_race_results(season):
     races = []
     offset = 0
@@ -53,7 +53,7 @@ def fetch_race_results(season):
                     "driverID": result["Driver"]["driverId"],
                     "givenName": result["Driver"]["givenName"],
                     "familyName": result["Driver"]["familyName"],
-                    "position": result["Position"],
+                    "position": result["position"],
                     "constructorID": result["Constructor"]["constructorId"],
                     "grid": result["grid"],
                     "speed": result["FastestLap"]["AverageSpeed"]["speed"] if "speed" in result else None,
