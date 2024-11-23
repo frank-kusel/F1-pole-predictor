@@ -105,6 +105,7 @@ def main():
             ]
         
     next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
+    next_race
     st.session_state['next_race_date'] = next_race_date
     # Retrieve user_id from session state
     user_id = st.session_state.get('user_id')
