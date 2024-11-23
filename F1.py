@@ -175,6 +175,7 @@ def main():
         # Loop through extensions to find the map file
         for ext in extensions:
             map_image_path = f'{track_maps_folder}{map}{ext}'
+            map_image_path
             try:
                 with open(map_image_path):
                     map_image = map_image_path
