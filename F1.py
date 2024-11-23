@@ -75,7 +75,7 @@ def main():
     # if driver_names is None:
     
     
-    driver_names = ("Lewis Hamilton","Oliver Bearman", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Liam Lawson", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alexander Albon", "Franco Colapinto", "Nico Hülkenberg")
+    driver_names = ("Lewis Hamilton","Kevin Magnussen", "Max Verstappen", "Valtteri Bottas", "Lando Norris", "Zhou Guanyu", "Oscar Piastri", "Sergio Pérez", "Charles Leclerc", "Liam Lawson", "Carlos Sainz", "Pierre Gasly", "Fernando Alonso", "Esteban Ocon", "Lance Stroll", "Yuki Tsunoda", "George Russell", "Alexander Albon", "Franco Colapinto", "Nico Hülkenberg")
     
     race_schedule = [
             {'raceName': 'Bahrain', 'date': '2024-03-02', 'circuitName': 'Bahrain International Circuit'},
@@ -167,15 +167,14 @@ def main():
         map = next_race
         track_maps_folder = 'track_maps/'
         extensions = ['.svg', '.png']
-        map
-        
+        map = 'Las Vegas'
         # Initialize map_image as None
         map_image = None
 
         # Loop through extensions to find the map file
         for ext in extensions:
             map_image_path = f'{track_maps_folder}{map}{ext}'
-            map_image_path
+            
             try:
                 with open(map_image_path):
                     map_image = map_image_path
