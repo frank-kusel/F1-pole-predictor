@@ -105,7 +105,6 @@ def main():
             ]
         
     next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
-    next_race
     st.session_state['next_race_date'] = next_race_date
     # Retrieve user_id from session state
     user_id = st.session_state.get('user_id')
@@ -168,6 +167,7 @@ def main():
         map = next_race
         track_maps_folder = 'track_maps/'
         extensions = ['.svg', '.png']
+        map
         
         # Initialize map_image as None
         map_image = None
