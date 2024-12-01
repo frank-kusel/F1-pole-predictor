@@ -169,6 +169,7 @@ def main():
         extensions = ['.svg', '.png']
         # Initialize map_image as None
         map_image = None
+        
 
         # Loop through extensions to find the map file
         for ext in extensions:
