@@ -167,7 +167,6 @@ def main():
         map = next_race
         track_maps_folder = 'track_maps/'
         extensions = ['.svg', '.png']
-        map = 'Las Vegas'
         # Initialize map_image as None
         map_image = None
 
