@@ -448,6 +448,7 @@ def main():
             cursor.execute(query)
             columns = [desc[0] for desc in cursor.description]
             data = cursor.fetchall()
+            data
 
             # Create a DataFrame from the fetched data
             df = pd.DataFrame(data, columns=columns)
@@ -477,6 +478,7 @@ def main():
             
             # Fill remaining None values with 0
             pivot_df.fillna(0, inplace=True)
+            pivot_df
             
             # --- Plot cumulative points ---
             with st.container(border=False):
