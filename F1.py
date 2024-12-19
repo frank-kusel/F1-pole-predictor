@@ -104,7 +104,8 @@ def main():
             {'raceName': 'Abu Dhabi', 'date': '2024-12-08', 'circuitName': 'Yas Marina Circuit'}
             ]
 
-    """ temporarily swtich this off at the end of the season
+    """ 
+    temporarily swtich this off at the end of the season
     next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
     st.session_state['next_race_date'] = next_race_date
     # Retrieve user_id from session state
@@ -153,7 +154,8 @@ def main():
                             st.success("Registration successful! Please login with your username and password")
 
     # Next race info and circuit map
-    """ temoporarily switch this off at the end of the season
+    """ 
+    temoporarily switch this off at the end of the season
     with st.container(border=False):
         
         next_race_date_formatted = next_race_date.strftime('%d %B')
@@ -200,7 +202,8 @@ def main():
         # Initialize session state for the form_submit_button
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
-        """ temporarily switch this off at the end of the season
+        """ 
+        temporarily switch this off at the end of the season
         with st.form("entry_form"):
             col1, col2 = st.columns(2)
             with col1:
