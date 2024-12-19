@@ -103,10 +103,12 @@ def main():
             {'raceName': 'Qatar', 'date': '2024-12-01', 'circuitName': 'Losail International Circuit'},
             {'raceName': 'Abu Dhabi', 'date': '2024-12-08', 'circuitName': 'Yas Marina Circuit'}
             ]
-        
+
+    """ temporarily swtich this off at the end of the season
     next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
     st.session_state['next_race_date'] = next_race_date
     # Retrieve user_id from session state
+    """
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
@@ -151,6 +153,7 @@ def main():
                             st.success("Registration successful! Please login with your username and password")
 
     # Next race info and circuit map
+    """ temoporarily switch this off at the end of the season
     with st.container(border=False):
         
         next_race_date_formatted = next_race_date.strftime('%d %B')
@@ -187,17 +190,17 @@ def main():
             st.image(map_image, caption=f'{circuit_name}', use_column_width=True)
         else:
             st.error(f'Map image for {map} not found.')
-       
+    """
         
         
     # If logged in, show personal stats
     if logged_in:
-        circuit_id = fetch_circuit_id(conn, next_race)
+        # circuit_id = fetch_circuit_id(conn, next_race)
 
         # Initialize session state for the form_submit_button
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
-        
+        """ temporarily switch this off at the end of the season
         with st.form("entry_form"):
             col1, col2 = st.columns(2)
             with col1:
@@ -213,7 +216,7 @@ def main():
                 
                 db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
                 st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
-        
+        """
         # Display DataFrame
         st.markdown('##### Your previous picks')
         
