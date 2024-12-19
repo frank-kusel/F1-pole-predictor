@@ -127,7 +127,7 @@ def plot_cumulative_points(cumulative_points):
         xaxis_showline=False,
         yaxis_showline=False,
         xaxis_tickmode='array',
-        xaxis_tickvals=list(range(22)),  # Assuming 22 races
+        xaxis_tickvals=list(range(24)),  # Assuming 22 races
         yaxis_range=[0, cumulative_points.max().max()+20],
         legend=dict(
             orientation='h',  # Horizontal orientation
