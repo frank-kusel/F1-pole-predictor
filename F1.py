@@ -104,12 +104,12 @@ def main():
             {'raceName': 'Abu Dhabi', 'date': '2024-12-08', 'circuitName': 'Yas Marina Circuit'}
             ]
 
-    """ 
-    temporarily swtich this off at the end of the season
-    next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
-    st.session_state['next_race_date'] = next_race_date
+    
+    # temporarily swtich this off at the end of the season
+    # next_race, next_race_date, circuit_name = erg.next_race_name(race_schedule)
+    # st.session_state['next_race_date'] = next_race_date
     # Retrieve user_id from session state
-    """
+    
     user_id = st.session_state.get('user_id')
     logged_in = st.session_state.get('logged_in')
     username = st.session_state.get('username')
@@ -154,45 +154,44 @@ def main():
                             st.success("Registration successful! Please login with your username and password")
 
     # Next race info and circuit map
-    """ 
-    temoporarily switch this off at the end of the season
-    with st.container(border=False):
+    
+    # temoporarily switch this off at the end of the season
+    # with st.container(border=False):
+    #     
+    #     next_race_date_formatted = next_race_date.strftime('%d %B')
+    #     
+    #     # Calculate the number of days until the next race date
+    #     days_until_race = (next_race_date - datetime.now().date()).days
+    #     
+    #     # st.error(f'#### :red[{next_race}] :grey[Grand Prix ] {next_race_date_formatted}')
+    #     st.error(f'#### {next_race} :grey[Grand Prix ] {next_race_date_formatted}')
+    #     st.caption(f"Days until race: :red[{days_until_race}]")
+    #     
+    #     # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
         
-        next_race_date_formatted = next_race_date.strftime('%d %B')
-        
-        # Calculate the number of days until the next race date
-        days_until_race = (next_race_date - datetime.now().date()).days
-        
-        # st.error(f'#### :red[{next_race}] :grey[Grand Prix ] {next_race_date_formatted}')
-        st.error(f'#### {next_race} :grey[Grand Prix ] {next_race_date_formatted}')
-        st.caption(f"Days until race: :red[{days_until_race}]")
-        
-        # map = st.selectbox('Select Circuit', ['Abudhabi', 'Australia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belgium', 'Brazil', 'Canada', 'China', 'France', 'Greatbritain', 'Hungary', 'Italy', 'Japan', 'Mexico', 'Monaco', 'Netherlands', 'Russia', 'Singapore', 'Spain', 'Usa', 'Vietnam'])
-        
-        map = next_race
-        track_maps_folder = 'track_maps/'
-        extensions = ['.svg', '.png']
-        # Initialize map_image as None
-        map_image = None
-        
-
-        # Loop through extensions to find the map file
-        for ext in extensions:
-            map_image_path = f'{track_maps_folder}{map}{ext}'
-            
-            try:
-                with open(map_image_path):
-                    map_image = map_image_path
-                    break
-            except FileNotFoundError:
-                continue
-
-        if map_image:
-            # Display the image
-            st.image(map_image, caption=f'{circuit_name}', use_column_width=True)
-        else:
-            st.error(f'Map image for {map} not found.')
-    """
+    #     map = next_race
+    #     track_maps_folder = 'track_maps/'
+    #     extensions = ['.svg', '.png']
+    #     # Initialize map_image as None
+    #     map_image = None
+    #     
+    # 
+    #     # Loop through extensions to find the map file
+    #     for ext in extensions:
+    #         map_image_path = f'{track_maps_folder}{map}{ext}'
+    #         
+    #         try:
+    #             with open(map_image_path):
+    #                 map_image = map_image_path
+    #                 break
+    #         except FileNotFoundError:
+    #             continue
+    # 
+    #     if map_image:
+    #         # Display the image
+    #         st.image(map_image, caption=f'{circuit_name}', use_column_width=True)
+    #     else:
+    #         st.error(f'Map image for {map} not found.')
         
         
     # If logged in, show personal stats
@@ -202,24 +201,24 @@ def main():
         # Initialize session state for the form_submit_button
         if "disabled" not in st.session_state:
             st.session_state.disabled = False
-        """ 
-        temporarily switch this off at the end of the season
-        with st.form("entry_form"):
-            col1, col2 = st.columns(2)
-            with col1:
-                driver_1 = st.selectbox(f':red[Driver 1]', sorted(driver_names), key="driver_1")
-            with col2:
-                driver_2 = st.selectbox(f':grey[Driver 2]', sorted(driver_names), key="driver_2")
-            submitted = st.form_submit_button(f":green[Submit] :grey[- {next_race}] :grey[Grand Prix]", on_click=disable, disabled=st.session_state.disabled)
-
-            if submitted:
-                st.session_state.disabled = True
-                submitted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                current_user = st.session_state['user_id']
-                
-                db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
-                st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
-        """
+        
+        # temporarily switch this off at the end of the season
+        # with st.form("entry_form"):
+        #     col1, col2 = st.columns(2)
+        #     with col1:
+        #         driver_1 = st.selectbox(f':red[Driver 1]', sorted(driver_names), key="driver_1")
+        #     with col2:
+        #         driver_2 = st.selectbox(f':grey[Driver 2]', sorted(driver_names), key="driver_2")
+        #     submitted = st.form_submit_button(f":green[Submit] :grey[- {next_race}] :grey[Grand Prix]", on_click=disable, disabled=st.session_state.disabled)
+        # 
+        #     if submitted:
+        #         st.session_state.disabled = True
+        #         submitted_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        #         current_user = st.session_state['user_id']
+        #         
+        #         db.save_user_guesses(conn, current_user, driver_1, driver_2, int(circuit_id), submitted_time)
+        #         st.write(f'You have selected :green[{driver_1}] and :orange[{driver_2}]')
+        
         # Display DataFrame
         st.markdown('##### Your previous picks')
         
